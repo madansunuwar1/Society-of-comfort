@@ -5,34 +5,8 @@ const Userdash = () => {
   return (
     <div className="flex justify-center bg-slate-800 w-[100%] h-[100%]">
       <div className="px-5 pb-20 w-[390px] bg-white">
-        <div className="py-6 overflow-scroll grid grid-cols-2 gap-72">
-          <div className="flex rounded-3xl overflow-hidden shadow-md shadow-black/30 h-[85px] w-[295px] bg-gray-50">
-            <img
-              src="https://cdn.vox-cdn.com/thumbor/UGQ4on7DnoP9s24PlQV0OC0WRPc=/0x0:2040x1360/768x768/filters:focal(1020x680:1021x681)/cdn.vox-cdn.com/uploads/chorus_asset/file/24931354/236792_iPhone_15_Pro_and_15_Pro_Max_product_photos_AJohnson_0010.jpg"
-              alt=""
-              className="w-[97px] object-cover"
-            />
-            <div className="flex flex-col ml-3 my-auto ">
-              <h1 className="font-bold">Phone</h1>
-              <p className="text-green-600 font-light">AVAILABLE</p>
-              <p>Listing</p>
-            </div>
-          </div>
-          <div className="flex rounded-3xl overflow-hidden shadow-md shadow-black/30 h-[85px] w-[295px] bg-gray-50">
-            <img
-              src="https://cdn.vox-cdn.com/thumbor/UGQ4on7DnoP9s24PlQV0OC0WRPc=/0x0:2040x1360/768x768/filters:focal(1020x680:1021x681)/cdn.vox-cdn.com/uploads/chorus_asset/file/24931354/236792_iPhone_15_Pro_and_15_Pro_Max_product_photos_AJohnson_0010.jpg"
-              alt=""
-              className="w-[97px] object-cover"
-            />
-            <div className="flex flex-col ml-3 my-auto ">
-              <h1 className="font-bold">Phone</h1>
-              <p className="text-green-600 font-light">AVAILABLE</p>
-              <p>Listing</p>
-            </div>
-          </div>
-        </div>
         <div className="">
-          <div className="flex justify-between ">
+          <div className="flex justify-between mt-4">
             <Link to="/payment">
               <div className="w-[165px] h-[100px] rounded-xl bg-[#752FFF] p-2 shadow-lg shadow-slate-400">
                 <svg
