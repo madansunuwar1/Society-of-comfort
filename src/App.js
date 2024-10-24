@@ -42,6 +42,7 @@ import PaymentList from "./pages/admin/PaymentList";
 import DisplayEvent from "./pages/admin/DisplayEvent";
 import AddEvent from "./pages/admin/AddEvent";
 import UserPaymentList from "./pages/UserPaymentList";
+import Attendance from "./pages/admin/Attendance";
 
 function App() {
   const [fcmToken, setFcmToken] = useState(null);
@@ -351,6 +352,15 @@ function App() {
           element={
             <>
               <UserPaymentList />
+              <Botnav />
+            </>
+          }
+        />
+        <Route
+          path="/attendance"
+          element={
+            <>
+              <Attendance />
               <Botnav />
             </>
           }

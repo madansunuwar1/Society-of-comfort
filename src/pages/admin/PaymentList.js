@@ -170,6 +170,14 @@ const PaymentList = () => {
               />
               <input
                 className="rounded-xl py-2 px-4 shadow-sm border"
+                type="date"
+                placeholder="House Number"
+                value={houseNo}
+                onChange={(e) => setHouseNo(e.target.value)}
+                required
+              />
+              <input
+                className="rounded-xl py-2 px-4 shadow-sm border"
                 type="text"
                 placeholder="Owner Name"
                 value={ownerName}

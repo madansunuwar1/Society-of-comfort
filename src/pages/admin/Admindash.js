@@ -22,15 +22,15 @@ const Admindash = () => {
               </div>
             </Link>
             <Link to="/private">
-              <div className="w-[165px] h-[100px] rounded-xl bg-[#2aa79c] bg-opacity-20 p-2 shadow-lg shadow-slate-400">
+              <div className="w-[165px] h-[100px] rounded-xl bg-[#87d6ca] bg-opacity-20 p-2 shadow-lg shadow-slate-400">
                 <img
                   src="../assets/images/notice.png"
                   className="w-10 h-10"
                 ></img>
-                <h1 className="text-[14px] font-bold font-roboto text-[#2aa79c]">
+                <h1 className="text-[14px] font-bold font-roboto text-[#87d6ca]">
                   Send Private Notice
                 </h1>
-                <p className="text-[10px] font-roboto text-[#2aa79c]">
+                <p className="text-[10px] font-roboto text-[#87d6ca]">
                   Private and public notices can be sent here
                 </p>
               </div>
@@ -44,10 +44,10 @@ const Admindash = () => {
                   className="w-10 h-10"
                 ></img>
 
-                <h1 className="text-[14px] font-bold font-roboto text-[#752FFF]">
+                <h1 className="text-[14px] font-bold font-roboto text-[#c31fde]">
                   Payment
                 </h1>
-                <p className="text-[10px] font-roboto text-[#91ABDD]">
+                <p className="text-[10px] font-roboto text-[#c31fde]">
                   you can find your payment list here
                 </p>
               </div>
@@ -59,10 +59,10 @@ const Admindash = () => {
                   className="w-10 h-10"
                 ></img>
 
-                <h1 className="text-[14px] font-bold font-roboto text-[#ec3d72]">
+                <h1 className="text-[14px] font-bold font-roboto text-[#0298a9]">
                   event
                 </h1>
-                <p className="text-[10px] font-roboto text-[#ec3d72]">
+                <p className="text-[10px] font-roboto text-[#0298a9]">
                   you can find Bookings of today
                 </p>
               </div>
@@ -93,7 +93,22 @@ const Admindash = () => {
               <h1 className="text-[14px] font-bold font-roboto text-[#FFAE00]">
                 Residences
               </h1>
-              <p className="text-[10px] font-roboto text-[#ABA688]">
+              <p className="text-[10px] font-roboto text-[#FFAE00]">
+                you can find the list of residences here
+              </p>
+            </div>
+          </Link>
+          <Link to="/attendance">
+            <div className="w-[165px] h-[100px] rounded-xl bg-[#f2545a] bg-opacity-20 p-2 shadow-lg shadow-slate-400">
+              <img
+                src="../assets/images/immigration.png"
+                className="w-10 h-10"
+              ></img>
+
+              <h1 className="text-[14px] font-bold font-roboto text-[#f2545a]">
+                attandence
+              </h1>
+              <p className="text-[10px] font-roboto text-[#f2545a]">
                 you can find the list of residences here
               </p>
             </div>
