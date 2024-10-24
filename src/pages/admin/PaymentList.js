@@ -3,6 +3,8 @@ import { useDispatch, useSelector } from "react-redux";
 import { paymentActions } from "../../redux/paymentSlice";
 import { Link } from "react-router-dom";
 import { SlArrowLeft } from "react-icons/sl";
+import DatePicker from "react-datepicker";
+import "react-datepicker/dist/react-datepicker.css";
 
 const PaymentList = () => {
   const dispatch = useDispatch();
@@ -20,6 +22,8 @@ const PaymentList = () => {
   const [ownerName, setOwnerName] = useState("");
   const [waterCharges, setWaterCharges] = useState("");
   const [otherCharges, setOtherCharges] = useState("");
+  const [selectedDate, setSelectedDate] = useState(null);
+  const [specifics, setSpecifics] = useState([]);
 
   useEffect(() => {
     dispatch(paymentActions.getPayments());
@@ -68,12 +72,31 @@ const PaymentList = () => {
     setOwnerName("");
     setWaterCharges("");
     setOtherCharges("");
-    setIsModalOpen(false); // Close modal
+    setIsModalOpen(false);
+    setIsInvoiceOpen(true); // Close modal
   };
 
   const handleShowInvoice = (payment) => {
     setSelectedPayment(payment);
     setIsInvoiceOpen(true);
+  };
+
+  const addSpecific = () => {
+    setSpecifics([
+      ...specifics,
+      { particular: "", quantity: 0, rate: 0, total: 0 },
+    ]);
+  };
+
+  const handleSpecificChange = (index, field, value) => {
+    const updatedSpecifics = specifics.map((specific, i) =>
+      i === index ? { ...specific, [field]: value } : specific
+    );
+    setSpecifics(updatedSpecifics);
+  };
+
+  const removeSpecific = (index) => {
+    setSpecifics(specifics.filter((_, i) => i !== index));
   };
 
   if (loading || updating) return <div>Loading...</div>;
@@ -151,8 +174,8 @@ const PaymentList = () => {
 
       {/* Modal for Add Payment */}
       {isModalOpen && (
-        <div className="fixed inset-0 flex items-center justify-center z-50 bg-black bg-opacity-50">
-          <div className="bg-white rounded-lg p-6 shadow-lg">
+        <div className="fixed inset-0 flex z-50 bg-black bg-opacity-50 w-full">
+          <div className="bg-white p-6 shadow-lg w-full">
             <div className="flex justify-between items-center mb-4">
               <h3 className="font-bold text-lg">Add Payment</h3>
               <button onClick={() => setIsModalOpen(false)} className="text-xl">
@@ -168,12 +191,12 @@ const PaymentList = () => {
                 onChange={(e) => setHouseNo(e.target.value)}
                 required
               />
-              <input
-                className="rounded-xl py-2 px-4 shadow-sm border"
-                type="date"
-                placeholder="House Number"
-                value={houseNo}
-                onChange={(e) => setHouseNo(e.target.value)}
+              <DatePicker
+                className="rounded-xl py-2 px-4 shadow-sm border w-full"
+                selected={selectedDate}
+                onChange={(date) => setSelectedDate(date)}
+                placeholderText="Select a date"
+                dateFormat="yyyy-MM-dd"
                 required
               />
               <input
@@ -184,37 +207,97 @@ const PaymentList = () => {
                 onChange={(e) => setOwnerName(e.target.value)}
                 required
               />
-              <input
-                className="rounded-xl py-2 px-4 shadow-sm border"
-                type="number"
-                placeholder="Water Charges"
-                value={waterCharges}
-                onChange={(e) => setWaterCharges(e.target.value)}
-                required
-              />
-              <input
-                className="rounded-xl py-2 px-4 shadow-sm border"
-                type="text"
-                placeholder="Monthly Charge"
-                value={monthlyCharge}
-                onChange={(e) => setMonthlyCharge(e.target.value)}
-                required
-              />
-              <input
-                className="rounded-xl py-2 px-4 shadow-sm border"
-                type="number"
-                placeholder="Other Charges"
-                value={otherCharges}
-                onChange={(e) => setOtherCharges(e.target.value)}
-                required
-              />
-              <input
-                className="rounded-xl py-2 px-4 shadow-sm border"
-                type="text"
-                placeholder="Remarks"
-                value={remarks}
-                onChange={(e) => setRemarks(e.target.value)}
-              />
+
+              {/* Button to add specifics */}
+              <button
+                type="button"
+                className="bg-[#403F93] text-white py-2 rounded-3xl"
+                onClick={addSpecific}
+              >
+                Add Specifics
+              </button>
+
+              {/* List of specifics input fields */}
+              {specifics.map((specific, index) => (
+                <div key={index} className="flex gap-4 items-center mt-4">
+                  <div className="flex-1">
+                    <label className="block mb-1">Particular</label>
+                    <input
+                      className="rounded-xl py-2 px-4 shadow-sm border w-full"
+                      type="text"
+                      value={specific.particular}
+                      onChange={(e) =>
+                        handleSpecificChange(
+                          index,
+                          "particular",
+                          e.target.value
+                        )
+                      }
+                      placeholder="e.g., Water Charge"
+                      required
+                    />
+                  </div>
+                  <div className="flex-1">
+                    <label className="block mb-1">Quantity</label>
+                    <input
+                      className="rounded-xl py-2 px-4 shadow-sm border w-full"
+                      type="number"
+                      value={specific.quantity}
+                      onChange={(e) =>
+                        handleSpecificChange(index, "quantity", e.target.value)
+                      }
+                      required
+                    />
+                  </div>
+                  <div className="flex-1">
+                    <label className="block mb-1">Rate</label>
+                    <input
+                      className="rounded-xl py-2 px-4 shadow-sm border w-full"
+                      type="number"
+                      value={specific.rate}
+                      onChange={(e) =>
+                        handleSpecificChange(index, "rate", e.target.value)
+                      }
+                      required
+                    />
+                  </div>
+                  <div className="flex-1">
+                    <label className="block mb-1">Total</label>
+                    <input
+                      className="rounded-xl py-2 px-4 shadow-sm border w-full"
+                      type="number"
+                      value={specific.quantity * specific.rate}
+                      readOnly
+                    />
+                  </div>
+                  <button
+                    type="button"
+                    onClick={() => removeSpecific(index)}
+                    className="text-red-500 text-xl"
+                  >
+                    &times;
+                  </button>
+                </div>
+              ))}
+
+              {/* Displaying specifics as a list */}
+              <div className="mt-4">
+                <h4 className="font-bold mb-2">Bill Summary</h4>
+                <ul className="list-none">
+                  {specifics.map((specific, index) => (
+                    <li
+                      key={index}
+                      className="flex justify-between items-center mb-2"
+                    >
+                      <span>{specific.particular}</span>
+                      <span>{specific.quantity}</span>
+                      <span>{specific.rate}</span>
+                      <span>{specific.quantity * specific.rate}</span>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+
               <button
                 type="submit"
                 className="bg-[#403F93] text-white py-2 rounded-3xl"
@@ -225,11 +308,10 @@ const PaymentList = () => {
           </div>
         </div>
       )}
-
       {/* Invoice Modal */}
       {isInvoiceOpen && selectedPayment && (
-        <div className="fixed inset-0 flex items-center justify-center z-50 bg-black bg-opacity-50">
-          <div className="w-[390px] bg-white p-8 border border-gray-300 rounded-lg shadow-lg">
+        <div className="fixed inset-0 flex z-50 bg-black bg-opacity-50">
+          <div className="w-full bg-white p-8 border border-gray-300 rounded-lg shadow-lg">
             <h2 className="text-2xl font-bold text-center mb-2">
               Society of Comfort SMD
             </h2>

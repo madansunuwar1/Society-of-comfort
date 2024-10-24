@@ -109,7 +109,7 @@ const Admindash = () => {
                 attandence
               </h1>
               <p className="text-[10px] font-roboto text-[#f2545a]">
-                you can find the list of residences here
+                you can find attendance here
               </p>
             </div>
           </Link>
