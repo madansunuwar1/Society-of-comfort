@@ -4,14 +4,8 @@ import { Link } from "react-router-dom";
 
 const Residences = () => {
   return (
-    <div className="flex justify-center bg-slate-800 w-[100%] h-[100%]">
-      <div className="w-[390px] bg-slate-200 font-roboto pb-20">
-        <div className="bg-white flex px-6 py-4">
-          <div className="items-center my-auto">
-            <Link to="/dashboard">
-              <SlArrowLeft />
-            </Link>
-          </div>
+      <div className=" bg-slate-200 font-roboto pb-20">
+        <div className="bg-white flex px-6">
           <h3 className="font-bold flex justify-center mx-auto text-[22px]">
             Residences
           </h3>
@@ -319,7 +313,6 @@ const Residences = () => {
           </Link>
         </div>
       </div>
-    </div>
   );
 };
 

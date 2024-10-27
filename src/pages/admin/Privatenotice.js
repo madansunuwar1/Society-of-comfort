@@ -67,19 +67,14 @@ const Privatenotice = () => {
   };
 
   return (
-    <div className="flex justify-center bg-slate-800 w-[100%] h-[100vh]">
-      <div className="w-[390px] bg-white pb-20">
-        <div className="flex px-6 py-4">
-          <div className="items-center my-auto">
-            <Link to="/dashboard">
-              <SlArrowLeft />
-            </Link>
-          </div>
+
+      <div className="bg-white pb-20 py-4">
+        <div className="flex">
           <h3 className="font-bold flex justify-center mx-auto text-[22px]">
             Send Public Notice
           </h3>
         </div>
-        <div className="bg-slate-200 px-6 py-6 min-h-[100vh]">
+        <div className=" px-6 py-6 min-h-[100vh] bg-slate-200">
           <form onSubmit={handleSubmit}>
             <div className="">
               <input
@@ -127,7 +122,6 @@ const Privatenotice = () => {
           </form>
         </div>
       </div>
-    </div>
   );
 };
 

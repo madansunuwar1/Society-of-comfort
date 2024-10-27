@@ -67,22 +67,16 @@ const AddEvent = () => {
   };
 
   return (
-    <div className="flex justify-center bg-slate-800 w-full h-[100vh]">
-      <div className="w-[390px] bg-slate-200 pb-20">
-        <div className="flex px-6 py-4">
-          <div className="items-center my-auto">
-            <Link to="/dashboard">
-              <SlArrowLeft />
-            </Link>
-          </div>
+
+      <div className=" bg-slate-200 pb-20">
+        <div className="flex px-6">
           <h3 className="font-bold flex justify-center mx-auto text-[22px]">
             Add Event
           </h3>
         </div>
-
         <form
           onSubmit={handleSubmit}
-          className="flex flex-col justify-center items-center gap-5 mx-auto mt-12 w-[360px]"
+          className="flex flex-col justify-center items-center gap-5 mx-6 mt-12"
         >
           <input
             className="rounded-xl w-full py-4 px-4 shadow-slate-400 shadow-sm"
@@ -146,7 +140,6 @@ const AddEvent = () => {
           </button>
         </form>
       </div>
-    </div>
   );
 };
 

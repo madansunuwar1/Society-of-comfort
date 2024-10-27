@@ -103,13 +103,8 @@ const PaymentList = () => {
   if (error) return <div>Error: {error}</div>;
 
   return (
-    <div className="payment-list p-4 bg-slate-200">
-      <div className="flex px-6 py-4">
-        <div className="items-center my-auto">
-          <Link to="/dashboard">
-            <SlArrowLeft />
-          </Link>
-        </div>
+    <div className="payment-list p-2 bg-slate-200">
+      <div className="flex px-6">
         <h3 className="font-bold flex justify-center mx-auto text-[22px]">
           Payment
         </h3>
