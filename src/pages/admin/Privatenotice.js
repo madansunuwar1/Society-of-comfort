@@ -5,7 +5,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { addPrivateNotice } from "../../redux/noticeSlice"; // Import the slice
 import { fetchResidences } from "../../redux/userSlice"; // Import the action to fetch residences
 
-const Publicnotice = () => {
+const Privatenotice = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const user = JSON.parse(localStorage.getItem("user"));
@@ -131,4 +131,4 @@ const Publicnotice = () => {
   );
 };
 
-export default Publicnotice;
+export default Privatenotice;

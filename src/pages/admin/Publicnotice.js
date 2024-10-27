@@ -52,7 +52,7 @@ const Publicnotice = () => {
             </Link>
           </div>
           <h3 className="font-bold flex justify-center mx-auto text-[22px]">
-            Send Public Notice
+            Send Private Notice
           </h3>
         </div>
         <div className="bg-slate-200 px-6 py-6 min-h-[100vh]">

@@ -141,55 +141,6 @@ function App() {
           }
         />
         <Route
-          path="/dashboard"
-          element={
-            <>
-              <Topnav />
-              <ToastContainer
-                position="top-center"
-                autoClose={5000}
-                hideProgressBar={false}
-                newestOnTop={false}
-                closeOnClick
-                rtl={false}
-                pauseOnFocusLoss
-                draggable
-                pauseOnHover
-                theme="light"
-              />
-              <Admindash />
-              <Botnav />
-            </>
-          }
-        />
-        <Route
-          path="/public"
-          element={
-            <>
-              <Publicnotice />
-              <Botnav />
-            </>
-          }
-        />
-        <Route
-          path="/private"
-          element={
-            <>
-              <Privatenotice />
-              <Botnav />
-            </>
-          }
-        />
-        <Route
-          path="/residences"
-          element={
-            <>
-              <Residences />
-              <Botnav />
-            </>
-          }
-        />
-        <Route
           path="/complains"
           element={
             <>
@@ -321,24 +272,6 @@ function App() {
           }
         />
         <Route
-          path="/paymentlist"
-          element={
-            <>
-              <PaymentList />
-              <Botnav />
-            </>
-          }
-        />
-        <Route
-          path="/event"
-          element={
-            <>
-              <AddEvent />
-              <Botnav />
-            </>
-          }
-        />
-        <Route
           path="/display-event"
           element={
             <>
@@ -356,15 +289,14 @@ function App() {
             </>
           }
         />
-        <Route
-          path="/attendance"
-          element={
-            <>
-              <Attendance />
-              <Botnav />
-            </>
-          }
-        />
+        <Route path="/dashboard" element={<Admindash />}>
+          <Route path="public" element={<Publicnotice />} />
+          <Route path="private" element={<Privatenotice />} />
+          <Route path="paymentlist" element={<PaymentList />} />
+          <Route path="addevent" element={<AddEvent />} />
+          <Route path="residences" element={<Residences />} />
+          <Route path="attendance" element={<Attendance />} />
+        </Route>
       </Routes>
     </Router>
   );
