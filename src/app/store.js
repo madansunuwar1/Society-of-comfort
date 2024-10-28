@@ -3,6 +3,7 @@ import authReducer from "../redux/authSlice";
 import { paymentReducer } from "../redux/paymentSlice";
 import { noticeReducer } from "../redux/noticeSlice";
 import { userReducer } from "../redux/userSlice";
+import { invoiceReducer } from "../redux/invoiceSlice";
 
 export const store = configureStore({
   reducer: {
@@ -10,5 +11,6 @@ export const store = configureStore({
     payments: paymentReducer,
     notices: noticeReducer,
     user: userReducer,
+    invoices: invoiceReducer,
   },
 });

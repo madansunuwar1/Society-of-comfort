@@ -14,8 +14,6 @@ import Service from "./pages/Service";
 import Account from "./pages/Account";
 import Profile from "./pages/Profile";
 import Admindash from "./pages/admin/Admindash";
-import Publicnotice from "./pages/admin/Publicnotice";
-import Privatenotice from "./pages/admin/Privatenotice";
 import Residences from "./pages/admin/Residences";
 import Complains from "./pages/admin/Complains";
 import Review from "./pages/admin/Review";
@@ -43,6 +41,8 @@ import DisplayEvent from "./pages/admin/DisplayEvent";
 import AddEvent from "./pages/admin/AddEvent";
 import UserPaymentList from "./pages/UserPaymentList";
 import Attendance from "./pages/admin/Attendance";
+import Notices from "./pages/admin/Notices";
+import DashboardHome from "./pages/admin/DashboardHome";
 
 function App() {
   const [fcmToken, setFcmToken] = useState(null);
@@ -290,8 +290,8 @@ function App() {
           }
         />
         <Route path="/dashboard" element={<Admindash />}>
-          <Route path="public" element={<Publicnotice />} />
-          <Route path="private" element={<Privatenotice />} />
+          <Route index element={<DashboardHome />} />
+          <Route path="notices" element={<Notices />} />
           <Route path="paymentlist" element={<PaymentList />} />
           <Route path="addevent" element={<AddEvent />} />
           <Route path="residences" element={<Residences />} />

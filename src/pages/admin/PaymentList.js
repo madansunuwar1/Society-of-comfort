@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { paymentActions } from "../../redux/paymentSlice";
+import { invoiceActions } from "../../redux/invoiceSlice";
 import { Link } from "react-router-dom";
 import { SlArrowLeft } from "react-icons/sl";
 import DatePicker from "react-datepicker";
@@ -8,7 +8,7 @@ import "react-datepicker/dist/react-datepicker.css";
 
 const PaymentList = () => {
   const dispatch = useDispatch();
-  const { payments, loading, error } = useSelector((state) => state.payments);
+  const { invoices, loading, error } = useSelector((state) => state.invoices);
   const [updating, setUpdating] = useState(false);
   const [successMessage, setSuccessMessage] = useState("");
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -16,64 +16,42 @@ const PaymentList = () => {
   const [selectedPayment, setSelectedPayment] = useState(null);
 
   // Invoice form state
-  const [remarks, setRemarks] = useState("");
-  const [monthlyCharge, setMonthlyCharge] = useState("");
-  const [houseNo, setHouseNo] = useState("");
-  const [ownerName, setOwnerName] = useState("");
-  const [waterCharges, setWaterCharges] = useState("");
-  const [otherCharges, setOtherCharges] = useState("");
-  const [selectedDate, setSelectedDate] = useState(null);
-  const [specifics, setSpecifics] = useState([]);
+  const [houseId, setHouseId] = useState("");
+  const [totalAmount, setTotalAmount] = useState("");
+  const [items, setItems] = useState([
+    { particular: "", quantity: 0, rate: 0 },
+  ]);
 
   useEffect(() => {
-    dispatch(paymentActions.getPayments());
+    dispatch(invoiceActions.getInvoices());
   }, [dispatch]);
-
-  const handleStatusChange = async (id, currentStatus) => {
-    const newStatus = currentStatus === "Pending" ? "Confirmed" : "Pending";
-
-    setUpdating(true);
-
-    try {
-      await dispatch(
-        paymentActions.updatePaymentStatus({ id, status: newStatus })
-      );
-      setSuccessMessage("Status changed successfully!");
-      await dispatch(paymentActions.getPayments());
-    } catch (error) {
-      alert("sucessfull update status");
-      dispatch(paymentActions.getPayments());
-    } finally {
-      setUpdating(false);
-    }
-  };
 
   const handleSubmit = (e) => {
     e.preventDefault();
+    const calculatedTotal = items.reduce(
+      (acc, item) => acc + item.quantity * item.rate,
+      0
+    );
 
-    // Create form data object
     const formData = {
-      remarks,
-      monthlyCharge,
-      houseNo,
-      ownerName,
-      waterCharges,
-      otherCharges,
+      house_id: houseId,
+      total_amount: totalAmount || calculatedTotal,
+      items,
     };
 
-    // Process the form data (e.g., dispatch an action to add payment)
-    alert("Invoice generated");
-    // Here, you could dispatch an action to add the payment using formData
+    dispatch(invoiceActions.addInvoice(formData))
+      .then(() => {
+        setSuccessMessage("Invoice added successfully!");
+      })
+      .catch(() => {
+        alert("Failed to add invoice");
+      });
 
-    // Reset form
-    setRemarks("");
-    setMonthlyCharge("");
-    setHouseNo("");
-    setOwnerName("");
-    setWaterCharges("");
-    setOtherCharges("");
+    // Reset form state
+    setHouseId("");
+    setTotalAmount("");
+    setItems([{ particular: "", quantity: 0, rate: 0 }]);
     setIsModalOpen(false);
-    setIsInvoiceOpen(true); // Close modal
   };
 
   const handleShowInvoice = (payment) => {
@@ -81,30 +59,32 @@ const PaymentList = () => {
     setIsInvoiceOpen(true);
   };
 
-  const addSpecific = () => {
-    setSpecifics([
-      ...specifics,
-      { particular: "", quantity: 0, rate: 0, total: 0 },
-    ]);
-  };
-
-  const handleSpecificChange = (index, field, value) => {
-    const updatedSpecifics = specifics.map((specific, i) =>
-      i === index ? { ...specific, [field]: value } : specific
+  const handleItemChange = (index, field, value) => {
+    const updatedItems = items.map((item, i) =>
+      i === index ? { ...item, [field]: value } : item
     );
-    setSpecifics(updatedSpecifics);
+    setItems(updatedItems);
   };
 
-  const removeSpecific = (index) => {
-    setSpecifics(specifics.filter((_, i) => i !== index));
+  const addItem = () => {
+    setItems([...items, { particular: "", quantity: 0, rate: 0 }]);
+  };
+
+  const removeItem = (index) => {
+    setItems(items.filter((_, i) => i !== index));
   };
 
   if (loading || updating) return <div>Loading...</div>;
   if (error) return <div>Error: {error}</div>;
 
   return (
-    <div className="payment-list p-2 bg-slate-200">
-      <div className="flex px-6">
+    <div className="payment-list p-4 bg-slate-200">
+      <div className="flex px-6 py-4">
+        <div className="items-center my-auto">
+          <Link to="/dashboard">
+            <SlArrowLeft />
+          </Link>
+        </div>
         <h3 className="font-bold flex justify-center mx-auto text-[22px]">
           Payment
         </h3>
@@ -125,35 +105,21 @@ const PaymentList = () => {
         <table className="min-w-full bg-white shadow-md rounded-lg overflow-hidden">
           <thead>
             <tr className="bg-gray-200">
-              <th className="py-2 px-4 text-left">Payment ID</th>
+              <th className="py-2 px-4 text-left">ID</th>
               <th className="py-2 px-4 text-left">Amount</th>
               <th className="py-2 px-4 text-left">Date</th>
-              <th className="py-2 px-4 text-left">Status</th>
               <th className="py-2 px-4 text-left">Actions</th>
             </tr>
           </thead>
           <tbody>
-            {payments?.data?.map((payment) => (
-              <tr
-                key={payment.payment.id}
-                className="border-b hover:bg-gray-100"
-              >
-                <td className="py-2 px-4">{payment.payment.id}</td>
-                <td className="py-2 px-4">{payment.payment.amount}</td>
-                <td className="py-2 px-4">{payment.payment.date}</td>
-                <td className="py-2 px-4">{payment.payment.status}</td>
+            {invoices?.data?.map((payment) => (
+              <tr key={payment.id} className="border-b hover:bg-gray-100">
+                <td className="py-2 px-4">{payment.id}</td>
+                <td className="py-2 px-4">{payment.total_amount}</td>
                 <td className="py-2 px-4">
-                  <button
-                    onClick={() =>
-                      handleStatusChange(
-                        payment.payment.id,
-                        payment.payment.status
-                      )
-                    }
-                    className="bg-blue-500 text-white px-2 py-1 rounded mt-2"
-                  >
-                    Change Status
-                  </button>
+                  {new Date(payment.created_at).toLocaleDateString()}
+                </td>
+                <td className="py-2 px-4">
                   <button
                     onClick={() => handleShowInvoice(payment)}
                     className="bg-yellow-500 text-white px-2 py-1 rounded mt-2 ml-2"
@@ -178,121 +144,88 @@ const PaymentList = () => {
               </button>
             </div>
             <form onSubmit={handleSubmit} className="flex flex-col gap-4">
-              <input
-                className="rounded-xl py-2 px-4 shadow-sm border"
-                type="text"
-                placeholder="House Number"
-                value={houseNo}
-                onChange={(e) => setHouseNo(e.target.value)}
-                required
-              />
-              <DatePicker
-                className="rounded-xl py-2 px-4 shadow-sm border w-full"
-                selected={selectedDate}
-                onChange={(date) => setSelectedDate(date)}
-                placeholderText="Select a date"
-                dateFormat="yyyy-MM-dd"
-                required
-              />
-              <input
-                className="rounded-xl py-2 px-4 shadow-sm border"
-                type="text"
-                placeholder="Owner Name"
-                value={ownerName}
-                onChange={(e) => setOwnerName(e.target.value)}
-                required
-              />
+              <label>
+                House ID:
+                <input
+                  className="rounded-xl py-2 px-4 shadow-sm border ml-4"
+                  type="text"
+                  value={houseId}
+                  onChange={(e) => setHouseId(e.target.value)}
+                  required
+                />
+              </label>
+              <label>
+                Total Amount (optional):
+                <input
+                  className="rounded-xl py-2 px-4 shadow-sm border ml-4"
+                  type="number"
+                  value={totalAmount}
+                  onChange={(e) => setTotalAmount(e.target.value)}
+                  placeholder="Auto-calculated if left blank"
+                />
+              </label>
 
-              {/* Button to add specifics */}
-              <button
-                type="button"
-                className="bg-[#403F93] text-white py-2 rounded-3xl"
-                onClick={addSpecific}
-              >
-                Add Specifics
-              </button>
-
-              {/* List of specifics input fields */}
-              {specifics.map((specific, index) => (
-                <div key={index} className="flex gap-4 items-center mt-4">
-                  <div className="flex-1">
-                    <label className="block mb-1">Particular</label>
-                    <input
-                      className="rounded-xl py-2 px-4 shadow-sm border w-full"
-                      type="text"
-                      value={specific.particular}
-                      onChange={(e) =>
-                        handleSpecificChange(
-                          index,
-                          "particular",
-                          e.target.value
-                        )
-                      }
-                      placeholder="e.g., Water Charge"
-                      required
-                    />
-                  </div>
-                  <div className="flex-1">
-                    <label className="block mb-1">Quantity</label>
-                    <input
-                      className="rounded-xl py-2 px-4 shadow-sm border w-full"
-                      type="number"
-                      value={specific.quantity}
-                      onChange={(e) =>
-                        handleSpecificChange(index, "quantity", e.target.value)
-                      }
-                      required
-                    />
-                  </div>
-                  <div className="flex-1">
-                    <label className="block mb-1">Rate</label>
-                    <input
-                      className="rounded-xl py-2 px-4 shadow-sm border w-full"
-                      type="number"
-                      value={specific.rate}
-                      onChange={(e) =>
-                        handleSpecificChange(index, "rate", e.target.value)
-                      }
-                      required
-                    />
-                  </div>
-                  <div className="flex-1">
-                    <label className="block mb-1">Total</label>
-                    <input
-                      className="rounded-xl py-2 px-4 shadow-sm border w-full"
-                      type="number"
-                      value={specific.quantity * specific.rate}
-                      readOnly
-                    />
-                  </div>
+              <h4 className="font-bold text-xl">items</h4>
+              {items.map((item, index) => (
+                <div key={index} className="flex gap-2">
+                  <label>Particular</label>
+                  <input
+                    className="rounded-xl py-2 px-4 shadow-sm border ml-4"
+                    type="text"
+                    value={item.particular}
+                    onChange={(e) =>
+                      handleItemChange(index, "particular", e.target.value)
+                    }
+                    placeholder="Particular"
+                    required
+                  />
+                  <label>Quantity</label>
+                  <input
+                    className="rounded-xl py-2 px-4 shadow-sm border ml-4"
+                    type="number"
+                    value={item.quantity}
+                    onChange={(e) =>
+                      handleItemChange(
+                        index,
+                        "quantity",
+                        parseInt(e.target.value)
+                      )
+                    }
+                    placeholder="Quantity"
+                    required
+                  />
+                  <label>Rate</label>
+                  <input
+                    className="rounded-xl py-2 px-4 shadow-sm border ml-4"
+                    type="number"
+                    value={item.rate}
+                    onChange={(e) =>
+                      handleItemChange(
+                        index,
+                        "rate",
+                        parseFloat(e.target.value)
+                      )
+                    }
+                    placeholder="Rate"
+                    required
+                  />
                   <button
+                    className="bg-red-400 text-white py-2 px-4 rounded-3xl"
                     type="button"
-                    onClick={() => removeSpecific(index)}
-                    className="text-red-500 text-xl"
+                    onClick={() => removeItem(index)}
                   >
-                    &times;
+                    Remove
                   </button>
                 </div>
               ))}
 
-              {/* Displaying specifics as a list */}
-              <div className="mt-4">
-                <h4 className="font-bold mb-2">Bill Summary</h4>
-                <ul className="list-none">
-                  {specifics.map((specific, index) => (
-                    <li
-                      key={index}
-                      className="flex justify-between items-center mb-2"
-                    >
-                      <span>{specific.particular}</span>
-                      <span>{specific.quantity}</span>
-                      <span>{specific.rate}</span>
-                      <span>{specific.quantity * specific.rate}</span>
-                    </li>
-                  ))}
-                </ul>
-              </div>
-
+              <button
+                className="bg-green-400 text-white py-2 px-4 rounded-3xl"
+                type="button"
+                onClick={addItem}
+              >
+                Add Item
+              </button>
               <button
                 type="submit"
                 className="bg-[#403F93] text-white py-2 rounded-3xl"
@@ -313,43 +246,39 @@ const PaymentList = () => {
             <h2 className="text-2xl font-bold text-center mb-6">Invoice</h2>
 
             <div className="text-sm font-mono border-b border-gray-400 pb-2 mb-4">
-              <strong>Bill To:</strong>
-              <p>House No: {selectedPayment.houseNo}</p>
-              <p>Owner: {selectedPayment.ownerName}</p>
+              <strong>House ID:</strong> {selectedPayment.house_id}
             </div>
 
-            <div className="text-sm font-mono border-b border-gray-400 pb-2 mb-4">
-              <strong>Payment Details:</strong>
-              <p>
-                Monthly Charge:{" "}
-                <span className="float-right">
-                  ${selectedPayment.monthlyCharge}
-                </span>
-              </p>
-              <p>
-                Water Charges:{" "}
-                <span className="float-right">
-                  ${selectedPayment.waterCharges}
-                </span>
-              </p>
-              <p>
-                Other Charges:{" "}
-                <span className="float-right">
-                  ${selectedPayment.otherCharges}
-                </span>
-              </p>
-            </div>
+            <h4 className="font-bold mb-4">items:</h4>
+            <ul className="mb-4">
+              {/* Check if selectedPayment.items exists before mapping */}
+              {selectedPayment.invoice_items &&
+              selectedPayment.invoice_items.length > 0 ? (
+                selectedPayment.invoice_items.map((item, index) => (
+                  <li
+                    key={index}
+                    className="flex justify-between border-b py-2"
+                  >
+                    <span>{item.particular}</span>
+                    <span>
+                      {item.quantity} x {item.rate}
+                    </span>
+                  </li>
+                ))
+              ) : (
+                <li>No items found for this invoice.</li>
+              )}
+            </ul>
 
-            <div className="text-sm font-mono border-b border-gray-400 pb-2 mb-4">
-              <strong>Remarks:</strong>
-              <p>{selectedPayment.remarks}</p>
+            <div className="flex justify-between font-bold text-lg border-t border-gray-400 pt-2">
+              <span>Total:</span>
+              <span>{selectedPayment.total_amount}</span>
             </div>
-
             <button
               onClick={() => setIsInvoiceOpen(false)}
-              className="bg-gray-500 text-white rounded-lg py-2 mt-4 w-full"
+              className="mt-4 bg-blue-500 text-white px-4 py-2 rounded"
             >
-              Close Invoice
+              Close
             </button>
           </div>
         </div>
