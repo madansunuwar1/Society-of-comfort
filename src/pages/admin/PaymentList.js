@@ -6,6 +6,7 @@ import { SlArrowLeft } from "react-icons/sl";
 import DatePicker from "react-datepicker";
 import api from "../../utils/api";
 import "react-datepicker/dist/react-datepicker.css";
+import { Skeleton } from "antd";
 
 const PaymentList = () => {
   const dispatch = useDispatch();
@@ -36,16 +37,20 @@ const PaymentList = () => {
       });
   }, [dispatch]);
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
+  useEffect(() => {
+    // Calculate total amount whenever items change
     const calculatedTotal = items.reduce(
       (acc, item) => acc + item.quantity * item.rate,
       0
     );
+    setTotalAmount(calculatedTotal);
+  }, [items]);
 
+  const handleSubmit = (e) => {
+    e.preventDefault();
     const formData = {
       house_id: houseId,
-      total_amount: totalAmount || calculatedTotal,
+      total_amount: totalAmount,
       items,
     };
 
@@ -61,6 +66,7 @@ const PaymentList = () => {
     setHouseId("");
     setTotalAmount("");
     setItems([{ particular: "", quantity: 0, rate: 0 }]);
+    dispatch(invoiceActions.getInvoices());
   };
 
   const handleHouseChange = (e) => {
@@ -94,7 +100,16 @@ const PaymentList = () => {
     setItems(items.filter((_, i) => i !== index));
   };
 
-  if (loading || updating) return <div>Loading...</div>;
+  const today = new Date().toISOString().split("T")[0];
+
+  if (loading || updating)
+    return (
+      <div className="p-12">
+        <Skeleton active />
+        <Skeleton active />
+        <Skeleton active />
+      </div>
+    );
   if (error) return <div>Error: {error}</div>;
 
   return (
@@ -128,32 +143,74 @@ const PaymentList = () => {
                 </select>
               </div>
               <div className="flex flex-col gap-2 w-full">
-                <label>Total Amount (optional):</label>
+                <label>Select bill date</label>
                 <input
                   className="rounded-md py-3 px-4 border-[2px] border-gray-400"
-                  type="number"
-                  value={totalAmount}
-                  onChange={(e) => setTotalAmount(e.target.value)}
-                  placeholder="Auto-calculated if left blank"
+                  type="date"
+                  value={today}
                 />
+              </div>
+              <div className="flex flex-col gap-2 w-full">
+                <label>Select month</label>
+                <select
+                  className="rounded-md py-3 px-4 border-[2px] border-gray-400"
+                  defaultValue=""
+                >
+                  <option value="" disabled>
+                    Select a month
+                  </option>
+                  {[
+                    "January",
+                    "February",
+                    "March",
+                    "April",
+                    "May",
+                    "June",
+                    "July",
+                    "August",
+                    "September",
+                    "October",
+                    "November",
+                    "December",
+                  ].map((month, index) => (
+                    <option key={index} value={month}>
+                      {month}
+                    </option>
+                  ))}
+                </select>
               </div>
             </div>
 
-            <h4 className="font-bold text-xl mt-6">Items</h4>
-            <table className="min-w-full bg-white border border-gray-300 mt-4">
+            <table className="min-w-full bg-white border border-gray-300 mt-8">
               <thead>
-                <tr className="bg-gray-200">
-                  <th className="py-2 px-4 text-left">Particular</th>
-                  <th className="py-2 px-4 text-left">Quantity</th>
-                  <th className="py-2 px-4 text-left">Rate</th>
-                  <th className="py-2 px-4 text-left">Total</th>
-                  <th className="py-2 px-4 text-left">Actions</th>
+                <tr className="bg-white">
+                  <th className="py-2 px-4 border border-gray-300 text-left">
+                    S.no
+                  </th>
+                  <th className="py-2 px-4 border border-gray-300 text-left">
+                    Particular
+                  </th>
+                  <th className="py-2 px-4 border border-gray-300 text-left">
+                    Quantity
+                  </th>
+                  <th className="py-2 px-4 border border-gray-300 text-left">
+                    Rate
+                  </th>
+                  <th className="py-2 px-4 border border-gray-300 text-left">
+                    Total
+                  </th>
+                  <th className="py-2 px-4 border border-gray-300 text-left">
+                    Actions
+                  </th>
                 </tr>
               </thead>
               <tbody>
                 {items.map((item, index) => (
                   <tr key={index} className="border-b hover:bg-gray-100">
-                    <td className="py-2 px-4">
+                    <td className="py-2 px-4  border border-gray-300">
+                      {index}
+                    </td>
+                    <td className="py-2 px-4  border border-gray-300">
                       <input
                         className="rounded-md py-1 px-2 border border-gray-400 w-full"
                         type="text"
@@ -165,7 +222,7 @@ const PaymentList = () => {
                         required
                       />
                     </td>
-                    <td className="py-2 px-4">
+                    <td className="py-2 px-4  border border-gray-300">
                       <input
                         className="rounded-md py-1 px-2 border border-gray-400 w-full"
                         type="number"
@@ -181,7 +238,7 @@ const PaymentList = () => {
                         required
                       />
                     </td>
-                    <td className="py-2 px-4">
+                    <td className="py-2 px-4  border border-gray-300">
                       <input
                         className="rounded-md py-1 px-2 border border-gray-400 w-full"
                         type="number"
@@ -197,8 +254,10 @@ const PaymentList = () => {
                         required
                       />
                     </td>
-                    <td className="py-2 px-4">{item.quantity * item.rate}</td>
-                    <td className="py-2 px-4">
+                    <td className="py-2 px-4  border border-gray-300">
+                      {item.quantity * item.rate}
+                    </td>
+                    <td className="py-2 px-4  border border-gray-300">
                       <button
                         className="bg-red-600 text-white py-1 px-4 rounded-lg"
                         type="button"
@@ -209,55 +268,69 @@ const PaymentList = () => {
                     </td>
                   </tr>
                 ))}
+                <tr>
+                  <td className="py-2 px-4  border border-gray-300"></td>
+                  <td className="py-2 px-4  border border-gray-300">
+                    Due amount
+                  </td>
+                  <td className="py-2 px-4  border border-gray-300"></td>
+                  <td className="py-2 px-4  border border-gray-300"></td>
+                  <td className="py-2 px-4  border border-gray-300">
+                    {dueAmount}
+                  </td>
+                </tr>
+                <tr>
+                  <td className="py-2 px-4 "></td>
+                  <td className="py-2 px-4 "></td>
+                  <td className="py-2 px-4 "></td>
+                  <td className="py-2 px-4  border border-gray-300">Total</td>
+                  <td className="py-2 px-4  border border-gray-300">
+                    {totalAmount}
+                  </td>
+                </tr>
               </tbody>
             </table>
             <div className="flex justify-between">
               <div className="flex gap-2 mt-8">
-                <button
-                  className="bg-green-600 text-white py-2 px-4 rounded-lg"
-                  type="button"
-                  onClick={addItem}
-                >
-                  Add Item
-                </button>
-                <button
-                  type="submit"
-                  className="bg-[#403F93] text-white py-2 px-8 rounded-lg"
-                >
-                  Add Payment
-                </button>
-              </div>
-              <div className="mt-8">
-                {houseId && ( // Conditionally render due amount
-                  <div className="mt-2 text-sm border-[2px] rounded-lg px-4 py-2">
-                    <div className="flex flex-col">
-                      <span className="text-md font-bold">Due Amount</span>
-                      <span className="text-lg">Rs {dueAmount}</span>
-                    </div>
-                  </div>
-                )}
+                <div>
+                  <button
+                    className="bg-green-600 text-white py-2 px-4 rounded-lg"
+                    type="button"
+                    onClick={addItem}
+                  >
+                    Add Item
+                  </button>
+                </div>
+                <div>
+                  <button
+                    type="submit"
+                    className="bg-[#403F93] text-white py-2 px-8 rounded-lg"
+                  >
+                    Add Payment
+                  </button>
+                </div>
               </div>
             </div>
           </form>
         </div>
       </div>
       <div className="overflow-x-auto mt-10 bg-white p-4">
-        <h4 className="font-bold text-xl mb-4">Items</h4>
+        <h4 className="font-bold text-xl mb-4">Invoices</h4>
         <table className="min-w-full bg-white shadow-md rounded-lg overflow-hidden">
           <thead>
-            <tr>
-              <th className="py-2 px-4 text-left">ID</th>
-              <th className="py-2 px-4 text-left">Amount</th>
-              <th className="py-2 px-4 text-left">Date</th>
+            <tr className="border-b">
+              <th className="py-2 px-4 text-left border-r">ID</th>
+              <th className="py-2 px-4 text-left border-r">Amount</th>
+              <th className="py-2 px-4 text-left border-r">Date</th>
               <th className="py-2 px-4 text-left">Actions</th>
             </tr>
           </thead>
           <tbody>
             {invoices?.data?.map((payment) => (
               <tr key={payment.id} className="border-b hover:bg-gray-100">
-                <td className="py-2 px-4">{payment.id}</td>
-                <td className="py-2 px-4">{payment.total_amount}</td>
-                <td className="py-2 px-4">
+                <td className="py-2 px-4 border-r">{payment.id}</td>
+                <td className="py-2 px-4 border-r">{payment.total_amount}</td>
+                <td className="py-2 px-4 border-r">
                   {new Date(payment.created_at).toLocaleDateString()}
                 </td>
                 <td className="py-2 px-4">

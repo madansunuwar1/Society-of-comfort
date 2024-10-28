@@ -24,8 +24,11 @@ const Admindash = () => {
   };
 
   const handleLogout = () => {
-    localStorage.removeItem("user");
-    navigate("/");
+    const confirmLogout = window.confirm("Are you sure you want to log out?");
+    if (confirmLogout) {
+      localStorage.removeItem("user");
+      navigate("/");
+    }
   };
 
   // Extract the last part of the path as the selected key
@@ -57,27 +60,14 @@ const Admindash = () => {
         <p className="text-white font-bold text-lg text-center pb-4">
           Society Of Comfort
         </p>
-        <div className="flex">
-          <Button
-            type="primary"
-            onClick={toggleCollapsed}
-            style={{ margin: "16px", display: collapsed ? "none" : "block" }}
-          >
-            {collapsed ? <MenuUnfoldOutlined /> : <MenuFoldOutlined />}
-          </Button>
-          <Button
-            type="primary"
-            onClick={handleLogout}
-            style={{ margin: "16px" }}
-          >
-            <div className="flex gap-2">
-              <LogoutOutlined />
-              <span style={{ display: collapsed ? "none" : "block" }}>
-                Logout
-              </span>
-            </div>
-          </Button>
-        </div>
+        <Button
+          type="primary"
+          onClick={toggleCollapsed}
+          style={{ margin: "16px", display: collapsed ? "none" : "block" }}
+        >
+          {collapsed ? <MenuUnfoldOutlined /> : <MenuFoldOutlined />}
+        </Button>
+
         <Menu
           mode="inline"
           selectedKeys={[selectedKey]} // Use extracted key for selected menu item
@@ -102,7 +92,7 @@ const Admindash = () => {
             }}
           >
             <Link to="paymentlist">
-              <span>Payment</span>
+              <span>Create Bill</span>
             </Link>
           </Menu.Item>
           <Menu.Item
@@ -137,6 +127,16 @@ const Admindash = () => {
             <Link to="attendance">
               <span>Attendance</span>
             </Link>
+          </Menu.Item>
+          <Menu.Item
+            key="logout"
+            icon={<LogoutOutlined style={{ color: "#FF4D4F" }} />}
+            onClick={handleLogout} // Call handleLogout on click
+            style={{
+              color: "white",
+            }}
+          >
+            <span>Logout</span>
           </Menu.Item>
         </Menu>
       </Sider>
