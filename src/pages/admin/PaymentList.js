@@ -7,6 +7,7 @@ import DatePicker from "react-datepicker";
 import api from "../../utils/api";
 import "react-datepicker/dist/react-datepicker.css";
 import { Skeleton } from "antd";
+import { notification } from "antd";
 
 const PaymentList = () => {
   const dispatch = useDispatch();
@@ -24,6 +25,7 @@ const PaymentList = () => {
     { particular: "", quantity: 0, rate: 0 },
   ]);
   const [dueAmount, setDueAmount] = useState(null);
+  const [selectedMonth, setSelectedMonth] = useState("");
 
   useEffect(() => {
     dispatch(invoiceActions.getInvoices());
@@ -51,15 +53,23 @@ const PaymentList = () => {
     const formData = {
       house_id: houseId,
       total_amount: totalAmount,
+      month: selectedMonth,
       items,
     };
 
     dispatch(invoiceActions.addInvoice(formData))
       .then(() => {
         setSuccessMessage("Invoice added successfully!");
+        notification.success({
+          message: "Success",
+          description: "Invoice added successfully!",
+        });
       })
       .catch(() => {
-        alert("Failed to add invoice");
+        notification.success({
+          message: "Success",
+          description: "Invoice added successfully!",
+        });
       });
 
     // Reset form state
@@ -125,11 +135,11 @@ const PaymentList = () => {
             <h3 className="font-bold text-lg">Invoice</h3>
           </div>
           <form onSubmit={handleSubmit}>
-            <div className="flex gap-4 justify-evenly">
+            <div className="flex gap-4 flex-col md:flex-row justify-evenly">
               <div className="flex flex-col gap-2 w-full">
                 <label>House ID:</label>
                 <select
-                  className="rounded-md py-3 px-4 border-[2px] border-gray-400"
+                  className="rounded-md py-1 px-4 border-[2px] border-gray-400"
                   value={houseId}
                   onChange={handleHouseChange}
                   required
@@ -145,7 +155,7 @@ const PaymentList = () => {
               <div className="flex flex-col gap-2 w-full">
                 <label>Select bill date</label>
                 <input
-                  className="rounded-md py-3 px-4 border-[2px] border-gray-400"
+                  className="rounded-md py-1 px-4 border-[2px] border-gray-400"
                   type="date"
                   value={today}
                 />
@@ -153,8 +163,9 @@ const PaymentList = () => {
               <div className="flex flex-col gap-2 w-full">
                 <label>Select month</label>
                 <select
-                  className="rounded-md py-3 px-4 border-[2px] border-gray-400"
-                  defaultValue=""
+                  className="rounded-md py-1 px-4 border-[2px] border-gray-400"
+                  value={selectedMonth}
+                  onChange={(e) => setSelectedMonth(e.target.value)}
                 >
                   <option value="" disabled>
                     Select a month
@@ -180,116 +191,121 @@ const PaymentList = () => {
                 </select>
               </div>
             </div>
-
-            <table className="min-w-full bg-white border border-gray-300 mt-8">
-              <thead>
-                <tr className="bg-white">
-                  <th className="py-2 px-4 border border-gray-300 text-left">
-                    S.no
-                  </th>
-                  <th className="py-2 px-4 border border-gray-300 text-left">
-                    Particular
-                  </th>
-                  <th className="py-2 px-4 border border-gray-300 text-left">
-                    Quantity
-                  </th>
-                  <th className="py-2 px-4 border border-gray-300 text-left">
-                    Rate
-                  </th>
-                  <th className="py-2 px-4 border border-gray-300 text-left">
-                    Total
-                  </th>
-                  <th className="py-2 px-4 border border-gray-300 text-left">
-                    Actions
-                  </th>
-                </tr>
-              </thead>
-              <tbody>
-                {items.map((item, index) => (
-                  <tr key={index} className="border-b hover:bg-gray-100">
+            <div className="overflow-x-auto min-w-full">
+              <table className="min-w-full bg-white border border-gray-300 mt-8">
+                <thead>
+                  <tr className="bg-white">
+                    <th className="py-2 px-4 border border-gray-300 text-left">
+                      S.no
+                    </th>
+                    <th className="py-2 px-4 border border-gray-300 text-left">
+                      Particular
+                    </th>
+                    <th className="py-2 px-4 border border-gray-300 text-left">
+                      Quantity
+                    </th>
+                    <th className="py-2 px-4 border border-gray-300 text-left">
+                      Rate
+                    </th>
+                    <th className="py-2 px-4 border border-gray-300 text-left">
+                      Total
+                    </th>
+                    <th className="py-2 px-4 border border-gray-300 text-left">
+                      Actions
+                    </th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {items.map((item, index) => (
+                    <tr key={index} className="border-b hover:bg-gray-100">
+                      <td className="py-2 px-4  border border-gray-300">
+                        {index}
+                      </td>
+                      <td className="py-2 px-4  border border-gray-300">
+                        <input
+                          className="rounded-md py-1 px-2 border border-gray-400 w-full"
+                          type="text"
+                          value={item.particular}
+                          onChange={(e) =>
+                            handleItemChange(
+                              index,
+                              "particular",
+                              e.target.value
+                            )
+                          }
+                          placeholder="Particular"
+                          required
+                        />
+                      </td>
+                      <td className="py-2 px-4  border border-gray-300">
+                        <input
+                          className="rounded-md py-1 px-2 border border-gray-400 w-full"
+                          type="number"
+                          value={item.quantity}
+                          onChange={(e) =>
+                            handleItemChange(
+                              index,
+                              "quantity",
+                              parseInt(e.target.value)
+                            )
+                          }
+                          placeholder="Quantity"
+                          required
+                        />
+                      </td>
+                      <td className="py-2 px-4  border border-gray-300">
+                        <input
+                          className="rounded-md py-1 px-2 border border-gray-400 w-full"
+                          type="number"
+                          value={item.rate}
+                          onChange={(e) =>
+                            handleItemChange(
+                              index,
+                              "rate",
+                              parseFloat(e.target.value)
+                            )
+                          }
+                          placeholder="Rate"
+                          required
+                        />
+                      </td>
+                      <td className="py-2 px-4  border border-gray-300">
+                        {item.quantity * item.rate}
+                      </td>
+                      <td className="py-2 px-4  border border-gray-300">
+                        <button
+                          className="bg-red-600 text-white py-1 px-4 rounded-lg"
+                          type="button"
+                          onClick={() => removeItem(index)}
+                        >
+                          Remove
+                        </button>
+                      </td>
+                    </tr>
+                  ))}
+                  <tr>
+                    <td className="py-2 px-4  border border-gray-300"></td>
                     <td className="py-2 px-4  border border-gray-300">
-                      {index}
+                      Due amount
                     </td>
+                    <td className="py-2 px-4  border border-gray-300"></td>
+                    <td className="py-2 px-4  border border-gray-300"></td>
                     <td className="py-2 px-4  border border-gray-300">
-                      <input
-                        className="rounded-md py-1 px-2 border border-gray-400 w-full"
-                        type="text"
-                        value={item.particular}
-                        onChange={(e) =>
-                          handleItemChange(index, "particular", e.target.value)
-                        }
-                        placeholder="Particular"
-                        required
-                      />
-                    </td>
-                    <td className="py-2 px-4  border border-gray-300">
-                      <input
-                        className="rounded-md py-1 px-2 border border-gray-400 w-full"
-                        type="number"
-                        value={item.quantity}
-                        onChange={(e) =>
-                          handleItemChange(
-                            index,
-                            "quantity",
-                            parseInt(e.target.value)
-                          )
-                        }
-                        placeholder="Quantity"
-                        required
-                      />
-                    </td>
-                    <td className="py-2 px-4  border border-gray-300">
-                      <input
-                        className="rounded-md py-1 px-2 border border-gray-400 w-full"
-                        type="number"
-                        value={item.rate}
-                        onChange={(e) =>
-                          handleItemChange(
-                            index,
-                            "rate",
-                            parseFloat(e.target.value)
-                          )
-                        }
-                        placeholder="Rate"
-                        required
-                      />
-                    </td>
-                    <td className="py-2 px-4  border border-gray-300">
-                      {item.quantity * item.rate}
-                    </td>
-                    <td className="py-2 px-4  border border-gray-300">
-                      <button
-                        className="bg-red-600 text-white py-1 px-4 rounded-lg"
-                        type="button"
-                        onClick={() => removeItem(index)}
-                      >
-                        Remove
-                      </button>
+                      {dueAmount}
                     </td>
                   </tr>
-                ))}
-                <tr>
-                  <td className="py-2 px-4  border border-gray-300"></td>
-                  <td className="py-2 px-4  border border-gray-300">
-                    Due amount
-                  </td>
-                  <td className="py-2 px-4  border border-gray-300"></td>
-                  <td className="py-2 px-4  border border-gray-300"></td>
-                  <td className="py-2 px-4  border border-gray-300">
-                    {dueAmount}
-                  </td>
-                </tr>
-                <tr>
-                  <td className="py-2 px-4 "></td>
-                  <td className="py-2 px-4 "></td>
-                  <td className="py-2 px-4 "></td>
-                  <td className="py-2 px-4  border border-gray-300">Total</td>
-                  <td className="py-2 px-4  border border-gray-300">
-                    {totalAmount}
-                  </td>
-                </tr>
-              </tbody>
-            </table>
+                  <tr>
+                    <td className="py-2 px-4 "></td>
+                    <td className="py-2 px-4 "></td>
+                    <td className="py-2 px-4 "></td>
+                    <td className="py-2 px-4  border border-gray-300">Total</td>
+                    <td className="py-2 px-4  border border-gray-300">
+                      {totalAmount}
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
             <div className="flex justify-between">
               <div className="flex gap-2 mt-8">
                 <div>
@@ -349,40 +365,114 @@ const PaymentList = () => {
 
       {isInvoiceOpen && selectedPayment && (
         <div className="fixed inset-0 flex z-50 bg-black bg-opacity-50">
-          <div className="w-full bg-white p-8 m-8 md:m-20  border border-gray-300 rounded-lg shadow-lg">
-            <h2 className="text-2xl font-bold text-center mb-2">
-              Society of Comfort SMD
+          <div className=" bg-white p-8  border border-gray-300 rounded-lg shadow-lg mx-auto my-auto">
+            <h2 className="text-xl font-bold text-center mb-2">
+              Society of Comfort SMD Awas Bayawasthapan Samiti
             </h2>
-            <h2 className="text-2xl font-bold text-center mb-6">Invoice</h2>
-
-            <div className="text-sm font-mono border-b border-gray-400 pb-2 mb-4">
-              <strong>House ID:</strong> {selectedPayment.house_id}
+            <p className="text-center">thaiba-14, Lalitpur</p>
+            <div className="text-sm font-mono border-gray-400 pb-2 mb-4 mt-8">
+              <div className="flex justify-between">
+                <p>
+                  {" "}
+                  <strong>House No:</strong> {selectedPayment.house_id}
+                </p>
+                <p>Date: {selectedPayment.created_at}</p>
+              </div>
             </div>
+            <div className="mb-4 overflow-x-auto min-w-full">
+              <table className="min-w-full bg-white rounded-lg overflow-hidden">
+                <thead>
+                  <tr className="bg-white">
+                    <th className="py-2 px-4 border border-gray-300 text-left">
+                      S.no
+                    </th>
+                    <th className="py-2 px-4 border border-gray-300 text-left">
+                      Particular
+                    </th>
+                    <th className="py-2 px-4 border border-gray-300 text-left">
+                      Quantity
+                    </th>
+                    <th className="py-2 px-4 border border-gray-300 text-left">
+                      Rate
+                    </th>
+                    <th className="py-2 px-4 border border-gray-300 text-left">
+                      Total
+                    </th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {/* Mapped Data */}
+                  {selectedPayment.invoice_items &&
+                  selectedPayment.invoice_items.length > 0 ? (
+                    selectedPayment.invoice_items.map((item, index) => (
+                      <tr key={item.id}>
+                        <td className="py-2 px-4 border border-gray-300 text-left">
+                          {index + 1}
+                        </td>
+                        <td className="py-2 px-4 border border-gray-300 text-left">
+                          {item.particular}
+                        </td>
+                        <td className="py-2 px-4 border border-gray-300 text-left">
+                          {item.quantity}
+                        </td>
+                        <td className="py-2 px-4 border border-gray-300 text-left">
+                          {item.rate}
+                        </td>
+                        <td className="py-2 px-4 border border-gray-300 text-left">
+                          {item.quantity * item.rate}
+                        </td>
+                      </tr>
+                    ))
+                  ) : (
+                    <tr>
+                      <td
+                        colSpan={5}
+                        className="py-2 px-4 border border-gray-300 text-center"
+                      >
+                        No items found for this invoice.
+                      </td>
+                    </tr>
+                  )}
+                  <tr className="bg-gray-100 font-bold">
+                    <td
+                      colSpan={4}
+                      className="py-2 px-4 border border-gray-300 text-left"
+                    >
+                      Amount Total
+                    </td>
+                    <td className="py-2 px-4 border border-gray-300 text-left">
+                      {selectedPayment.total_amount}
+                    </td>
+                  </tr>
 
-            <h4 className="font-bold mb-4">items:</h4>
-            <ul className="mb-4">
-              {/* Check if selectedPayment.items exists before mapping */}
-              {selectedPayment.invoice_items &&
-              selectedPayment.invoice_items.length > 0 ? (
-                selectedPayment.invoice_items.map((item, index) => (
-                  <li
-                    key={index}
-                    className="flex justify-between border-b py-2"
-                  >
-                    <span>{item.particular}</span>
-                    <span>
-                      {item.quantity} x {item.rate}
-                    </span>
-                  </li>
-                ))
-              ) : (
-                <li>No items found for this invoice.</li>
-              )}
-            </ul>
+                  {/* Due Amount Total Row */}
+                  <tr className="bg-gray-100 font-bold">
+                    <td
+                      colSpan={4}
+                      className="py-2 px-4 border border-gray-300 text-left"
+                    >
+                      Due Amount Total
+                    </td>
+                    <td className="py-2 px-4 border border-gray-300 text-left">
+                      {selectedPayment.due_at_invoice}
+                    </td>
+                  </tr>
 
-            <div className="flex justify-between font-bold text-lg border-t border-gray-400 pt-2">
-              <span>Total:</span>
-              <span>{selectedPayment.total_amount}</span>
+                  {/* Grand Total Row */}
+                  <tr className="bg-gray-200 font-bold">
+                    <td
+                      colSpan={4}
+                      className="py-2 px-4 border border-gray-300 text-left"
+                    >
+                      Grand Total
+                    </td>
+                    <td className="py-2 px-4 border border-gray-300 text-left">
+                      {Number(selectedPayment.total_amount) +
+                        Number(selectedPayment.due_at_invoice)}
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
             </div>
             <button
               onClick={() => setIsInvoiceOpen(false)}

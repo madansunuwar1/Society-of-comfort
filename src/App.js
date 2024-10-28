@@ -43,6 +43,7 @@ import UserPaymentList from "./pages/UserPaymentList";
 import Attendance from "./pages/admin/Attendance";
 import Notices from "./pages/admin/Notices";
 import DashboardHome from "./pages/admin/DashboardHome";
+import ConfirmPayment from "./pages/admin/ConfirmPayment";
 
 function App() {
   const [fcmToken, setFcmToken] = useState(null);
@@ -292,6 +293,7 @@ function App() {
         <Route path="/dashboard" element={<Admindash />}>
           <Route index element={<DashboardHome />} />
           <Route path="notices" element={<Notices />} />
+          <Route path="confirmpayment" element={<ConfirmPayment />} />
           <Route path="paymentlist" element={<PaymentList />} />
           <Route path="addevent" element={<AddEvent />} />
           <Route path="residences" element={<Residences />} />

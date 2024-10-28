@@ -60,13 +60,6 @@ const Admindash = () => {
         <p className="text-white font-bold text-lg text-center pb-4">
           Society Of Comfort
         </p>
-        <Button
-          type="primary"
-          onClick={toggleCollapsed}
-          style={{ margin: "16px", display: collapsed ? "none" : "block" }}
-        >
-          {collapsed ? <MenuUnfoldOutlined /> : <MenuFoldOutlined />}
-        </Button>
 
         <Menu
           mode="inline"
@@ -93,6 +86,17 @@ const Admindash = () => {
           >
             <Link to="paymentlist">
               <span>Create Bill</span>
+            </Link>
+          </Menu.Item>
+          <Menu.Item
+            key="confirmpayment"
+            icon={<CreditCardOutlined style={{ color: "#c31fde" }} />}
+            style={{
+              color: selectedKey === "confirmpayment" ? "blue" : "white",
+            }}
+          >
+            <Link to="confirmpayment">
+              <span>Confirm Payment</span>
             </Link>
           </Menu.Item>
           <Menu.Item
