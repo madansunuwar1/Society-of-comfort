@@ -2,7 +2,8 @@ import React, { useEffect } from "react";
 import { SlArrowLeft } from "react-icons/sl";
 import { Link } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
-import { getPublicNotices, getPrivateNotices } from "../redux/noticeSlice"; // Update with the correct import path
+import { getPublicNotices, getPrivateNotices } from "../redux/noticeSlice";
+import { Skeleton } from "antd"; // Update with the correct import path
 
 const Notice = () => {
   const dispatch = useDispatch();
@@ -29,6 +30,14 @@ const Notice = () => {
     setIsPrivate(true);
   };
 
+  if (loading) {
+    return (
+      <div className="p-12">
+        <Skeleton active />
+      </div>
+    );
+  }
+
   return (
     <div className="flex justify-center bg-slate-800 w-[100%] h-[100%]">
       <div className="w-[390px] bg-gray-200 font-roboto pb-20">
@@ -53,16 +62,12 @@ const Notice = () => {
             {isPrivate && <span className="bg-[#403F93] h-1 w-32"></span>}
           </button>
         </div>
-        <div className="h-1 w-[100%] bg-white"></div>
-        {loading && <div>Loading...</div>}
+
         {!isPrivate &&
-          publicNotices.data &&
-          publicNotices.data.map((item) => (
+          publicNotices?.data &&
+          publicNotices?.data.map((item) => (
             <div className="px-6 py-1 mt-6" key={item.id}>
-              <div className="flex gap-4">
-                <div className="w-12 h-12 bg-black rounded-full">
-                  <img alt="" className=""></img>
-                </div>
+              <div className="">
                 <div className="px-1">
                   <h1 className="font-bold overflow-hidden text-[#403F93]">
                     {item.title}
@@ -72,7 +77,7 @@ const Notice = () => {
                   </p>
                 </div>
               </div>
-              <div className="bg-white p-5 mt-4 overflow-hidden rounded-md shadow-lg border-[1px] border-black">
+              <div className="bg-white p-3 mt-4 overflow-hidden rounded-md shadow-lg border-[1px] border-gray-400">
                 <p>{item.notice_body}</p>
               </div>
             </div>
@@ -81,10 +86,7 @@ const Notice = () => {
           <>
             {privateNotices?.data?.map((item) => (
               <div className="px-6 py-1 mt-6" key={item.id}>
-                <div className="flex gap-4">
-                  <div className="w-12 h-12 bg-black rounded-full">
-                    <img alt="" className=""></img>
-                  </div>
+                <div className="">
                   <div className="px-1">
                     <h1 className="font-bold overflow-hidden text-[#403F93]">
                       {item.title}
@@ -92,7 +94,7 @@ const Notice = () => {
                     <p className="text-sm mt-2">{item.sent_at.split("T")[0]}</p>
                   </div>
                 </div>
-                <div className="bg-white p-5 mt-4 overflow-hidden rounded-md shadow-lg border-[1px] border-black">
+                <div className="bg-white p-3 mt-4 overflow-hidden rounded-md shadow-lg border-[1px] border-gray-400">
                   <p>{item.notice}</p>
                 </div>
               </div>

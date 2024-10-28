@@ -3,6 +3,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { paymentActions } from "../redux/paymentSlice";
 import { Link } from "react-router-dom";
 import { SlArrowLeft } from "react-icons/sl";
+import { Skeleton } from "antd";
 
 const Payment = () => {
   const dispatch = useDispatch();
@@ -17,7 +18,11 @@ const Payment = () => {
 
   // Render loading, error, or payment list
   if (loading) {
-    return <div className="text-center text-white">Loading...</div>;
+    return (
+      <div className="p-12">
+        <Skeleton active />
+      </div>
+    );
   }
 
   // Function to determine the status color using Tailwind CSS classes

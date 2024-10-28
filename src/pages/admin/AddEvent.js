@@ -125,7 +125,6 @@ const AddEvent = () => {
             required
           />
         </div>
-
         {/* File input for attachment */}
         <div>
           <label className="font-bold text-md">Iamge</label>
