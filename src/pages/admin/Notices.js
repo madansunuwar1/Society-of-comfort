@@ -4,6 +4,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { addPublicNotice, addPrivateNotice } from "../../redux/noticeSlice";
 import { fetchResidences } from "../../redux/userSlice";
+import { notification } from "antd"; // Import notification from antd
 
 const Notices = () => {
   const navigate = useNavigate();
@@ -52,16 +53,24 @@ const Notices = () => {
     dispatch(action(formData))
       .unwrap()
       .then(() => {
-        alert(
-          `${
+        // Use antd notification for success
+        notification.success({
+          message: `${
             noticeType.charAt(0).toUpperCase() + noticeType.slice(1)
-          } notice sent successfully`
-        );
+          } Notice Sent`,
+          description: `${
+            noticeType.charAt(0).toUpperCase() + noticeType.slice(1)
+          } notice sent successfully.`,
+        });
         navigate("/dashboard");
       })
       .catch((error) => {
         console.error("Error:", error);
-        alert("Network request failed");
+        // Use antd notification for error
+        notification.error({
+          message: "Error",
+          description: "Network request failed. Please try again.",
+        });
       });
   };
 
@@ -94,7 +103,7 @@ const Notices = () => {
         </h3>
         <form onSubmit={handleSubmit}>
           <div>
-            <label className="font-bold text-md"> Notice Title</label>
+            <label className="font-bold text-md">Notice Title</label>
             <input
               className="rounded-md py-3 px-4 w-full border-[2px] border-gray-400 mt-2"
               type="text"

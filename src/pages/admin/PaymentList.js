@@ -387,6 +387,9 @@ const PaymentList = () => {
                       S.no
                     </th>
                     <th className="py-2 px-4 border border-gray-300 text-left">
+                      images
+                    </th>
+                    <th className="py-2 px-4 border border-gray-300 text-left">
                       Particular
                     </th>
                     <th className="py-2 px-4 border border-gray-300 text-left">
