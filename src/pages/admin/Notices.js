@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import Select from "react-select"; // Import react-select
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { addPublicNotice, addPrivateNotice } from "../../redux/noticeSlice";
@@ -34,14 +35,13 @@ const Notices = () => {
     }));
   };
 
-  const handleResidenceChange = (e) => {
-    const selectedOptions = Array.from(
-      e.target.selectedOptions,
-      (option) => option.value
-    );
+  const handleResidenceChange = (selectedOptions) => {
+    const selectedIds = selectedOptions
+      ? selectedOptions.map((option) => option.value)
+      : [];
     setFormData((prevFormData) => ({
       ...prevFormData,
-      residence_id: selectedOptions,
+      residence_id: selectedIds,
     }));
   };
 
@@ -66,11 +66,11 @@ const Notices = () => {
   };
 
   return (
-    <div className="bg-white pb-20 pt-8">
-      <div className="flex justify-center space-x-4">
+    <div className="bg-white pb-20 pt-8 mx-6">
+      <div className="flex space-x-4">
         <button
           className={`px-4 py-2 ${
-            noticeType === "public" ? "bg-blue-500 text-white" : "bg-gray-300"
+            noticeType === "public" ? "bg-[#403F93] text-white" : "bg-gray-300"
           }`}
           onClick={() => setNoticeType("public")}
         >
@@ -78,7 +78,7 @@ const Notices = () => {
         </button>
         <button
           className={`px-4 py-2 ${
-            noticeType === "private" ? "bg-blue-500 text-white" : "bg-gray-300"
+            noticeType === "private" ? "bg-[#403F93] text-white" : "bg-gray-300"
           }`}
           onClick={() => setNoticeType("private")}
         >
@@ -86,16 +86,17 @@ const Notices = () => {
         </button>
       </div>
 
-      <div className="px-6 py-6 min-h-[100vh] bg-slate-200">
-        <h3 className="font-bold text-center text-[22px] mb-4">
+      <div className="py-6 min-h-[100vh]">
+        <h3 className="font-bold text-[22px] mb-4">
           {noticeType === "public"
             ? "Send Public Notice"
             : "Send Private Notice"}
         </h3>
         <form onSubmit={handleSubmit}>
           <div>
+            <label className="font-bold text-md"> Notice Title</label>
             <input
-              className="rounded-xl px-4 py-4 w-full shadow-md"
+              className="rounded-md py-3 px-4 w-full border-[2px] border-gray-400 mt-2"
               type="text"
               name="title"
               placeholder="Notice Title"
@@ -104,10 +105,11 @@ const Notices = () => {
             />
           </div>
           <div className="pt-6">
+            <label className="font-bold text-md">Notice Description</label>
             <textarea
-              className="rounded-xl w-full py-4 px-4 shadow-md"
+              className="rounded-md w-full py-4 px-4 border-[2px] border-gray-400 mt-2"
               name="notice_body"
-              placeholder="Notice"
+              placeholder="Notice Description"
               value={formData.notice_body}
               onChange={handleInputChange}
             />
@@ -115,25 +117,30 @@ const Notices = () => {
 
           {noticeType === "private" && (
             <div className="pt-6">
-              <select
-                className="rounded-xl w-full py-4 px-4 shadow-md"
-                multiple
-                value={formData.residence_id}
+              <label className="font-bold text-md">Select Residences</label>
+              <Select
+                isMulti
+                isDisabled={loading}
+                options={
+                  !loading &&
+                  residences?.data?.map((residence) => ({
+                    value: residence.id,
+                    label: residence.name,
+                  }))
+                }
+                value={formData.residence_id.map((id) => ({
+                  value: id,
+                  label: residences?.data?.find((res) => res.id === id)?.name,
+                }))}
                 onChange={handleResidenceChange}
-              >
-                {!loading &&
-                  residences?.data?.map((residence) => (
-                    <option key={residence.id} value={residence.id}>
-                      {residence.name}
-                    </option>
-                  ))}
-              </select>
+                className="mt-2"
+              />
             </div>
           )}
 
           <button
             type="submit"
-            className="bg-[#403F93] text-white mx-auto flex px-24 py-3 rounded-3xl mt-6"
+            className="bg-[#403F93] text-white flex px-16 py-3 rounded-lg mt-6"
           >
             Send Notice
           </button>

@@ -4,6 +4,7 @@ import { invoiceActions } from "../../redux/invoiceSlice";
 import { Link } from "react-router-dom";
 import { SlArrowLeft } from "react-icons/sl";
 import DatePicker from "react-datepicker";
+import api from "../../utils/api";
 import "react-datepicker/dist/react-datepicker.css";
 
 const PaymentList = () => {
@@ -11,19 +12,28 @@ const PaymentList = () => {
   const { invoices, loading, error } = useSelector((state) => state.invoices);
   const [updating, setUpdating] = useState(false);
   const [successMessage, setSuccessMessage] = useState("");
-  const [isModalOpen, setIsModalOpen] = useState(false);
   const [isInvoiceOpen, setIsInvoiceOpen] = useState(false);
   const [selectedPayment, setSelectedPayment] = useState(null);
 
   // Invoice form state
   const [houseId, setHouseId] = useState("");
+  const [houses, setHouses] = useState([]);
   const [totalAmount, setTotalAmount] = useState("");
   const [items, setItems] = useState([
     { particular: "", quantity: 0, rate: 0 },
   ]);
+  const [dueAmount, setDueAmount] = useState(null);
 
   useEffect(() => {
     dispatch(invoiceActions.getInvoices());
+    api
+      .get("/houses")
+      .then((response) => {
+        setHouses(response.data); // Update houses state with API data
+      })
+      .catch((error) => {
+        console.error("Error fetching houses:", error);
+      });
   }, [dispatch]);
 
   const handleSubmit = (e) => {
@@ -51,7 +61,17 @@ const PaymentList = () => {
     setHouseId("");
     setTotalAmount("");
     setItems([{ particular: "", quantity: 0, rate: 0 }]);
-    setIsModalOpen(false);
+  };
+
+  const handleHouseChange = (e) => {
+    const selectedHouseId = e.target.value;
+    setHouseId(selectedHouseId);
+
+    // Find the selected house and set its due amount
+    const selectedHouse = houses.data.find(
+      (house) => house.house_number === selectedHouseId
+    );
+    setDueAmount(selectedHouse ? selectedHouse.dues : 0); // Update due amount
   };
 
   const handleShowInvoice = (payment) => {
@@ -79,32 +99,153 @@ const PaymentList = () => {
 
   return (
     <div className="payment-list p-4 bg-slate-200">
-      <div className="flex px-6 py-4">
-        <div className="items-center my-auto">
-          <Link to="/dashboard">
-            <SlArrowLeft />
-          </Link>
-        </div>
-        <h3 className="font-bold flex justify-center mx-auto text-[22px]">
-          Payment
-        </h3>
-      </div>
       {successMessage && (
         <div className="mb-4 p-2 bg-green-200 text-green-800 rounded">
           {successMessage}
         </div>
       )}
-      <button
-        onClick={() => setIsModalOpen(true)}
-        className="bg-green-500 text-white px-4 py-2 rounded mb-4"
-      >
-        Add Payment
-      </button>
-      {/* Payment Table */}
-      <div className="overflow-x-auto">
+      <div className=" flex bg-black bg-opacity-50 w-full">
+        <div className="bg-white p-6 shadow-lg w-full">
+          <div className="flex justify-between items-center mb-4">
+            <h3 className="font-bold text-lg">Invoice</h3>
+          </div>
+          <form onSubmit={handleSubmit}>
+            <div className="flex gap-4 justify-evenly">
+              <div className="flex flex-col gap-2 w-full">
+                <label>House ID:</label>
+                <select
+                  className="rounded-md py-3 px-4 border-[2px] border-gray-400"
+                  value={houseId}
+                  onChange={handleHouseChange}
+                  required
+                >
+                  <option value="">Select House Id</option>
+                  {houses?.data?.map((house) => (
+                    <option key={house.house_number} value={house.house_number}>
+                      {house.user_names || `House ID: ${house.house_number}`}
+                    </option>
+                  ))}
+                </select>
+              </div>
+              <div className="flex flex-col gap-2 w-full">
+                <label>Total Amount (optional):</label>
+                <input
+                  className="rounded-md py-3 px-4 border-[2px] border-gray-400"
+                  type="number"
+                  value={totalAmount}
+                  onChange={(e) => setTotalAmount(e.target.value)}
+                  placeholder="Auto-calculated if left blank"
+                />
+              </div>
+            </div>
+
+            <h4 className="font-bold text-xl mt-6">Items</h4>
+            <table className="min-w-full bg-white border border-gray-300 mt-4">
+              <thead>
+                <tr className="bg-gray-200">
+                  <th className="py-2 px-4 text-left">Particular</th>
+                  <th className="py-2 px-4 text-left">Quantity</th>
+                  <th className="py-2 px-4 text-left">Rate</th>
+                  <th className="py-2 px-4 text-left">Total</th>
+                  <th className="py-2 px-4 text-left">Actions</th>
+                </tr>
+              </thead>
+              <tbody>
+                {items.map((item, index) => (
+                  <tr key={index} className="border-b hover:bg-gray-100">
+                    <td className="py-2 px-4">
+                      <input
+                        className="rounded-md py-1 px-2 border border-gray-400 w-full"
+                        type="text"
+                        value={item.particular}
+                        onChange={(e) =>
+                          handleItemChange(index, "particular", e.target.value)
+                        }
+                        placeholder="Particular"
+                        required
+                      />
+                    </td>
+                    <td className="py-2 px-4">
+                      <input
+                        className="rounded-md py-1 px-2 border border-gray-400 w-full"
+                        type="number"
+                        value={item.quantity}
+                        onChange={(e) =>
+                          handleItemChange(
+                            index,
+                            "quantity",
+                            parseInt(e.target.value)
+                          )
+                        }
+                        placeholder="Quantity"
+                        required
+                      />
+                    </td>
+                    <td className="py-2 px-4">
+                      <input
+                        className="rounded-md py-1 px-2 border border-gray-400 w-full"
+                        type="number"
+                        value={item.rate}
+                        onChange={(e) =>
+                          handleItemChange(
+                            index,
+                            "rate",
+                            parseFloat(e.target.value)
+                          )
+                        }
+                        placeholder="Rate"
+                        required
+                      />
+                    </td>
+                    <td className="py-2 px-4">{item.quantity * item.rate}</td>
+                    <td className="py-2 px-4">
+                      <button
+                        className="bg-red-600 text-white py-1 px-4 rounded-lg"
+                        type="button"
+                        onClick={() => removeItem(index)}
+                      >
+                        Remove
+                      </button>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+            <div className="flex justify-between">
+              <div className="flex gap-2 mt-8">
+                <button
+                  className="bg-green-600 text-white py-2 px-4 rounded-lg"
+                  type="button"
+                  onClick={addItem}
+                >
+                  Add Item
+                </button>
+                <button
+                  type="submit"
+                  className="bg-[#403F93] text-white py-2 px-8 rounded-lg"
+                >
+                  Add Payment
+                </button>
+              </div>
+              <div className="mt-8">
+                {houseId && ( // Conditionally render due amount
+                  <div className="mt-2 text-sm border-[2px] rounded-lg px-4 py-2">
+                    <div className="flex flex-col">
+                      <span className="text-md font-bold">Due Amount</span>
+                      <span className="text-lg">Rs {dueAmount}</span>
+                    </div>
+                  </div>
+                )}
+              </div>
+            </div>
+          </form>
+        </div>
+      </div>
+      <div className="overflow-x-auto mt-10 bg-white p-4">
+        <h4 className="font-bold text-xl mb-4">Items</h4>
         <table className="min-w-full bg-white shadow-md rounded-lg overflow-hidden">
           <thead>
-            <tr className="bg-gray-200">
+            <tr>
               <th className="py-2 px-4 text-left">ID</th>
               <th className="py-2 px-4 text-left">Amount</th>
               <th className="py-2 px-4 text-left">Date</th>
@@ -122,7 +263,7 @@ const PaymentList = () => {
                 <td className="py-2 px-4">
                   <button
                     onClick={() => handleShowInvoice(payment)}
-                    className="bg-yellow-500 text-white px-2 py-1 rounded mt-2 ml-2"
+                    className="bg-[#403F93] text-white px-2 py-1 rounded mt-2 ml-2"
                   >
                     Show Invoice
                   </button>
@@ -133,113 +274,9 @@ const PaymentList = () => {
         </table>
       </div>
 
-      {/* Modal for Add Payment */}
-      {isModalOpen && (
-        <div className="fixed inset-0 flex z-50 bg-black bg-opacity-50 w-full">
-          <div className="bg-white p-6 shadow-lg w-full">
-            <div className="flex justify-between items-center mb-4">
-              <h3 className="font-bold text-lg">Add Payment</h3>
-              <button onClick={() => setIsModalOpen(false)} className="text-xl">
-                &times;
-              </button>
-            </div>
-            <form onSubmit={handleSubmit} className="flex flex-col gap-4">
-              <label>
-                House ID:
-                <input
-                  className="rounded-xl py-2 px-4 shadow-sm border ml-4"
-                  type="text"
-                  value={houseId}
-                  onChange={(e) => setHouseId(e.target.value)}
-                  required
-                />
-              </label>
-              <label>
-                Total Amount (optional):
-                <input
-                  className="rounded-xl py-2 px-4 shadow-sm border ml-4"
-                  type="number"
-                  value={totalAmount}
-                  onChange={(e) => setTotalAmount(e.target.value)}
-                  placeholder="Auto-calculated if left blank"
-                />
-              </label>
-
-              <h4 className="font-bold text-xl">items</h4>
-              {items.map((item, index) => (
-                <div key={index} className="flex gap-2">
-                  <label>Particular</label>
-                  <input
-                    className="rounded-xl py-2 px-4 shadow-sm border ml-4"
-                    type="text"
-                    value={item.particular}
-                    onChange={(e) =>
-                      handleItemChange(index, "particular", e.target.value)
-                    }
-                    placeholder="Particular"
-                    required
-                  />
-                  <label>Quantity</label>
-                  <input
-                    className="rounded-xl py-2 px-4 shadow-sm border ml-4"
-                    type="number"
-                    value={item.quantity}
-                    onChange={(e) =>
-                      handleItemChange(
-                        index,
-                        "quantity",
-                        parseInt(e.target.value)
-                      )
-                    }
-                    placeholder="Quantity"
-                    required
-                  />
-                  <label>Rate</label>
-                  <input
-                    className="rounded-xl py-2 px-4 shadow-sm border ml-4"
-                    type="number"
-                    value={item.rate}
-                    onChange={(e) =>
-                      handleItemChange(
-                        index,
-                        "rate",
-                        parseFloat(e.target.value)
-                      )
-                    }
-                    placeholder="Rate"
-                    required
-                  />
-                  <button
-                    className="bg-red-400 text-white py-2 px-4 rounded-3xl"
-                    type="button"
-                    onClick={() => removeItem(index)}
-                  >
-                    Remove
-                  </button>
-                </div>
-              ))}
-
-              <button
-                className="bg-green-400 text-white py-2 px-4 rounded-3xl"
-                type="button"
-                onClick={addItem}
-              >
-                Add Item
-              </button>
-              <button
-                type="submit"
-                className="bg-[#403F93] text-white py-2 rounded-3xl"
-              >
-                Add Payment
-              </button>
-            </form>
-          </div>
-        </div>
-      )}
-      {/* Invoice Modal */}
       {isInvoiceOpen && selectedPayment && (
         <div className="fixed inset-0 flex z-50 bg-black bg-opacity-50">
-          <div className="w-full bg-white p-8 border border-gray-300 rounded-lg shadow-lg">
+          <div className="w-full bg-white p-8 m-8 md:m-20  border border-gray-300 rounded-lg shadow-lg">
             <h2 className="text-2xl font-bold text-center mb-2">
               Society of Comfort SMD
             </h2>

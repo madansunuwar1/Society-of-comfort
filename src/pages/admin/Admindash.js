@@ -46,11 +46,13 @@ const Admindash = () => {
         }}
       >
         <div className="px-10 py-4">
-          <img
-            src="https://www.apartmentsofwildewood.com/wp-content/uploads/apartments-of-wildewood-using-the-pool-at-your-apartment.jpg"
-            alt="logo"
-            className="rounded-full w-28 h-28 mx-auto"
-          />
+          {!collapsed && (
+            <img
+              src="https://www.apartmentsofwildewood.com/wp-content/uploads/apartments-of-wildewood-using-the-pool-at-your-apartment.jpg"
+              alt="logo"
+              className="rounded-full w-28 h-28 mx-auto"
+            />
+          )}
         </div>
         <p className="text-white font-bold text-lg text-center pb-4">
           Society Of Comfort
@@ -84,32 +86,57 @@ const Admindash = () => {
           <Menu.Item
             key="notices"
             icon={<NotificationOutlined style={{ color: "#F55A70" }} />}
+            style={{
+              color: selectedKey === "notices" ? "blue" : "white",
+            }}
           >
-            <Link to="notices">Send Notice</Link>
+            <Link to="notices">
+              <span>Send Notice</span>
+            </Link>
           </Menu.Item>
           <Menu.Item
             key="paymentlist"
             icon={<CreditCardOutlined style={{ color: "#c31fde" }} />}
+            style={{
+              color: selectedKey === "paymentlist" ? "blue" : "white",
+            }}
           >
-            <Link to="paymentlist">Payment</Link>
+            <Link to="paymentlist">
+              <span>Payment</span>
+            </Link>
           </Menu.Item>
           <Menu.Item
             key="addevent"
             icon={<CalendarOutlined style={{ color: "#0298a9" }} />}
+            style={{
+              color: selectedKey === "addevent" ? "blue" : "white",
+            }}
           >
-            <Link to="addevent">Event</Link>
+            <Link to="addevent">
+              <span>Event</span>
+            </Link>
           </Menu.Item>
           <Menu.Item
             key="residences"
             icon={<HomeOutlined style={{ color: "#FFAE00" }} />}
+            style={{
+              color: selectedKey === "residences" ? "blue" : "white",
+            }}
           >
-            <Link to="residences">Residences</Link>
+            <Link to="residences">
+              <span>Residences</span>
+            </Link>
           </Menu.Item>
           <Menu.Item
             key="attendance"
             icon={<UserOutlined style={{ color: "#f2545a" }} />}
+            style={{
+              color: selectedKey === "attendance" ? "blue" : "white",
+            }}
           >
-            <Link to="attendance">Attendance</Link>
+            <Link to="attendance">
+              <span>Attendance</span>
+            </Link>
           </Menu.Item>
         </Menu>
       </Sider>
