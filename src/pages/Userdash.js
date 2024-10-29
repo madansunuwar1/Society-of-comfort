@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 
 const Userdash = () => {
   return (
-    <div className="flex justify-center w-[100%] h-[100%]">
+    <div className="flex justify-center">
       <div className="px-5 pb-20 bg-white">
         <div className="">
           <div className="w-full h-[205px] bg-[url('https://res.cloudinary.com/sentral/image/upload/w_1000,h_1000,q_auto:eco,c_fill/f_auto/v1684782440/miro_hero_building_exterior_2000x1125.jpg')] rounded-lg mt-6 pl-7 font-roboto shadow-lg shadow-slate-400">
@@ -15,13 +15,13 @@ const Userdash = () => {
               You can find
             </p>
 
-            <button className="bg-[#01BCAD] text-[12px] text-white rounded-2xl px-4 py-2 mt-2">
+            <button className="bg-[#01BCAD] text-[12px] text-white rounded-lg px-4 py-2 mt-2">
               See More
             </button>
           </div>
           <div className="flex justify-between mt-4 gap-4">
             <Link to="/payment">
-              <div className="w-[165px] h-[100px] rounded-xl bg-[#752FFF] p-2 shadow-lg shadow-slate-400">
+              <div className="w-[165px] h-[100px] rounded-lg bg-[#752FFF] p-2 shadow-lg shadow-slate-400">
                 <svg
                   width="33"
                   height="33"
@@ -55,7 +55,7 @@ const Userdash = () => {
               </div>
             </Link>
             <Link to="/userpayment">
-              <div className="w-[165px] h-[100px] rounded-xl bg-[#752FFF] bg-opacity-20 p-2 shadow-lg shadow-slate-400">
+              <div className="w-[165px] h-[100px] rounded-lg bg-[#752FFF] bg-opacity-20 p-2 shadow-lg shadow-slate-400">
                 <svg
                   width="33"
                   height="33"
@@ -80,7 +80,7 @@ const Userdash = () => {
           </div>
           {/* <div className="flex justify-between mt-4">
             <Link to="/service">
-              <div className="w-[165px] h-[100px] rounded-xl bg-[#752FFF] bg-opacity-20 p-2 shadow-lg shadow-slate-400">
+              <div className="w-[165px] h-[100px] rounded-lg bg-[#752FFF] bg-opacity-20 p-2 shadow-lg shadow-slate-400">
                 <svg
                   width="33"
                   height="33"
@@ -103,7 +103,7 @@ const Userdash = () => {
               </div>
             </Link>
             <Link to="/history">
-              <div className="w-[165px] h-[100px] rounded-xl bg-[#FFAE00] bg-opacity-20 p-2 shadow-lg shadow-slate-400">
+              <div className="w-[165px] h-[100px] rounded-lg bg-[#FFAE00] bg-opacity-20 p-2 shadow-lg shadow-slate-400">
                 <svg
                   width="33"
                   height="33"
@@ -137,7 +137,7 @@ const Userdash = () => {
 
         <div className="flex justify-between mt-4">
           <Link to="/display-event">
-            <div className="w-[165px] h-[100px] rounded-xl bg-[#F55A70] bg-opacity-20 p-2 shadow-lg shadow-slate-400">
+            <div className="w-[165px] h-[100px] rounded-lg bg-[#F55A70] bg-opacity-20 p-2 shadow-lg shadow-slate-400">
               <svg
                 width="33"
                 height="33"
@@ -167,7 +167,7 @@ const Userdash = () => {
             </div>
           </Link>
           <Link to="/booking">
-            <div className="w-[165px] h-[100px] rounded-xl bg-[#4a6e31] p-2 shadow-lg shadow-slate-400">
+            <div className="w-[165px] h-[100px] rounded-lg bg-[#4a6e31] p-2 shadow-lg shadow-slate-400">
               <svg
                 width="33"
                 height="33"
@@ -203,10 +203,10 @@ const Userdash = () => {
         </div>
         <div className="mt-4 pb-20">
           <h1 className="text-xl font-bold">What Community Has For Sale</h1>
-          <div className="flex border-[2px] border-gray-300 rounded-xl mt-4 shadow-lg shadow-gray-400">
+          <div className="flex border-[2px] border-gray-300 rounded-lg mt-4 shadow-lg shadow-gray-400">
             <img
               src="https://m.xcite.com/media/catalog/product//i/p/iphone_14_5g_-_red_1_3.jpg"
-              className="w-24 h-24 rounded-l-xl object-cover"
+              className="w-24 h-24 rounded-l-lg object-cover"
             ></img>
             <div className="ml-4">
               <p className="text-sm font-bold mb-2">Iphone 14 pro</p>
@@ -215,10 +215,10 @@ const Userdash = () => {
               <p className="text-sm">Price: 2000rs</p>
             </div>
           </div>
-          <div className="flex border-[2px] border-gray-300 rounded-xl mt-4 shadow-lg shadow-gray-400">
+          <div className="flex border-[2px] border-gray-300 rounded-lg mt-4 shadow-lg shadow-gray-400">
             <img
               src="https://tse4.mm.bing.net/th?id=OIP.e8vVcUe-dNIsUmxm76aSNgHaHV&pid=Api&P=0&h=220"
-              className="w-24 h-24 rounded-l-xl object-cover"
+              className="w-24 h-24 rounded-l-lg object-cover"
             ></img>
             <div className="ml-4">
               <p className="text-sm font-bold mb-2">I-pad mini</p>

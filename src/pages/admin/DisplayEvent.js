@@ -1,5 +1,8 @@
 import React, { useEffect, useState } from "react";
 import api from "../../utils/api"; // Import the axios instance
+import { Link } from "react-router-dom";
+import { SlArrowLeft } from "react-icons/sl";
+import { Skeleton } from "antd";
 
 const DisplayEvent = () => {
   const [events, setEvents] = useState([]); // State to hold events data
@@ -25,7 +28,11 @@ const DisplayEvent = () => {
 
   // Conditional rendering for loading, error, or event list
   if (loading) {
-    return <p>Loading events...</p>;
+    return (
+      <div className="p-12">
+        <Skeleton active />
+      </div>
+    );
   }
 
   if (error) {
@@ -33,15 +40,24 @@ const DisplayEvent = () => {
   }
 
   return (
-    <div className=" bg-slate-200 rounded-xl p-8">
-      <h3 className="text-2xl font-bold mb-6">Events</h3>
+    <div className=" bg-slate-200 rounded-xl p-2 md:px-24">
+      <div className="flex px-6 py-4">
+        <div className="items-center my-auto">
+          <Link to="/userdash">
+            <SlArrowLeft />
+          </Link>
+        </div>
+        <h3 className="font-bold flex justify-center mx-auto text-[22px]">
+          Events
+        </h3>
+      </div>
 
       {
         <ul className="space-y-4">
           {events.data.map((event) => (
             <li
               key={event.id}
-              className="p-4 bg-white rounded-lg shadow-sm flex flex-col"
+              className="p-4 bg-white rounded-lg shadow-sm flex flex-col md:px-14"
             >
               <h4 className="text-xl font-semibold">{event.event.name}</h4>
               <p className="text-gray-600 mb-2">{event.event.description}</p>
@@ -53,7 +69,7 @@ const DisplayEvent = () => {
                     <img
                       src={event.file_url} // Assuming the file_url URL is directly accessible
                       alt="Event file_url"
-                      className="mt-2 rounded-lg shadow-md h-[200px] w-full object-cover"
+                      className="mt-2 rounded-lg shadow-md h-[200px] md:h-[400px] w-full object-cover"
                     />
                   ) : event.file_url.endsWith(".pdf") ? (
                     <a

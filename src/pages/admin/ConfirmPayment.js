@@ -1,19 +1,20 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { paymentActions } from "../../redux/paymentSlice";
-import { Link } from "react-router-dom";
-import { SlArrowLeft } from "react-icons/sl";
-import { Skeleton, Button, Modal, Select, message } from "antd";
+import { Skeleton, Button, Modal, Select, Pagination, message } from "antd";
 
 const ConfirmPayment = () => {
   const dispatch = useDispatch();
   const { payments, loading } = useSelector((state) => state.payments);
 
-  // State to manage modal visibility and selected payment
-  const [isModalVisible, setIsModalVisible] = React.useState(false);
-  const [selectedPaymentId, setSelectedPaymentId] = React.useState(null);
-  const [newStatus, setNewStatus] = React.useState("Pending"); // Default status
-  const [imageUrl, setImageUrl] = React.useState(null); // State to manage image display
+  const [isModalVisible, setIsModalVisible] = useState(false);
+  const [selectedPaymentId, setSelectedPaymentId] = useState(null);
+  const [newStatus, setNewStatus] = useState("Pending");
+  const [imageUrl, setImageUrl] = useState(null);
+
+  // Pagination state
+  const [currentPage, setCurrentPage] = useState(1);
+  const [pageSize] = useState(10); // Adjust page size as needed
 
   useEffect(() => {
     dispatch(paymentActions.getPayments());
@@ -32,23 +33,22 @@ const ConfirmPayment = () => {
           status: newStatus,
         })
       )
-        .unwrap() // Unwrap for better error handling
+        .unwrap()
         .then(() => {
           message.success("Payment status updated successfully!");
           setIsModalVisible(false);
           setNewStatus("Pending");
-          dispatch(paymentActions.getPayments()); // Reset status
-        })
-        .catch((err) => {
-          message.success("sucessfull");
           dispatch(paymentActions.getPayments());
+        })
+        .catch(() => {
+          message.error("Failed to update payment status.");
         });
     }
   };
 
   const handleCancel = () => {
     setIsModalVisible(false);
-    setNewStatus("Pending"); // Reset status on cancel
+    setNewStatus("Pending");
   };
 
   const handleImageClick = (url) => {
@@ -57,6 +57,11 @@ const ConfirmPayment = () => {
 
   const handleImageModalClose = () => {
     setImageUrl(null);
+  };
+
+  // Handle pagination change
+  const handlePageChange = (page) => {
+    setCurrentPage(page);
   };
 
   if (loading) {
@@ -78,16 +83,14 @@ const ConfirmPayment = () => {
     }
   };
 
+  // Paginate payments data
+  const paginatedPayments = payments?.data?.slice(
+    (currentPage - 1) * pageSize,
+    currentPage * pageSize
+  );
+
   return (
     <div className="w-full bg-slate-200 p-6 pb-20 rounded-lg shadow-md">
-      <div className="flex items-center mb-4">
-        <Link to="/userdash" className="text-gray-500 hover:text-gray-700">
-          <SlArrowLeft />
-        </Link>
-        <h3 className="font-bold flex justify-center mx-auto text-lg">
-          Payment
-        </h3>
-      </div>
       <h1 className="text-xl font-semibold mb-4">Payment List</h1>
       <div className="overflow-x-auto">
         <table className="min-w-full bg-white border border-gray-300">
@@ -97,13 +100,12 @@ const ConfirmPayment = () => {
               <th className="py-2 px-4 border border-gray-300">Date</th>
               <th className="py-2 px-4 border border-gray-300">Amount</th>
               <th className="py-2 px-4 border border-gray-300">Status</th>
-              <th className="py-2 px-4 border border-gray-300">Slip</th>{" "}
-              {/* New Slip Column */}
+              <th className="py-2 px-4 border border-gray-300">Slip</th>
               <th className="py-2 px-4 border border-gray-300">Action</th>
             </tr>
           </thead>
           <tbody>
-            {payments?.data?.map((payment) => (
+            {paginatedPayments?.map((payment) => (
               <tr key={payment.payment.id} className="hover:bg-gray-50">
                 <td className="py-2 px-4 border border-gray-300">
                   {payment.payment.id}
@@ -125,9 +127,9 @@ const ConfirmPayment = () => {
                 </td>
                 <td className="py-2 px-4 border border-gray-300">
                   <img
-                    src={payment.slip_url} // Use slip_url for the image source
+                    src={payment.slip_url}
                     alt="Slip"
-                    onClick={() => handleImageClick(payment.slip_url)} // Click to view image
+                    onClick={() => handleImageClick(payment.slip_url)}
                     className="cursor-pointer h-10 w-10 object-cover"
                   />
                 </td>
@@ -143,6 +145,15 @@ const ConfirmPayment = () => {
           </tbody>
         </table>
       </div>
+
+      {/* Pagination Component */}
+      <Pagination
+        current={currentPage}
+        pageSize={pageSize}
+        total={payments?.data?.length || 0}
+        onChange={handlePageChange}
+        className="mt-4 text-center"
+      />
 
       {/* Modal for Updating Status */}
       <Modal

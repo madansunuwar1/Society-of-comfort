@@ -22,12 +22,12 @@ const Botnav = () => {
   };
   return (
     <div className="flex justify-center">
-      <div className="bg-[#3F3F95] fixed bottom-0 flex justify-center gap-12 py-3 px-4 rounded-xl items-centers mx-2 mb-2">
+      <div className="bg-[#3F3F95] fixed bottom-0 flex justify-center gap-12 py-3 px-4 rounded-xl items-centers mx-2 mb-2 bg-opacity-90">
         <button onClick={handleNavigation}>
           <FaHome className="h-6 w-6 text-white mx-auto" />
           <div className="text-white text-sm">Home</div>
         </button>
-        <Link to="/userpayment">
+        <Link to="/payment">
           <MdOutlinePayment className="h-6 w-6 text-white mx-auto" />
           <span className="text-white text-sm">Payment</span>
         </Link>

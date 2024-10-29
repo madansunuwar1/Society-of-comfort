@@ -44,6 +44,8 @@ import Attendance from "./pages/admin/Attendance";
 import Notices from "./pages/admin/Notices";
 import DashboardHome from "./pages/admin/DashboardHome";
 import ConfirmPayment from "./pages/admin/ConfirmPayment";
+import InvoiceHistory from "./pages/InvoiceHistory";
+import BookingList from "./pages/admin/BookingList";
 
 function App() {
   const [fcmToken, setFcmToken] = useState(null);
@@ -290,6 +292,15 @@ function App() {
             </>
           }
         />
+        <Route
+          path="/invoicehistory"
+          element={
+            <>
+              <InvoiceHistory />
+              <Botnav />
+            </>
+          }
+        />
         <Route path="/dashboard" element={<Admindash />}>
           <Route index element={<DashboardHome />} />
           <Route path="notices" element={<Notices />} />
@@ -298,6 +309,7 @@ function App() {
           <Route path="addevent" element={<AddEvent />} />
           <Route path="residences" element={<Residences />} />
           <Route path="attendance" element={<Attendance />} />
+          <Route path="booking" element={<BookingList />} />
         </Route>
       </Routes>
     </Router>

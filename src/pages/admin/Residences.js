@@ -10,7 +10,7 @@ const Residences = () => {
           Residences
         </h3>
       </div>
-      <div className="px-6 py-3 flex flex-wrap gap-8">
+      <div className="px-6 py-3 flex flex-col gap-4 mt-4">
         <Link to="/profile">
           <div className="flex gap-6 bg-white p-3 rounded-lg shadow-lg">
             <img

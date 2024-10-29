@@ -22,7 +22,7 @@ const Signin = () => {
     } else if (loggedInUser && loggedInUser.role === "Worker") {
       navigate("/proadmin");
     }
-  }, [navigate, user]);
+  }, [user]);
 
   const handlesubmit = async (event) => {
     event.preventDefault();
