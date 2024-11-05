@@ -19,6 +19,7 @@ const UserPaymentList = () => {
   const [slip, setSlip] = useState(null);
   const [remarks, setRemarks] = useState("");
   const [status, setStatus] = useState("Pending"); // Default status
+  const [errors, setErrors] = useState({}); // To store validation errors
 
   useEffect(() => {
     dispatch(paymentActions.getPayments());
@@ -30,13 +31,42 @@ const UserPaymentList = () => {
     }
   };
 
+  const validateForm = () => {
+    const newErrors = {};
+    // Validate amount
+    if (!amount) {
+      newErrors.amount = "Amount is required.";
+    } else if (isNaN(amount) || amount <= 0) {
+      newErrors.amount = "Amount must be a positive number.";
+    }
+
+    // Validate date
+    if (!date) {
+      newErrors.date = "Date is required.";
+    } else if (new Date(date) < new Date()) {
+      newErrors.date = "Date cannot be in the past.";
+    }
+
+    // Validate slip
+    if (!slip) {
+      newErrors.slip = "Please upload a slip file.";
+    } else if (!["image/png", "image/jpeg"].includes(slip.type)) {
+      newErrors.slip = "File type must be PNG or JPEG.";
+    }
+
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0; // Return true if no errors
+  };
+
   const handlePaymentSubmit = async (e) => {
     e.preventDefault();
 
-    // Validation to ensure slip is selected
-    if (!slip) {
-      alert("Please upload a slip file.");
-      return;
+    // Reset errors
+    setErrors({});
+
+    // Validate form fields
+    if (!validateForm()) {
+      return; // If validation fails, exit early
     }
 
     // Create a FormData object to handle file uploads
@@ -48,18 +78,18 @@ const UserPaymentList = () => {
     formData.append("remarks", remarks);
     formData.append("status", status);
 
-    try {
-      const response = await dispatch(paymentActions.addPayment(formData));
+    const response = await dispatch(paymentActions.addPayment(formData));
 
-      if (response && response.status === 201) {
-        alert("Payment submitted successfully!"); // Success notification
-        setSuccessMessage("Payment added successfully!");
-        resetPaymentForm();
-      } else {
-        alert("Unexpected response. Please try again.");
-      }
-    } catch (error) {
-      alert("Payment submission failed."); // Failure notification
+    // Check for errors explicitly from the response
+    if (paymentActions.addPayment.fulfilled.match(response)) {
+      alert("Payment submitted successfully");
+      setSuccessMessage("Payment added successfully!");
+      resetPaymentForm();
+    } else {
+      alert(
+        "There was an error",
+        response.payload || "Unexpected error. Please try again."
+      );
     }
   };
 
@@ -108,6 +138,7 @@ const UserPaymentList = () => {
             onChange={(e) => setAmount(e.target.value)}
             required
           />
+          {errors.amount && <p className="text-red-500">{errors.amount}</p>}
         </div>
         <div>
           <label className="font-bold text-md">Date</label>
@@ -119,6 +150,7 @@ const UserPaymentList = () => {
             onChange={(e) => setDate(e.target.value)}
             required
           />
+          {errors.date && <p className="text-red-500">{errors.date}</p>}
         </div>
         <div>
           <label className="font-bold text-md">Screenshot</label>
@@ -130,6 +162,7 @@ const UserPaymentList = () => {
             accept="image/png, image/jpeg"
             required
           />
+          {errors.slip && <p className="text-red-500">{errors.slip}</p>}
         </div>
         <div>
           <label className="font-bold text-md">Remarks</label>
@@ -152,7 +185,7 @@ const UserPaymentList = () => {
       {/* Payment List */}
       <h1 className="text-xl font-bold mb-4">Payment List</h1>
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
-        {payments?.data?.map((payment) => (
+        {payments?.map((payment) => (
           <div
             key={payment.payment.id}
             className="bg-white flex gap-4 shadow-md rounded-lg p-4 border border-gray-200"

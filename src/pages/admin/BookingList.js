@@ -24,10 +24,11 @@ const BookingList = () => {
       .unwrap()
       .then(() => {
         message.success("Booking approved successfully!");
+        // Optionally refetch the bookings if needed
         dispatch(bookingActions.fetchBookings());
       })
       .catch(() => {
-        message.error("Failed to approve booking.");
+        message.error("Failed to approve booking."); // Error message only in case of failure
       });
   };
 
@@ -36,10 +37,11 @@ const BookingList = () => {
       .unwrap()
       .then(() => {
         message.success("Booking declined successfully!");
+        // Optionally refetch the bookings if needed
         dispatch(bookingActions.fetchBookings());
       })
       .catch(() => {
-        message.error("Failed to decline booking.");
+        message.error("Failed to decline booking."); // Error message only in case of failure
       });
   };
 
