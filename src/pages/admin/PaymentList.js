@@ -300,9 +300,7 @@ const PaymentList = () => {
                     <td className="py-2 px-4 "></td>
                     <td className="py-2 px-4  border border-gray-300">Total</td>
                     <td className="py-2 px-4  border border-gray-300">
-                      {parseFloat(totalAmount) + parseFloat(dueAmount)
-                      
-                      }
+                      {parseFloat(totalAmount) + parseFloat(dueAmount)}
                     </td>
                   </tr>
                 </tbody>

@@ -16,11 +16,12 @@ const Notices = () => {
   const [formData, setFormData] = useState({
     title: "",
     notice_body: "",
-    users: [2],
     user_id: user.user.id,
     notice_type: noticeType,
-    residence_id: [], // Only used for private notice
+    users: [], // Only used for private notice
   });
+  const [errors, setErrors] = useState({}); // State for form validation errors
+  const [isSending, setIsSending] = useState(false); // State for sending status
 
   useEffect(() => {
     if (noticeType === "private") {
@@ -34,23 +35,54 @@ const Notices = () => {
       ...prevFormData,
       [name]: value,
     }));
+    setErrors((prevErrors) => ({ ...prevErrors, [name]: null })); // Clear error for changed field
   };
 
   const handleResidenceChange = (selectedOptions) => {
     const selectedIds = selectedOptions
-      ? selectedOptions.map((option) => option.value)
+      ? selectedOptions.map((option) => String(option.value))
       : [];
     setFormData((prevFormData) => ({
       ...prevFormData,
-      residence_id: selectedIds,
+      users: selectedIds,
     }));
+    setErrors((prevErrors) => ({ ...prevErrors, users: null })); // Clear error for residence selection
+  };
+
+  const validateForm = () => {
+    const newErrors = {};
+    if (!formData.title) {
+      newErrors.title = "Title is required.";
+    }
+    if (!formData.notice_body) {
+      newErrors.notice_body = "Notice description is required.";
+    }
+    if (noticeType === "private" && formData.users.length === 0) {
+      newErrors.users = "At least one residence must be selected.";
+    }
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0; // Return true if no errors
   };
 
   const handleSubmit = async (event) => {
     event.preventDefault();
+
+    if (!validateForm()) {
+      return; // Stop submission if validation fails
+    }
+
     const action = noticeType === "public" ? addPublicNotice : addPrivateNotice;
 
-    dispatch(action(formData))
+    const submissionData = {
+      ...formData,
+      users: formData.users,
+    };
+
+    console.log("Submission Data:", submissionData);
+
+    setIsSending(true); // Set sending state to true
+
+    dispatch(action(submissionData))
       .unwrap()
       .then(() => {
         // Use antd notification for success
@@ -66,11 +98,23 @@ const Notices = () => {
       })
       .catch((error) => {
         console.error("Error:", error);
-        // Use antd notification for error
-        notification.error({
-          message: "Error",
-          description: "Network request failed. Please try again.",
-        });
+        // Check if the error has a message from the backend
+        if (error.error) {
+          // Display the error message from the backend
+          notification.error({
+            message: "Validation Error",
+            description: error.error,
+          });
+        } else {
+          // Use antd notification for other errors
+          notification.error({
+            message: "Error",
+            description: "Network request failed. Please try again.",
+          });
+        }
+      })
+      .finally(() => {
+        setIsSending(false); // Reset sending state after completion
       });
   };
 
@@ -105,23 +149,35 @@ const Notices = () => {
           <div>
             <label className="font-bold text-md">Notice Title</label>
             <input
-              className="rounded-md py-3 px-4 w-full border-[2px] border-gray-400 mt-2"
+              className={`rounded-md py-3 px-4 w-full border-[2px] border-gray-400 mt-2 ${
+                errors.title ? "border-red-500" : ""
+              }`}
               type="text"
               name="title"
               placeholder="Notice Title"
               value={formData.title}
               onChange={handleInputChange}
+              disabled={isSending} // Disable input when sending
             />
+            {errors.title && (
+              <p className="text-red-500 text-sm">{errors.title}</p>
+            )}
           </div>
           <div className="pt-6">
             <label className="font-bold text-md">Notice Description</label>
             <textarea
-              className="rounded-md w-full py-4 px-4 border-[2px] border-gray-400 mt-2"
+              className={`rounded-md w-full py-4 px-4 border-[2px] border-gray-400 mt-2 ${
+                errors.notice_body ? "border-red-500" : ""
+              }`}
               name="notice_body"
               placeholder="Notice Description"
               value={formData.notice_body}
               onChange={handleInputChange}
+              disabled={isSending} // Disable input when sending
             />
+            {errors.notice_body && (
+              <p className="text-red-500 text-sm">{errors.notice_body}</p>
+            )}
           </div>
 
           {noticeType === "private" && (
@@ -129,7 +185,7 @@ const Notices = () => {
               <label className="font-bold text-md">Select Residences</label>
               <Select
                 isMulti
-                isDisabled={loading}
+                isDisabled={loading || isSending} // Disable Select when loading or sending
                 options={
                   !loading &&
                   residences?.data?.map((residence) => ({
@@ -137,21 +193,25 @@ const Notices = () => {
                     label: residence.name,
                   }))
                 }
-                value={formData.residence_id.map((id) => ({
+                value={formData.users.map((id) => ({
                   value: id,
                   label: residences?.data?.find((res) => res.id === id)?.name,
                 }))}
                 onChange={handleResidenceChange}
                 className="mt-2"
               />
+              {errors.users && (
+                <p className="text-red-500 text-sm">{errors.users}</p>
+              )}
             </div>
           )}
 
           <button
             type="submit"
             className="bg-[#403F93] text-white flex px-16 py-3 rounded-lg mt-6"
+            disabled={isSending} // Disable button when sending
           >
-            Send Notice
+            {isSending ? "Sending..." : "Send Notice"}
           </button>
         </form>
       </div>
