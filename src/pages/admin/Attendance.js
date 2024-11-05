@@ -1,18 +1,47 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+import api from "../../utils/api"; // Adjust the path according to your file structure
 
 const Attendance = () => {
-  const [students, setStudents] = useState([
-    { id: 1, name: "John Doe", present: false },
-    { id: 2, name: "Jane Smith", present: false },
-    { id: 3, name: "Sam Wilson", present: false },
-  ]);
+  const [students, setStudents] = useState([]);
 
-  const toggleAttendance = (id) => {
-    setStudents((prevStudents) =>
-      prevStudents.map((student) =>
-        student.id === id ? { ...student, present: !student.present } : student
-      )
-    );
+  // Fetch attendance data from the API
+  useEffect(() => {
+    const fetchAttendance = async () => {
+      try {
+        const response = await api.get("/attendances");
+        // Assuming the response data is an array of students
+        setStudents(response.data);
+      } catch (error) {
+        console.error("Error fetching attendance data:", error);
+      }
+    };
+
+    fetchAttendance();
+  }, []);
+
+  const toggleAttendance = async (student) => {
+    const userId = student.id; // Use the student's ID
+    const currentDate = new Date().toISOString().split("T")[0]; // Get the current date in YYYY-MM-DD format
+
+    const payload = {
+      user_id: userId,
+      date: currentDate,
+    };
+
+    // Send POST request to mark attendance
+    try {
+      await api.post("/attendances", payload);
+      // Toggle attendance state locally after successful post
+      setStudents((prevStudents) =>
+        prevStudents.map((student) =>
+          student.id === userId
+            ? { ...student, present: !student.present }
+            : student
+        )
+      );
+    } catch (error) {
+      console.error("Error marking attendance:", error);
+    }
   };
 
   return (
@@ -22,7 +51,6 @@ const Attendance = () => {
         <thead>
           <tr>
             <th className="py-2 px-4 border">Name</th>
-            <th className="py-2 px-4 border">Status</th>
             <th className="py-2 px-4 border">Action</th>
           </tr>
         </thead>
@@ -30,13 +58,7 @@ const Attendance = () => {
           {students.map((student) => (
             <tr key={student.id} className="border-t">
               <td className="py-2 px-4">{student.name}</td>
-              <td
-                className={`py-2 px-4 ${
-                  student.present ? "text-green-500" : "text-red-500"
-                }`}
-              >
-                {student.present ? "Present" : "Absent"}
-              </td>
+
               <td className="py-2 px-4">
                 <button
                   className={`py-1 px-3 rounded ${
@@ -44,9 +66,9 @@ const Attendance = () => {
                       ? "bg-red-500 text-white"
                       : "bg-green-500 text-white"
                   }`}
-                  onClick={() => toggleAttendance(student.id)}
+                  onClick={() => toggleAttendance(student)}
                 >
-                  {student.present ? "Mark Absent" : "Mark Present"}
+                  {student.present ? "already checked in" : "Checked in"}
                 </button>
               </td>
             </tr>

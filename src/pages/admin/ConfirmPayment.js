@@ -84,7 +84,7 @@ const ConfirmPayment = () => {
   };
 
   // Paginate payments data
-  const paginatedPayments = payments?.data?.slice(
+  const paginatedPayments = payments?.slice(
     (currentPage - 1) * pageSize,
     currentPage * pageSize
   );

@@ -67,7 +67,7 @@ const BookingList = () => {
   }
 
   // Paginate bookings data
-  const paginatedBookings = bookings?.data?.slice(
+  const paginatedBookings = bookings?.slice(
     (currentPage - 1) * pageSize,
     currentPage * pageSize
   );

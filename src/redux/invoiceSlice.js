@@ -27,13 +27,21 @@ export const getInvoices = createAsyncThunk(
 // Async thunk to add an invoice
 export const addInvoice = createAsyncThunk(
   "invoices/addInvoice",
-  async (invoiceData, { rejectWithValue }) => {
+  async (formData, { rejectWithValue }) => {
     try {
-      const response = await api.post("/invoices", invoiceData);
-      return response.data;
+      const response = await api.post("/invoices", formData);
+
+      // Check if response status is 200 and has data
+      if (response.status === 200 && response.data) {
+        return response.data; // Return the data containing the invoice details
+      } else {
+        return rejectWithValue("Failed to add invoice.");
+      }
     } catch (error) {
-      console.error("API Error:", error.response?.data);
-      return rejectWithValue(error.response?.data || "Failed to add invoice");
+      console.error("API Error:", error); // Log the full error object
+      return rejectWithValue(
+        error.response?.data?.message || "An error occurred"
+      );
     }
   }
 );
