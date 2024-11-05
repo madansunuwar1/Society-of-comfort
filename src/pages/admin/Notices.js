@@ -11,7 +11,6 @@ const Notices = () => {
   const dispatch = useDispatch();
   const user = JSON.parse(localStorage.getItem("user"));
   const { residences, loading } = useSelector((state) => state.user);
-
   const [noticeType, setNoticeType] = useState("public"); // Toggle between public and private notice
   const [formData, setFormData] = useState({
     title: "",
@@ -193,10 +192,14 @@ const Notices = () => {
                     label: residence.name,
                   }))
                 }
-                value={formData.users.map((id) => ({
-                  value: id,
-                  label: residences?.data?.find((res) => res.id === id)?.name,
-                }))}
+                value={residences?.data
+                  ?.filter((residence) =>
+                    formData.users.includes(residence.id.toString())
+                  )
+                  .map((residence) => ({
+                    value: residence.id,
+                    label: residence.name,
+                  }))}
                 onChange={handleResidenceChange}
                 className="mt-2"
               />
