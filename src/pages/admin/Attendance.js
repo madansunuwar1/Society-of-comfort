@@ -144,7 +144,7 @@ const Attendance = () => {
 
         <div className="flex gap-4 mt-4">
           <div className="flex flex-col gap-2 w-full">
-            <label>Select month</label>
+            <label>Start Date Time</label>
             <input
               type="datetime-local"
               value={startTime}
@@ -161,7 +161,7 @@ const Attendance = () => {
           </div>
 
           <div className="flex flex-col gap-2 w-full">
-            <label>Select month</label>
+            <label>End Date Time</label>
 
             <input
               type="datetime-local"

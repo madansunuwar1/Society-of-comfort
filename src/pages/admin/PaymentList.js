@@ -6,8 +6,7 @@ import { SlArrowLeft } from "react-icons/sl";
 import DatePicker from "react-datepicker";
 import api from "../../utils/api";
 import "react-datepicker/dist/react-datepicker.css";
-import { Skeleton } from "antd";
-import { notification } from "antd";
+import { Skeleton, notification } from "antd";
 
 const PaymentList = () => {
   const dispatch = useDispatch();
@@ -22,10 +21,11 @@ const PaymentList = () => {
   const [houses, setHouses] = useState([]);
   const [totalAmount, setTotalAmount] = useState("");
   const [items, setItems] = useState([
-    { particular: "", quantity: 0, rate: 0 },
+    { particular: "", quantity: 1, rate: 0 },
   ]);
   const [dueAmount, setDueAmount] = useState(null);
   const [selectedMonth, setSelectedMonth] = useState("");
+  const [formErrors, setFormErrors] = useState({});
 
   useEffect(() => {
     dispatch(invoiceActions.getInvoices());
@@ -48,8 +48,39 @@ const PaymentList = () => {
     setTotalAmount(calculatedTotal);
   }, [items]);
 
+  // Form validation function
+  const validateForm = () => {
+    const errors = {};
+    if (!houseId) errors.houseId = "House ID is required.";
+    if (!selectedMonth) errors.selectedMonth = "Month is required.";
+    if (items.length === 0) errors.items = "At least one item is required.";
+
+    // Check for empty item particulars or invalid quantities/rates
+    items.forEach((item, index) => {
+      if (!item.particular)
+        errors[`item-${index}-particular`] = "Particular is required.";
+      if (item.quantity <= 0)
+        errors[`item-${index}-quantity`] = "Quantity must be greater than 0.";
+      if (item.rate <= 0)
+        errors[`item-${index}-rate`] = "Rate must be greater than 0.";
+    });
+
+    setFormErrors(errors);
+    return Object.keys(errors).length === 0;
+  };
+
   const handleSubmit = (e) => {
     e.preventDefault();
+
+    // Validate form
+    if (!validateForm()) {
+      notification.error({
+        message: "Form validation Error",
+        description: "Please fix the errors in the form.",
+      });
+      return;
+    }
+
     const formData = {
       house_id: houseId,
       total_amount: totalAmount,
@@ -67,8 +98,8 @@ const PaymentList = () => {
       })
       .catch(() => {
         notification.error({
-          message: "error",
-          description: "Invoice Not added successfully!",
+          message: "Error",
+          description: "Invoice not added successfully!",
         });
       });
 
@@ -76,6 +107,7 @@ const PaymentList = () => {
     setHouseId("");
     setTotalAmount("");
     setItems([{ particular: "", quantity: 0, rate: 0 }]);
+    setFormErrors({});
     dispatch(invoiceActions.getInvoices());
   };
 
@@ -90,11 +122,6 @@ const PaymentList = () => {
     setDueAmount(selectedHouse ? selectedHouse.dues : 0); // Update due amount
   };
 
-  const handleShowInvoice = (payment) => {
-    setSelectedPayment(payment);
-    setIsInvoiceOpen(true);
-  };
-
   const handleItemChange = (index, field, value) => {
     const updatedItems = items.map((item, i) =>
       i === index ? { ...item, [field]: value } : item
@@ -102,8 +129,19 @@ const PaymentList = () => {
     setItems(updatedItems);
   };
 
+  const handleShowInvoice = (payment) => {
+    setSelectedPayment(payment);
+    setIsInvoiceOpen(true);
+  };
+
+  useEffect(() => {
+    if (selectedPayment) {
+      console.log("Selected Payment:", selectedPayment);
+    }
+  }, [selectedPayment]);
+
   const addItem = () => {
-    setItems([...items, { particular: "", quantity: 0, rate: 0 }]);
+    setItems([...items, { particular: "", quantity: 1, rate: 0 }]);
   };
 
   const removeItem = (index) => {
@@ -129,7 +167,7 @@ const PaymentList = () => {
           {successMessage}
         </div>
       )}
-      <div className=" flex bg-black bg-opacity-50 w-full">
+      <div className="flex bg-black bg-opacity-50 w-full">
         <div className="bg-white p-6 shadow-lg w-full">
           <div className="flex justify-between items-center mb-4">
             <h3 className="font-bold text-lg">Invoice</h3>
@@ -151,6 +189,11 @@ const PaymentList = () => {
                     </option>
                   ))}
                 </select>
+                {formErrors.houseId && (
+                  <span className="text-red-600 text-sm">
+                    {formErrors.houseId}
+                  </span>
+                )}
               </div>
               <div className="flex flex-col gap-2 w-full">
                 <label>Select bill date</label>
@@ -189,6 +232,11 @@ const PaymentList = () => {
                     </option>
                   ))}
                 </select>
+                {formErrors.selectedMonth && (
+                  <span className="text-red-600 text-sm">
+                    {formErrors.selectedMonth}
+                  </span>
+                )}
               </div>
             </div>
             <div className="overflow-x-auto min-w-full">
@@ -217,13 +265,12 @@ const PaymentList = () => {
                 </thead>
                 <tbody>
                   {items.map((item, index) => (
-                    <tr key={index} className="border-b hover:bg-gray-100">
-                      <td className="py-2 px-4  border border-gray-300">
-                        {index}
+                    <tr key={index}>
+                      <td className="py-2 px-4 border border-gray-300">
+                        {index + 1}
                       </td>
-                      <td className="py-2 px-4  border border-gray-300">
+                      <td className="py-2 px-4 border border-gray-300">
                         <input
-                          className="rounded-md py-1 px-2 border border-gray-400 w-full"
                           type="text"
                           value={item.particular}
                           onChange={(e) =>
@@ -233,29 +280,38 @@ const PaymentList = () => {
                               e.target.value
                             )
                           }
-                          placeholder="Particular"
+                          className="w-full border px-2 py-1"
                           required
                         />
+                        {formErrors[`item-${index}-particular`] && (
+                          <span className="text-red-600 text-sm">
+                            {formErrors[`item-${index}-particular`]}
+                          </span>
+                        )}
                       </td>
-                      <td className="py-2 px-4  border border-gray-300">
+                      <td className="py-2 px-4 border border-gray-300">
                         <input
-                          className="rounded-md py-1 px-2 border border-gray-400 w-full"
                           type="number"
                           value={item.quantity}
                           onChange={(e) =>
                             handleItemChange(
                               index,
                               "quantity",
-                              parseInt(e.target.value)
+                              parseInt(e.target.value, 10)
                             )
                           }
-                          placeholder="Quantity"
+                          className="w-full border px-2 py-1"
+                          min="1"
                           required
                         />
+                        {formErrors[`item-${index}-quantity`] && (
+                          <span className="text-red-600 text-sm">
+                            {formErrors[`item-${index}-quantity`]}
+                          </span>
+                        )}
                       </td>
-                      <td className="py-2 px-4  border border-gray-300">
+                      <td className="py-2 px-4 border border-gray-300">
                         <input
-                          className="rounded-md py-1 px-2 border border-gray-400 w-full"
                           type="number"
                           value={item.rate}
                           onChange={(e) =>
@@ -265,17 +321,23 @@ const PaymentList = () => {
                               parseFloat(e.target.value)
                             )
                           }
-                          placeholder="Rate"
+                          className="w-full border px-2 py-1"
+                          min="1"
                           required
                         />
+                        {formErrors[`item-${index}-rate`] && (
+                          <span className="text-red-600 text-sm">
+                            {formErrors[`item-${index}-rate`]}
+                          </span>
+                        )}
                       </td>
-                      <td className="py-2 px-4  border border-gray-300">
+                      <td className="py-2 px-4 border border-gray-300">
                         {item.quantity * item.rate}
                       </td>
-                      <td className="py-2 px-4  border border-gray-300">
+                      <td className="py-2 px-4 border border-gray-300">
                         <button
-                          className="bg-red-600 text-white py-1 px-4 rounded-lg"
                           type="button"
+                          className="text-red-600"
                           onClick={() => removeItem(index)}
                         >
                           Remove
@@ -283,53 +345,30 @@ const PaymentList = () => {
                       </td>
                     </tr>
                   ))}
-                  <tr>
-                    <td className="py-2 px-4  border border-gray-300"></td>
-                    <td className="py-2 px-4  border border-gray-300">
-                      Due amount
-                    </td>
-                    <td className="py-2 px-4  border border-gray-300"></td>
-                    <td className="py-2 px-4  border border-gray-300"></td>
-                    <td className="py-2 px-4  border border-gray-300">
-                      {dueAmount}
-                    </td>
-                  </tr>
-                  <tr>
-                    <td className="py-2 px-4 "></td>
-                    <td className="py-2 px-4 "></td>
-                    <td className="py-2 px-4 "></td>
-                    <td className="py-2 px-4  border border-gray-300">Total</td>
-                    <td className="py-2 px-4  border border-gray-300">
-                      {parseFloat(totalAmount) + parseFloat(dueAmount)}
-                    </td>
-                  </tr>
                 </tbody>
               </table>
+              <button
+                type="button"
+                className="mt-4 text-blue-600"
+                onClick={addItem}
+              >
+                Add Item
+              </button>
             </div>
-            <div className="flex justify-between">
-              <div className="flex gap-2 mt-8">
-                <div>
-                  <button
-                    className="bg-green-600 text-white py-2 px-4 rounded-lg"
-                    type="button"
-                    onClick={addItem}
-                  >
-                    Add Item
-                  </button>
-                </div>
-                <div>
-                  <button
-                    type="submit"
-                    className="bg-[#403F93] text-white py-2 px-8 rounded-lg"
-                  >
-                    Add Payment
-                  </button>
-                </div>
-              </div>
+            <div className="flex flex-col items-end mt-4">
+              <div>Total Amount: {totalAmount}</div>
+              {dueAmount !== null && <div>Due Amount: {dueAmount}</div>}
+              <button
+                type="submit"
+                className="bg-blue-600 text-white py-2 px-4 rounded mt-4"
+              >
+                Submit Invoice
+              </button>
             </div>
           </form>
         </div>
       </div>
+      {/* Invoice List */}
       <div className="overflow-x-auto mt-10 bg-white p-4">
         <h4 className="font-bold text-xl mb-4">Invoices</h4>
         <table className="min-w-full bg-white shadow-md rounded-lg overflow-hidden">
@@ -362,9 +401,17 @@ const PaymentList = () => {
           </tbody>
         </table>
       </div>
-
+      {/* Invoice Details Modal */}
       {isInvoiceOpen && selectedPayment && (
         <div className="fixed inset-0 flex z-50 bg-black bg-opacity-50">
+          <div>
+            <button
+              onClick={() => setIsInvoiceOpen(false)}
+              className="mt-4 bg-blue-500 text-white px-4 py-2 rounded ml-10"
+            >
+              x
+            </button>
+          </div>
           <div className=" bg-white p-8  border border-gray-300 rounded-lg shadow-lg mx-auto my-auto">
             <h2 className="text-xl font-bold text-center mb-2">
               Society of Comfort SMD Awas Bayawasthapan Samiti

@@ -3,6 +3,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { paymentActions } from "../redux/paymentSlice";
 import { Link } from "react-router-dom";
 import { SlArrowLeft } from "react-icons/sl";
+import { Skeleton, Button, Modal, Select, Pagination, message } from "antd";
 
 const UserPaymentList = () => {
   const dispatch = useDispatch();
@@ -20,6 +21,26 @@ const UserPaymentList = () => {
   const [remarks, setRemarks] = useState("");
   const [status, setStatus] = useState("Pending"); // Default status
   const [errors, setErrors] = useState({}); // To store validation errors
+  const [currentPage, setCurrentPage] = useState(1);
+  const [pageSize] = useState(10);
+  const [imageUrl, setImageUrl] = useState(null);
+
+  const handleImageModalClose = () => {
+    setImageUrl(null);
+  };
+
+  const handlePageChange = (page) => {
+    setCurrentPage(page);
+  };
+
+  const handleImageClick = (url) => {
+    setImageUrl(url);
+  };
+
+  const paginatedPayments = payments?.slice(
+    (currentPage - 1) * pageSize,
+    currentPage * pageSize
+  );
 
   useEffect(() => {
     dispatch(paymentActions.getPayments());
@@ -52,6 +73,10 @@ const UserPaymentList = () => {
       newErrors.slip = "Please upload a slip file.";
     } else if (!["image/png", "image/jpeg"].includes(slip.type)) {
       newErrors.slip = "File type must be PNG or JPEG.";
+    }
+
+    if (!remarks) {
+      newErrors.remarks = "please eneter your remark for payment";
     }
 
     setErrors(newErrors);
@@ -100,7 +125,18 @@ const UserPaymentList = () => {
     setRemarks("");
   };
 
-  if (loading || updating) return <div>Loading...</div>;
+  const getStatusColor = (status) => {
+    switch (status) {
+      case "Confirmed":
+        return "bg-green-500";
+      case "Pending":
+        return "bg-yellow-500";
+      default:
+        return "bg-gray-500";
+    }
+  };
+
+  if (loading) return <div>Loading...</div>;
   if (error) return <div>Error: {error}</div>;
 
   return (
@@ -132,7 +168,7 @@ const UserPaymentList = () => {
           <label className="font-bold text-md">Amount</label>
           <input
             className="rounded-md py-3 px-4 w-full border-[2px] border-gray-400 mt-2"
-            type="number"
+            type="text"
             placeholder="Amount"
             value={amount}
             onChange={(e) => setAmount(e.target.value)}
@@ -173,51 +209,86 @@ const UserPaymentList = () => {
             value={remarks}
             onChange={(e) => setRemarks(e.target.value)}
           />
+          {errors.remarks && <p className="text-red-500">{errors.remarks}</p>}
         </div>
         <button
           type="submit"
           className="bg-[#403F93] text-white flex px-16 py-3 rounded-lg mt-6"
+          disabled={updating}
         >
-          Add Payment
+          {updating ? "Adding..." : "Add Payment"}
         </button>
       </form>
 
       {/* Payment List */}
-      <h1 className="text-xl font-bold mb-4">Payment List</h1>
-      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
-        {payments?.map((payment) => (
-          <div
-            key={payment.payment.id}
-            className="bg-white flex gap-4 shadow-md rounded-lg p-4 border border-gray-200"
-          >
-            <div className="flex items-center my-2">
-              {payment.slip_url ? (
-                <img
-                  src={payment.slip_url}
-                  alt="Payment Slip"
-                  className="h-20 w-20 object-cover rounded"
-                />
-              ) : (
-                <span className="text-gray-500">No Image</span>
-              )}
-            </div>
-            <div>
-              <h3 className="text-md font-bold">
-                Payment ID: {payment.payment.id}
-              </h3>
+      <div className="w-full bg-slate-200 p-6 pb-20 rounded-lg shadow-md">
+        <h1 className="text-xl font-semibold mb-4">Payment List</h1>
+        <div className="overflow-x-auto">
+          <table className="min-w-full bg-white border border-gray-300">
+            <thead>
+              <tr className="bg-gray-100">
+                <th className="py-2 px-4 border border-gray-300">ID</th>
+                <th className="py-2 px-4 border border-gray-300">Date</th>
+                <th className="py-2 px-4 border border-gray-300">Amount</th>
+                <th className="py-2 px-4 border border-gray-300">Status</th>
+                <th className="py-2 px-4 border border-gray-300">Slip</th>
+              </tr>
+            </thead>
+            <tbody>
+              {paginatedPayments?.map((payment) => (
+                <tr key={payment.payment.id} className="hover:bg-gray-50">
+                  <td className="py-2 px-4 border border-gray-300">
+                    {payment.payment.id}
+                  </td>
+                  <td className="py-2 px-4 border border-gray-300">
+                    {payment.payment.date}
+                  </td>
+                  <td className="py-2 px-4 border border-gray-300">
+                    Rs.{payment.payment.amount}
+                  </td>
+                  <td className="py-2 px-4 border border-gray-300">
+                    <span
+                      className={`text-white px-2 py-1 rounded ${getStatusColor(
+                        payment.payment.status
+                      )}`}
+                    >
+                      {payment.payment.status}
+                    </span>
+                  </td>
+                  <td className="py-2 px-4 border border-gray-300">
+                    <img
+                      src={payment.slip_url}
+                      alt="Slip"
+                      onClick={() => handleImageClick(payment.slip_url)}
+                      className="cursor-pointer h-10 w-10 object-cover"
+                    />
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
 
-              <p>
-                <strong>Amount:</strong> {payment.payment.amount}
-              </p>
-              <p>
-                <strong>Date:</strong> {payment.payment.date}
-              </p>
-              <p>
-                <strong>Status:</strong> {payment.payment.status}
-              </p>
-            </div>
-          </div>
-        ))}
+        {/* Pagination Component */}
+        <Pagination
+          current={currentPage}
+          pageSize={pageSize}
+          total={payments?.data?.length || 0}
+          onChange={handlePageChange}
+          className="mt-4 text-center"
+        />
+
+        {/* Modal for Image Preview */}
+        <Modal
+          visible={!!imageUrl}
+          onCancel={handleImageModalClose}
+          footer={null}
+          centered
+        >
+          {imageUrl && (
+            <img src={imageUrl} alt="Slip Preview" className="w-full" />
+          )}
+        </Modal>
       </div>
     </div>
   );

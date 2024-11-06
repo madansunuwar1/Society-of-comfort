@@ -79,7 +79,7 @@ const BookingList = () => {
         <table className="min-w-full bg-white border border-gray-300">
           <thead>
             <tr className="bg-gray-100">
-              <th className="py-2 px-4 border border-gray-300">S. No</th>
+              <th className="py-2 px-4 border border-gray-300">Name</th>
               <th className="py-2 px-4 border border-gray-300">Date</th>
               <th className="py-2 px-4 border border-gray-300">Time</th>
               <th className="py-2 px-4 border border-gray-300">Hall Name</th>
@@ -89,10 +89,10 @@ const BookingList = () => {
             </tr>
           </thead>
           <tbody>
-            {paginatedBookings?.map((booking, index) => (
+            {paginatedBookings?.map((booking) => (
               <tr key={booking.id} className="hover:bg-gray-50">
                 <td className="py-2 px-4 border border-gray-300">
-                  {(currentPage - 1) * pageSize + index + 1}
+                  {booking.user.name}
                 </td>
                 <td className="py-2 px-4 border border-gray-300">
                   {new Date(booking.created_at).toLocaleDateString()}
