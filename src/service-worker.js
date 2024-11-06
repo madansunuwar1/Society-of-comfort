@@ -12,19 +12,6 @@ import { ExpirationPlugin } from "workbox-expiration";
 import { precacheAndRoute, createHandlerBoundToURL } from "workbox-precaching";
 import { registerRoute } from "workbox-routing";
 import { StaleWhileRevalidate } from "workbox-strategies";
-import { onBackgroundMessage } from "firebase/messaging/sw";
-import { messaging } from "./firebase";
-
-onBackgroundMessage(messaging, (payload) => {
-  console.log("Received background message ", payload);
-  const notificationTitle = payload.notification.title;
-  const notificationOptions = {
-    body: payload.notification.body,
-    icon: "/firebase-logo.png",
-  };
-
-  self.registration.showNotification(notificationTitle, notificationOptions);
-});
 
 clientsClaim();
 

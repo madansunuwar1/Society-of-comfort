@@ -27,12 +27,7 @@ import Tododetail from "./pages/professional/Tododetail";
 import History from "./pages/History";
 import Booking from "./pages/Booking";
 import Profileedit from "./pages/Profileedit";
-import {
-  generateToken,
-  initializeFirebaseMessaging,
-  messaging,
-} from "./notification/firebase";
-import { onMessage } from "firebase/messaging";
+
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import Payment from "./pages/Payment";
@@ -48,23 +43,6 @@ import InvoiceHistory from "./pages/InvoiceHistory";
 import BookingList from "./pages/admin/BookingList";
 
 function App() {
-  const [fcmToken, setFcmToken] = useState(null);
-  useEffect(() => {
-    const initMessaging = async () => {
-      const messagingInstance = await initializeFirebaseMessaging();
-      if (messagingInstance) {
-        const token = await generateToken(messagingInstance);
-        console.log(token);
-        setFcmToken(token);
-        onMessage(messagingInstance, (payload) => {
-          console.log("Message received. ", payload);
-          // Handle foreground messages here
-          toast("you have a service request");
-        });
-      }
-    };
-    initMessaging();
-  }, []);
   return (
     <Router>
       <Routes>
@@ -120,7 +98,7 @@ function App() {
           path="/service"
           element={
             <>
-              <Service fcmToken={fcmToken} />
+              <Service />
               <Botnav />
             </>
           }

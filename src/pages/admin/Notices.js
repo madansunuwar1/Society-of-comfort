@@ -5,9 +5,8 @@ import { useNavigate } from "react-router-dom";
 import { addPublicNotice, addPrivateNotice } from "../../redux/noticeSlice";
 import { fetchResidences } from "../../redux/userSlice";
 import { notification } from "antd"; // Import notification from antd
-import api from "../../utils/api";
 
-const Notices = (fcmToken) => {
+const Notices = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const user = JSON.parse(localStorage.getItem("user"));
@@ -62,18 +61,6 @@ const Notices = (fcmToken) => {
     }
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0; // Return true if no errors
-  };
-
-  const notificationData = {
-    token: fcmToken,
-    title: "new notification",
-    body: "Public notice sent",
-  };
-
-  const notificationData1 = {
-    token: fcmToken,
-    title: "new notification",
-    body: "Private notice sent",
   };
 
   const handleSubmit = async (event) => {
