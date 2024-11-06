@@ -3,7 +3,8 @@ import { SlArrowLeft } from "react-icons/sl";
 import { Link } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { getPublicNotices, getPrivateNotices } from "../redux/noticeSlice";
-import { Skeleton } from "antd"; // Update with the correct import path
+import SyncLoader from "react-spinners/SyncLoader";
+import { MdOutlineSpeakerNotes } from "react-icons/md";
 
 const Notice = () => {
   const dispatch = useDispatch();
@@ -30,17 +31,9 @@ const Notice = () => {
     setIsPrivate(true);
   };
 
-  if (loading) {
-    return (
-      <div className="p-12">
-        <Skeleton active />
-      </div>
-    );
-  }
-
   return (
-    <div className=" bg-gray-200 font-roboto pb-20">
-      <div className="flex px-6 py-4 bg-white">
+    <div className="bg-gray-200 font-roboto pb-20">
+      <div className="flex px-6 py-4 bg-white mb-4">
         <div className="items-center my-auto">
           <Link to="/userdash">
             <SlArrowLeft />
@@ -62,40 +55,62 @@ const Notice = () => {
         </button>
       </div>
 
-      {!isPrivate &&
-        publicNotices?.data &&
-        publicNotices?.data.map((item) => (
-          <div className="px-6 py-1 mt-6" key={item.id}>
-            <div className="">
-              <div className="px-1">
-                <h1 className="font-bold overflow-hidden text-[#403F93]">
-                  {item.title}
-                </h1>
-                <p className="text-sm mt-2">{item.created_at.split("T")[0]}</p>
-              </div>
-            </div>
-            <div className="bg-white p-3 mt-4 overflow-hidden rounded-md shadow-lg border-[1px] border-gray-400">
-              <p>{item.notice_body}</p>
-            </div>
-          </div>
-        ))}
-      {isPrivate && (
+      {loading ? (
+        <div className="flex justify-center h-[80vh] align-middle items-center">
+          <SyncLoader
+            color="#3F3F95"
+            loading={loading}
+            size={15}
+            aria-label="Loading Spinner"
+            data-testid="loader"
+          />
+        </div>
+      ) : (
         <>
-          {privateNotices?.data?.map((item) => (
-            <div className="px-6 py-1 mt-6" key={item.id}>
-              <div className="">
-                <div className="px-1">
-                  <h1 className="font-bold overflow-hidden text-[#403F93]">
-                    {item.title}
-                  </h1>
-                  <p className="text-sm mt-2">{item.sent_at.split("T")[0]}</p>
+          {!isPrivate &&
+            publicNotices?.data &&
+            publicNotices?.data.map((item) => (
+              <div className="px-6 py-1" key={item.id}>
+                <div className="bg-white p-3 overflow-hidden rounded-md shadow-lg border-[1px] border-gray-400">
+                  <div className="">
+                    <div className="flex gap-2">
+                      <MdOutlineSpeakerNotes className="h-6 w-6 my-auto" />
+                      <h1 className="font-bold overflow-hidden text-md my-auto">
+                        {item.title}
+                      </h1>
+                    </div>
+                    <p className="text-md my-auto overflow-hidden text-sm">
+                      {item.created_at.split("T")[0]}
+                    </p>
+                  </div>
+
+                  <p className="mt-4 text-gray-600 text-sm">
+                    {item.notice_body}
+                  </p>
                 </div>
               </div>
-              <div className="bg-white p-3 mt-4 overflow-hidden rounded-md shadow-lg border-[1px] border-gray-400">
-                <p>{item.notice}</p>
+            ))}
+
+          {isPrivate &&
+            privateNotices?.data?.map((item) => (
+              <div className="px-6 py-1" key={item.id}>
+                <div className="bg-white p-3 overflow-hidden rounded-md shadow-lg border-[1px] border-gray-400">
+                  <div className="">
+                    <div className="flex gap-2">
+                      <MdOutlineSpeakerNotes className="h-6 w-6 my-auto" />
+                      <h1 className="font-bold overflow-hidden text-md my-auto">
+                        {item.title}
+                      </h1>
+                    </div>
+                    <p className="text-md my-auto overflow-hidden text-sm">
+                      {item.sent_at.split("T")[0]}
+                    </p>
+                  </div>
+
+                  <p className="mt-4 text-gray-600 text-sm">{item.notice}</p>
+                </div>
               </div>
-            </div>
-          ))}
+            ))}
         </>
       )}
     </div>

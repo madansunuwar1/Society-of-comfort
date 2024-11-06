@@ -20,6 +20,7 @@ const Service = ({ fcmToken }) => {
     profession_id: "",
     service_image: null,
   });
+
   const notificationData = {
     token: fcmToken,
     title: "new notification",

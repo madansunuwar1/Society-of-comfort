@@ -40,7 +40,7 @@ const DisplayEvent = () => {
   }
 
   return (
-    <div className=" bg-slate-200 rounded-xl p-2 md:px-24">
+    <div className=" bg-slate-200 rounded-xl md:px-24">
       <div className="flex px-6 py-4">
         <div className="items-center my-auto">
           <Link to="/userdash">
@@ -55,28 +55,34 @@ const DisplayEvent = () => {
       {
         <ul className="space-y-4">
           {events.data.map((event) => (
-            <li
+            <div
               key={event.id}
-              className="p-4 bg-white rounded-lg shadow-sm flex flex-col md:px-14"
+              className=" bg-white shadow-sm flex flex-col md:px-14"
             >
-              <h4 className="text-xl font-semibold">{event.event.name}</h4>
-              <p className="text-gray-600 mb-2">{event.event.description}</p>
+              <div className="my-2">
+                <h4 className="text-lg font-semibold px-4">
+                  {event.event.name}
+                </h4>
+                <p className="text-gray-500 text-md px-4">
+                  {event.event.description}
+                </p>
+              </div>
               {event.file_url && (
-                <div className="mt-4">
+                <div className="border border-gray-500">
                   {event.file_url.endsWith(".jpg") ||
                   event.file_url.endsWith(".jpeg") ||
                   event.file_url.endsWith(".png") ? (
                     <img
                       src={event.file_url} // Assuming the file_url URL is directly accessible
                       alt="Event file_url"
-                      className="mt-2 rounded-lg shadow-md h-[200px] md:h-[400px] w-full object-cover"
+                      className="shadow-lg h-[200px] md:h-[400px] w-full object-cover"
                     />
                   ) : event.file_url.endsWith(".pdf") ? (
                     <a
                       href={event.file_url} // Link to download the PDF
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="mt-2 text-blue-600 underline"
+                      className="mt-2 text-blue-600 underline p-4"
                     >
                       Download PDF
                     </a>
@@ -85,16 +91,28 @@ const DisplayEvent = () => {
                   )}
                 </div>
               )}
-              <p className="mt-4">
-                Date: <span className="font-medium">{event.event.date}</span>
-              </p>
-              <p>
-                Time: <span className="font-medium">{event.event.time}</span>
-              </p>
-              <p>
-                Venue: <span className="font-medium">{event.event.venue}</span>
-              </p>
-            </li>
+              <div className="flex justify-between my-2 mx-4">
+                <div className="flex flex-col">
+                  <span className="font-medium text-md">Date:</span>{" "}
+                  <span className="text-sm text-gray-500">
+                    {event.event.date}
+                  </span>
+                </div>
+
+                <div className="flex flex-col">
+                  <span className="font-medium text-md">Time:</span>{" "}
+                  <span className="text-sm text-gray-500 ">
+                    {event.event.time}
+                  </span>
+                </div>
+                <div className="flex flex-col">
+                  <span className="font-medium text-md">Venue:</span>{" "}
+                  <span className="text-sm text-gray-500">
+                    {event.event.venue}
+                  </span>
+                </div>
+              </div>
+            </div>
           ))}
         </ul>
       }

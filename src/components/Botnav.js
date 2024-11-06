@@ -22,21 +22,21 @@ const Botnav = () => {
   };
   return (
     <div className="flex justify-center">
-      <div className="bg-[#3F3F95] fixed bottom-0 flex justify-center gap-12 py-3 px-4 rounded-xl items-centers mx-2 mb-2 bg-opacity-90">
+      <div className="bg-[#3F3F95] fixed bottom-0 flex justify-center gap-12 py-3 px-4 rounded-xl items-centers mx-2 mb-2">
         <button onClick={handleNavigation}>
-          <FaHome className="h-6 w-6 text-white mx-auto" />
+          <FaHome className="h-5 w-5 text-white mx-auto" />
           <div className="text-white text-sm">Home</div>
         </button>
         <Link to="/payment">
-          <MdOutlinePayment className="h-6 w-6 text-white mx-auto" />
+          <MdOutlinePayment className="h-5 w-5 text-white mx-auto" />
           <span className="text-white text-sm">Payment</span>
         </Link>
         <Link to="/notice">
-          <GrNotes className="w-6 h-6 text-white mx-auto" />
+          <GrNotes className="w-5 h-5 text-white mx-auto" />
           <span className="text-white text-sm">Notice</span>
         </Link>
         <Link to="/profile">
-          <IoPersonSharp className="h-6 w-6 text-white mx-auto" />
+          <IoPersonSharp className="h-5 w-5 text-white mx-auto" />
           <span className="text-white text-sm">Profile</span>
         </Link>
       </div>
