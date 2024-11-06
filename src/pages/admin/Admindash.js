@@ -170,7 +170,7 @@ const Admindash = () => {
       )}
       <div
         onClick={handleLogout}
-        className="fixed bg-[#3F3F95] rounded-md p-4 right-2 top-2 flex gap-1"
+        className="fixed bg-[#3F3F95] rounded-md p-4 right-2 top-2 flex gap-1 md:hidden"
       >
         <LogoutOutlined style={{ color: "#ffffff" }} />
       </div>
