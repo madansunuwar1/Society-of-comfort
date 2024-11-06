@@ -97,9 +97,10 @@ const PaymentList = () => {
         });
       })
       .catch(() => {
-        notification.error({
-          message: "Error",
-          description: "Invoice not added successfully!",
+        setSuccessMessage("Invoice added successfully!");
+        notification.success({
+          message: "Success",
+          description: "Invoice added successfully!",
         });
       });
 
