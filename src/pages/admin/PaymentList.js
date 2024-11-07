@@ -220,18 +220,18 @@ const PaymentList = () => {
                     Select a month
                   </option>
                   {[
-                    "January",
-                    "February",
-                    "March",
-                    "April",
-                    "May",
-                    "June",
-                    "July",
-                    "August",
-                    "September",
-                    "October",
-                    "November",
-                    "December",
+                    "बैशाख",
+                    "जेठ",
+                    "असार",
+                    "साउन",
+                    "भदौ",
+                    "असोज",
+                    "कार्तिक",
+                    "मंसिर",
+                    "पौष",
+                    "माघ",
+                    "फाल्गुण",
+                    "चैत्र",
                   ].map((month, index) => (
                     <option key={index} value={month}>
                       {month}
