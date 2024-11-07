@@ -2,7 +2,8 @@ import React, { useState, useEffect } from "react";
 import api from "../../utils/api"; // Adjust the path according to your file structure
 import Select from "react-select"; // Importing the Select component
 import { useDispatch, useSelector } from "react-redux";
-import { fetchResidences } from "../../redux/userSlice"; // Adjust the import according to your file structure
+import { fetchResidences } from "../../redux/userSlice";
+import { Skeleton } from "antd"; // Adjust the import according to your file structure
 
 const Attendance = () => {
   const dispatch = useDispatch();
@@ -188,26 +189,32 @@ const Attendance = () => {
       <div className="pt-8">
         <h1 className="text-xl font-semibold mb-4">Payment List</h1>
         <div className="overflow-x-auto min-w-full">
-          <table className="min-w-full bg-white border border-gray-300">
-            <thead>
-              <tr className="bg-gray-100">
-                <th className="py-2 px-4 border border-gray-300">id</th>
-                <th className="py-2 px-4 border border-gray-300">Name</th>
-              </tr>
-            </thead>
-            <tbody>
-              {students.map((student) => (
-                <tr key={student.id} className="border-t">
-                  <td className="py-2 px-4 text-center border border-gray-300">
-                    {student.id}
-                  </td>
-                  <td className="py-2 px-4 text-center border border-gray-300">
-                    {student.name}
-                  </td>
+          {loading ? (
+            <div className="p-12">
+              <Skeleton active />
+            </div>
+          ) : (
+            <table className="min-w-full bg-white border border-gray-300">
+              <thead>
+                <tr className="bg-gray-100">
+                  <th className="py-2 px-4 border border-gray-300">id</th>
+                  <th className="py-2 px-4 border border-gray-300">Name</th>
                 </tr>
-              ))}
-            </tbody>
-          </table>
+              </thead>
+              <tbody>
+                {students.map((student) => (
+                  <tr key={student.id} className="border-t">
+                    <td className="py-2 px-4 text-center border border-gray-300">
+                      {student.id}
+                    </td>
+                    <td className="py-2 px-4 text-center border border-gray-300">
+                      {student.name}
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          )}
         </div>
       </div>
     </div>

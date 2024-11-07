@@ -36,3 +36,7 @@
     transform: rotate(360deg);
   }
 }
+
+.custom-date-picker input {
+  @apply rounded-md py-1 px-4 border-[2px] border-gray-400 w-full;
+}

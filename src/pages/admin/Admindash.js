@@ -49,10 +49,10 @@ const Admindash = () => {
 
   const menuItems = [
     {
-      key: "notices",
+      key: "noticelist",
       icon: <NotificationOutlined style={{ color: "#F55A70" }} />,
-      label: "Send Notice",
-      link: "notices",
+      label: "Notices",
+      link: "noticelist",
     },
     {
       key: "paymentlist",
@@ -110,9 +110,9 @@ const Admindash = () => {
           <div className="px-10 py-4">
             {!collapsed && (
               <img
-                src="https://www.apartmentsofwildewood.com/wp-content/uploads/apartments-of-wildewood-using-the-pool-at-your-apartment.jpg"
+                src="../assets/images/image.jpeg"
                 alt="logo"
-                className="rounded-full w-28 h-28 mx-auto"
+                className="rounded-full w-30 h-30 mx-auto"
               />
             )}
           </div>

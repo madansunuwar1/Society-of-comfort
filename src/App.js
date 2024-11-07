@@ -42,6 +42,7 @@ import ConfirmPayment from "./pages/admin/ConfirmPayment";
 import InvoiceHistory from "./pages/InvoiceHistory";
 import BookingList from "./pages/admin/BookingList";
 import AddPayment from "./pages/AddPayment";
+import NoticeList from "./pages/admin/NoticeList";
 
 function App() {
   return (
@@ -68,6 +69,7 @@ function App() {
             </>
           }
         />
+
         <Route
           path="/generatepass"
           element={
@@ -294,6 +296,7 @@ function App() {
           <Route path="notices" element={<Notices />} />
           <Route path="confirmpayment" element={<ConfirmPayment />} />
           <Route path="paymentlist" element={<PaymentList />} />
+          <Route path="noticelist" element={<NoticeList />} />
           <Route path="addevent" element={<AddEvent />} />
           <Route path="residences" element={<Residences />} />
           <Route path="attendance" element={<Attendance />} />

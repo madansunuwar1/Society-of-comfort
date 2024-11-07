@@ -5,10 +5,39 @@ import api from "../utils/api"; // Adjust the import path accordingly
 const initialState = {
   publicNotices: [],
   privateNotices: [],
+  allNotices: [], // New state to store all notices
   loading: false,
   error: null,
 };
 
+// Async thunk to get all notices
+export const getAllNotices = createAsyncThunk(
+  "notices/getAllNotices",
+  async () => {
+    const response = await api.get("/notices");
+    return response.data;
+  }
+);
+
+// Async thunk to edit any notice
+export const editNotice = createAsyncThunk(
+  "notices/editNotice",
+  async ({ id, noticeData }) => {
+    const response = await api.put(`/notices/${id}/`, noticeData);
+    return response.data;
+  }
+);
+
+// Async thunk to delete any notice
+export const deleteNotice = createAsyncThunk(
+  "notices/deleteNotice",
+  async (id) => {
+    await api.delete(`/notices/${id}/`);
+    return id; // Return ID so we can remove it from the state
+  }
+);
+
+// Other thunks here...
 // Async thunk to get public notices
 export const getPublicNotices = createAsyncThunk(
   "notices/getPublicNotices",
@@ -76,92 +105,61 @@ const noticeSlice = createSlice({
   reducers: {},
   extraReducers: (builder) => {
     builder
-      .addCase(getPublicNotices.pending, (state) => {
+      .addCase(getAllNotices.pending, (state) => {
         state.loading = true;
       })
-      .addCase(getPublicNotices.fulfilled, (state, action) => {
+      .addCase(getAllNotices.fulfilled, (state, action) => {
         state.loading = false;
-        state.publicNotices = action.payload;
+        state.allNotices = action.payload;
       })
-      .addCase(getPublicNotices.rejected, (state, action) => {
+      .addCase(getAllNotices.rejected, (state, action) => {
         state.loading = false;
         state.error = action.error.message;
       })
-      .addCase(getPrivateNotices.pending, (state) => {
+      .addCase(editNotice.pending, (state) => {
         state.loading = true;
       })
-      .addCase(getPrivateNotices.fulfilled, (state, action) => {
+      .addCase(editNotice.fulfilled, (state, action) => {
         state.loading = false;
-        state.privateNotices = action.payload;
-      })
-      .addCase(getPrivateNotices.rejected, (state, action) => {
-        state.loading = false;
-        state.error = action.error.message;
-      })
-      .addCase(addPublicNotice.pending, (state) => {
-        state.loading = true;
-      })
-      .addCase(addPublicNotice.fulfilled, (state, action) => {
-        state.loading = false;
-        state.publicNotices.push(action.payload);
-      })
-      .addCase(addPublicNotice.rejected, (state, action) => {
-        state.loading = false;
-        state.error = action.error.message;
-      })
-      .addCase(addPrivateNotice.pending, (state) => {
-        state.loading = true;
-      })
-      .addCase(addPrivateNotice.fulfilled, (state, action) => {
-        state.loading = false;
-        state.privateNotices.push(action.payload);
-      })
-      .addCase(addPrivateNotice.rejected, (state, action) => {
-        state.loading = false;
-        state.error = action.error.message;
-      })
-      .addCase(updatePublicNotice.pending, (state) => {
-        state.loading = true;
-      })
-      .addCase(updatePublicNotice.fulfilled, (state, action) => {
-        state.loading = false;
-        const index = state.publicNotices.findIndex(
+        const index = state.allNotices.findIndex(
           (notice) => notice.id === action.payload.id
         );
         if (index !== -1) {
-          state.publicNotices[index] = action.payload;
+          state.allNotices[index] = action.payload;
         }
       })
-      .addCase(updatePublicNotice.rejected, (state, action) => {
+      .addCase(editNotice.rejected, (state, action) => {
         state.loading = false;
         state.error = action.error.message;
       })
-      .addCase(updatePrivateNotice.pending, (state) => {
+      .addCase(deleteNotice.pending, (state) => {
         state.loading = true;
       })
-      .addCase(updatePrivateNotice.fulfilled, (state, action) => {
+      .addCase(deleteNotice.fulfilled, (state, action) => {
         state.loading = false;
-        const index = state.privateNotices.findIndex(
-          (notice) => notice.id === action.payload.id
+        state.allNotices = state.allNotices.filter(
+          (notice) => notice.id !== action.payload
         );
-        if (index !== -1) {
-          state.privateNotices[index] = action.payload;
-        }
       })
-      .addCase(updatePrivateNotice.rejected, (state, action) => {
+      .addCase(deleteNotice.rejected, (state, action) => {
         state.loading = false;
         state.error = action.error.message;
       });
+
+    // Add other case handlers for public/private notices...
   },
 });
 
 // Export the actions and reducer
 export const noticeReducer = noticeSlice.reducer;
 export const noticeActions = {
+  getAllNotices,
   getPublicNotices,
   getPrivateNotices,
   addPublicNotice,
   addPrivateNotice,
   updatePublicNotice,
   updatePrivateNotice,
+  editNotice,
+  deleteNotice,
 };

@@ -5,11 +5,17 @@ import { Link } from "react-router-dom";
 import { SlArrowLeft } from "react-icons/sl";
 import DatePicker from "react-datepicker";
 import api from "../../utils/api";
-import "react-datepicker/dist/react-datepicker.css";
+import { NepaliDatePicker } from "nepali-datepicker-reactjs";
+import "nepali-datepicker-reactjs/dist/index.css";
 import { Skeleton, notification } from "antd";
 
 const PaymentList = () => {
   const dispatch = useDispatch();
+  const [date, setDate] = useState("");
+
+  const handleDateChange = (date) => {
+    setDate(date);
+  };
   const { invoices, loading, error } = useSelector((state) => state.invoices);
   const [updating, setUpdating] = useState(false);
   const [successMessage, setSuccessMessage] = useState("");
@@ -107,7 +113,7 @@ const PaymentList = () => {
     // Reset form state
     setHouseId("");
     setTotalAmount("");
-    setItems([{ particular: "", quantity: 0, rate: 0 }]);
+    setItems([{ particular: "", quantity: 1, rate: 0 }]);
     setFormErrors({});
     dispatch(invoiceActions.getInvoices());
   };
@@ -151,14 +157,6 @@ const PaymentList = () => {
 
   const today = new Date().toISOString().split("T")[0];
 
-  if (loading || updating)
-    return (
-      <div className="p-12">
-        <Skeleton active />
-        <Skeleton active />
-        <Skeleton active />
-      </div>
-    );
   if (error) return <div>Error: {error}</div>;
 
   return (
@@ -198,10 +196,11 @@ const PaymentList = () => {
               </div>
               <div className="flex flex-col gap-2 w-full">
                 <label>Select bill date</label>
-                <input
-                  className="rounded-md py-1 px-4 border-[2px] border-gray-400"
-                  type="date"
+                <NepaliDatePicker
                   value={today}
+                  onChange={handleDateChange}
+                  options={{ calenderLocale: "ne", valueLocale: "en" }}
+                  className="custom-date-picker"
                 />
               </div>
               <div className="flex flex-col gap-2 w-full">
@@ -370,38 +369,47 @@ const PaymentList = () => {
         </div>
       </div>
       {/* Invoice List */}
-      <div className="overflow-x-auto mt-10 bg-white p-4">
-        <h4 className="font-bold text-xl mb-4">Invoices</h4>
-        <table className="min-w-full bg-white shadow-md rounded-lg overflow-hidden">
-          <thead>
-            <tr className="border-b">
-              <th className="py-2 px-4 text-left border-r">ID</th>
-              <th className="py-2 px-4 text-left border-r">Amount</th>
-              <th className="py-2 px-4 text-left border-r">Date</th>
-              <th className="py-2 px-4 text-left">Actions</th>
-            </tr>
-          </thead>
-          <tbody>
-            {invoices?.data?.map((payment) => (
-              <tr key={payment.id} className="border-b hover:bg-gray-100">
-                <td className="py-2 px-4 border-r">{payment.id}</td>
-                <td className="py-2 px-4 border-r">{payment.total_amount}</td>
-                <td className="py-2 px-4 border-r">
-                  {new Date(payment.created_at).toLocaleDateString()}
-                </td>
-                <td className="py-2 px-4">
-                  <button
-                    onClick={() => handleShowInvoice(payment)}
-                    className="bg-[#403F93] text-white px-2 py-1 rounded mt-2 ml-2"
-                  >
-                    Show Invoice
-                  </button>
-                </td>
+      {loading ? (
+        <div className="p-12">
+          <Skeleton active />
+          <Skeleton active />
+          <Skeleton active />
+        </div>
+      ) : (
+        <div className="overflow-x-auto mt-10 bg-white p-4">
+          <h4 className="font-bold text-xl mb-4">Invoices</h4>
+          <table className="min-w-full bg-white shadow-md rounded-lg overflow-hidden">
+            <thead>
+              <tr className="border-b">
+                <th className="py-2 px-4 text-left border-r">ID</th>
+                <th className="py-2 px-4 text-left border-r">Amount</th>
+                <th className="py-2 px-4 text-left border-r">Date</th>
+                <th className="py-2 px-4 text-left">Actions</th>
               </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
+            </thead>
+            <tbody>
+              {invoices?.data?.map((payment) => (
+                <tr key={payment.id} className="border-b hover:bg-gray-100">
+                  <td className="py-2 px-4 border-r">{payment.id}</td>
+                  <td className="py-2 px-4 border-r">{payment.total_amount}</td>
+                  <td className="py-2 px-4 border-r">
+                    {new Date(payment.created_at).toLocaleDateString()}
+                  </td>
+                  <td className="py-2 px-4">
+                    <button
+                      onClick={() => handleShowInvoice(payment)}
+                      className="bg-[#403F93] text-white px-2 py-1 rounded mt-2 ml-2"
+                    >
+                      Show Invoice
+                    </button>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      )}
+
       {/* Invoice Details Modal */}
       {isInvoiceOpen && selectedPayment && (
         <div className="fixed inset-0 flex z-50 bg-black bg-opacity-50">

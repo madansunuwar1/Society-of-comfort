@@ -64,14 +64,6 @@ const ConfirmPayment = () => {
     setCurrentPage(page);
   };
 
-  if (loading) {
-    return (
-      <div className="p-12">
-        <Skeleton active />
-      </div>
-    );
-  }
-
   const getStatusColor = (status) => {
     switch (status) {
       case "Confirmed":
@@ -93,57 +85,63 @@ const ConfirmPayment = () => {
     <div className="w-full bg-slate-200 p-6 pb-20 rounded-lg shadow-md">
       <h1 className="text-xl font-semibold mb-4">Payment List</h1>
       <div className="overflow-x-auto">
-        <table className="min-w-full bg-white border border-gray-300">
-          <thead>
-            <tr className="bg-gray-100">
-              <th className="py-2 px-4 border border-gray-300">ID</th>
-              <th className="py-2 px-4 border border-gray-300">Date</th>
-              <th className="py-2 px-4 border border-gray-300">Amount</th>
-              <th className="py-2 px-4 border border-gray-300">Status</th>
-              <th className="py-2 px-4 border border-gray-300">Slip</th>
-              <th className="py-2 px-4 border border-gray-300">Action</th>
-            </tr>
-          </thead>
-          <tbody>
-            {paginatedPayments?.map((payment) => (
-              <tr key={payment.payment.id} className="hover:bg-gray-50">
-                <td className="py-2 px-4 border border-gray-300">
-                  {payment.payment.id}
-                </td>
-                <td className="py-2 px-4 border border-gray-300">
-                  {payment.payment.date}
-                </td>
-                <td className="py-2 px-4 border border-gray-300">
-                  Rs.{payment.payment.amount}
-                </td>
-                <td className="py-2 px-4 border border-gray-300">
-                  <span
-                    className={`text-white px-2 py-1 rounded ${getStatusColor(
-                      payment.payment.status
-                    )}`}
-                  >
-                    {payment.payment.status}
-                  </span>
-                </td>
-                <td className="py-2 px-4 border border-gray-300">
-                  <img
-                    src={payment.slip_url}
-                    alt="Slip"
-                    onClick={() => handleImageClick(payment.slip_url)}
-                    className="cursor-pointer h-10 w-10 object-cover"
-                  />
-                </td>
-                <td className="py-2 px-4 border border-gray-300">
-                  <Button
-                    onClick={() => handleUpdateStatus(payment.payment.id)}
-                  >
-                    Update Status
-                  </Button>
-                </td>
+        {loading ? (
+          <div className="p-12">
+            <Skeleton active />
+          </div>
+        ) : (
+          <table className="min-w-full bg-white border border-gray-300">
+            <thead>
+              <tr className="bg-gray-100">
+                <th className="py-2 px-4 border border-gray-300">ID</th>
+                <th className="py-2 px-4 border border-gray-300">Date</th>
+                <th className="py-2 px-4 border border-gray-300">Amount</th>
+                <th className="py-2 px-4 border border-gray-300">Status</th>
+                <th className="py-2 px-4 border border-gray-300">Slip</th>
+                <th className="py-2 px-4 border border-gray-300">Action</th>
               </tr>
-            ))}
-          </tbody>
-        </table>
+            </thead>
+            <tbody>
+              {paginatedPayments?.map((payment) => (
+                <tr key={payment.payment.id} className="hover:bg-gray-50">
+                  <td className="py-2 px-4 border border-gray-300">
+                    {payment.payment.id}
+                  </td>
+                  <td className="py-2 px-4 border border-gray-300">
+                    {payment.payment.date}
+                  </td>
+                  <td className="py-2 px-4 border border-gray-300">
+                    Rs.{payment.payment.amount}
+                  </td>
+                  <td className="py-2 px-4 border border-gray-300">
+                    <span
+                      className={`text-white px-2 py-1 rounded ${getStatusColor(
+                        payment.payment.status
+                      )}`}
+                    >
+                      {payment.payment.status}
+                    </span>
+                  </td>
+                  <td className="py-2 px-4 border border-gray-300">
+                    <img
+                      src={payment.slip_url}
+                      alt="Slip"
+                      onClick={() => handleImageClick(payment.slip_url)}
+                      className="cursor-pointer h-10 w-10 object-cover"
+                    />
+                  </td>
+                  <td className="py-2 px-4 border border-gray-300">
+                    <Button
+                      onClick={() => handleUpdateStatus(payment.payment.id)}
+                    >
+                      Update Status
+                    </Button>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        )}
       </div>
 
       {/* Pagination Component */}
