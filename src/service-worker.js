@@ -62,6 +62,25 @@ registerRoute(
   })
 );
 
+self.addEventListener("push", (event) => {
+  let options = {
+    body: event.data ? event.data.text() : "New update available!",
+    icon: "/path/to/icon.png", // Replace with your app's icon path
+    badge: "/path/to/badge.png", // Optional: Add a badge if you'd like
+  };
+
+  event.waitUntil(
+    self.registration.showNotification("New Post Update", options)
+  );
+});
+
+// Handle notification click event to open app
+self.addEventListener("notificationclick", (event) => {
+  event.notification.close(); // Close the notification
+  event.waitUntil(
+    clients.openWindow("/") // Open the app when the notification is clicked
+  );
+});
 // This allows the web app to trigger skipWaiting via
 // registration.waiting.postMessage({type: 'SKIP_WAITING'})
 self.addEventListener("message", (event) => {

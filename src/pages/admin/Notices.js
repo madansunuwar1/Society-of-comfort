@@ -79,10 +79,12 @@ const Notices = () => {
 
     console.log("Submission Data:", submissionData);
 
-    setIsSending(true); // Set sending state to true
+    setIsSending(true);
+    // Set sending state to true
 
     dispatch(action(submissionData))
       .unwrap()
+
       .then(() => {
         // Use antd notification for success
         notification.success({
@@ -93,6 +95,7 @@ const Notices = () => {
             noticeType.charAt(0).toUpperCase() + noticeType.slice(1)
           } notice sent successfully.`,
         });
+
         navigate("/dashboard");
       })
       .catch((error) => {
@@ -113,7 +116,8 @@ const Notices = () => {
         }
       })
       .finally(() => {
-        setIsSending(false); // Reset sending state after completion
+        setIsSending(false);
+        // Reset sending state after completion
       });
   };
 
