@@ -9,6 +9,8 @@ import { NepaliDatePicker } from "nepali-datepicker-reactjs";
 import "nepali-datepicker-reactjs/dist/index.css";
 import { Skeleton, notification } from "antd";
 
+import NepaliDate from "nepali-date-converter";
+
 const PaymentList = () => {
   const dispatch = useDispatch();
   const [date, setDate] = useState("");
@@ -155,7 +157,11 @@ const PaymentList = () => {
     setItems(items.filter((_, i) => i !== index));
   };
 
-  const today = new Date().toISOString().split("T")[0];
+  const today = new NepaliDate();
+  const bsToday = `${today.getYear()}-${String(today.getMonth() + 1).padStart(
+    2,
+    "0"
+  )}-${String(today.getDate()).padStart(2, "0")}`;
 
   if (error) return <div>Error: {error}</div>;
 
@@ -197,7 +203,7 @@ const PaymentList = () => {
               <div className="flex flex-col gap-2 w-full">
                 <label>Select bill date</label>
                 <NepaliDatePicker
-                  value={today}
+                  value={bsToday}
                   onChange={handleDateChange}
                   options={{ calenderLocale: "ne", valueLocale: "en" }}
                   className="custom-date-picker"
