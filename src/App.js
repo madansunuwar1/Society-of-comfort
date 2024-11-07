@@ -41,6 +41,7 @@ import DashboardHome from "./pages/admin/DashboardHome";
 import ConfirmPayment from "./pages/admin/ConfirmPayment";
 import InvoiceHistory from "./pages/InvoiceHistory";
 import BookingList from "./pages/admin/BookingList";
+import AddPayment from "./pages/AddPayment";
 
 function App() {
   return (
@@ -54,6 +55,15 @@ function App() {
             <>
               <Topnav />
               <Userdash />
+              <Botnav />
+            </>
+          }
+        />
+        <Route
+          path="/adduserpayment"
+          element={
+            <>
+              <AddPayment />
               <Botnav />
             </>
           }

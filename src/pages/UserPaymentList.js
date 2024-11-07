@@ -140,7 +140,7 @@ const UserPaymentList = () => {
   if (error) return <div>Error: {error}</div>;
 
   return (
-    <div className="payment-list p-4 bg-slate-200">
+    <div className="payment-list md:p-4 bg-slate-200">
       <div className="flex px-6 py-4">
         <div className="items-center my-auto">
           <Link to="/userdash">
@@ -148,81 +148,12 @@ const UserPaymentList = () => {
           </Link>
         </div>
         <h3 className="font-bold flex justify-center mx-auto text-[22px]">
-          Payment Detail
+          Payment List
         </h3>
       </div>
 
-      {successMessage && (
-        <div className="mb-4 p-2 bg-green-200 text-green-800 rounded">
-          {successMessage}
-        </div>
-      )}
-
-      {/* Add Payment Form */}
-      <form
-        onSubmit={handlePaymentSubmit}
-        className="bg-white p-6 rounded-lg shadow-lg mb-6 flex flex-col gap-2"
-      >
-        <h3 className="text-xl font-bold mb-4">Add Payment</h3>
-        <div>
-          <label className="font-bold text-md">Amount</label>
-          <input
-            className="rounded-md py-3 px-4 w-full border-[2px] border-gray-400 mt-2"
-            type="text"
-            placeholder="Amount"
-            value={amount}
-            onChange={(e) => setAmount(e.target.value)}
-            required
-          />
-          {errors.amount && <p className="text-red-500">{errors.amount}</p>}
-        </div>
-        <div>
-          <label className="font-bold text-md">Date</label>
-          <input
-            className="rounded-md py-2 px-4 w-full border-[2px] border-gray-400 mt-2"
-            type="date"
-            placeholder="Date"
-            value={date}
-            onChange={(e) => setDate(e.target.value)}
-            required
-          />
-          {errors.date && <p className="text-red-500">{errors.date}</p>}
-        </div>
-        <div>
-          <label className="font-bold text-md">Screenshot</label>
-          <input
-            className="rounded-md py-2 px-4 w-full border-[2px] border-gray-400 mt-2"
-            type="file"
-            placeholder="Upload Slip"
-            onChange={handleFileChange}
-            accept="image/png, image/jpeg"
-            required
-          />
-          {errors.slip && <p className="text-red-500">{errors.slip}</p>}
-        </div>
-        <div>
-          <label className="font-bold text-md">Remarks</label>
-          <textarea
-            className="rounded-md py-2 px-4 w-full border-[2px] border-gray-400 mt-2"
-            type="text"
-            placeholder="Remarks"
-            value={remarks}
-            onChange={(e) => setRemarks(e.target.value)}
-          />
-          {errors.remarks && <p className="text-red-500">{errors.remarks}</p>}
-        </div>
-        <button
-          type="submit"
-          className="bg-[#403F93] text-white flex px-16 py-3 rounded-lg mt-6"
-          disabled={updating}
-        >
-          {updating ? "Adding..." : "Add Payment"}
-        </button>
-      </form>
-
       {/* Payment List */}
-      <div className="w-full bg-slate-200 p-6 pb-20 rounded-lg shadow-md">
-        <h1 className="text-xl font-semibold mb-4">Payment List</h1>
+      <div className="w-full bg-slate-200 p-0 md:p-6 pb-20 rounded-lg shadow-md">
         <div className="overflow-x-auto">
           <table className="min-w-full bg-white border border-gray-300">
             <thead>
