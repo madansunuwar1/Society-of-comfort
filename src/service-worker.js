@@ -74,13 +74,6 @@ self.addEventListener("push", (event) => {
   );
 });
 
-// Handle notification click event to open app
-self.addEventListener("notificationclick", (event) => {
-  event.notification.close(); // Close the notification
-  event.waitUntil(
-    clients.openWindow("/") // Open the app when the notification is clicked
-  );
-});
 // This allows the web app to trigger skipWaiting via
 // registration.waiting.postMessage({type: 'SKIP_WAITING'})
 self.addEventListener("message", (event) => {
