@@ -144,6 +144,104 @@ const noticeSlice = createSlice({
       .addCase(deleteNotice.rejected, (state, action) => {
         state.loading = false;
         state.error = action.error.message;
+      })
+      .addCase(getPrivateNotices.pending, (state) => {
+        state.loading = true;
+      })
+      .addCase(getPrivateNotices.fulfilled, (state, action) => {
+        state.loading = false;
+        state.privateNotices = action.payload;
+      })
+      .addCase(getPrivateNotices.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.error.message;
+      })
+      .addCase(getPublicNotices.pending, (state) => {
+        state.loading = true;
+      })
+      .addCase(getPublicNotices.fulfilled, (state, action) => {
+        state.loading = false;
+        state.publicNotices = action.payload;
+      })
+      .addCase(getPublicNotices.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.error.message;
+      })
+
+      // Add Public Notice
+      .addCase(addPublicNotice.pending, (state) => {
+        state.loading = true;
+      })
+      .addCase(addPublicNotice.fulfilled, (state, action) => {
+        state.loading = false;
+        state.publicNotices.push(action.payload);
+        state.allNotices.push(action.payload);
+      })
+      .addCase(addPublicNotice.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.error.message;
+      })
+
+      // Add Private Notice
+      .addCase(addPrivateNotice.pending, (state) => {
+        state.loading = true;
+      })
+      .addCase(addPrivateNotice.fulfilled, (state, action) => {
+        state.loading = false;
+        state.privateNotices.push(action.payload);
+        state.allNotices.push(action.payload);
+      })
+      .addCase(addPrivateNotice.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.error.message;
+      })
+
+      // Update Public Notice
+      .addCase(updatePublicNotice.pending, (state) => {
+        state.loading = true;
+      })
+      .addCase(updatePublicNotice.fulfilled, (state, action) => {
+        state.loading = false;
+        const index = state.publicNotices.findIndex(
+          (notice) => notice.id === action.payload.id
+        );
+        if (index !== -1) {
+          state.publicNotices[index] = action.payload;
+        }
+        const allIndex = state.allNotices.findIndex(
+          (notice) => notice.id === action.payload.id
+        );
+        if (allIndex !== -1) {
+          state.allNotices[allIndex] = action.payload;
+        }
+      })
+      .addCase(updatePublicNotice.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.error.message;
+      })
+
+      // Update Private Notice
+      .addCase(updatePrivateNotice.pending, (state) => {
+        state.loading = true;
+      })
+      .addCase(updatePrivateNotice.fulfilled, (state, action) => {
+        state.loading = false;
+        const index = state.privateNotices.findIndex(
+          (notice) => notice.id === action.payload.id
+        );
+        if (index !== -1) {
+          state.privateNotices[index] = action.payload;
+        }
+        const allIndex = state.allNotices.findIndex(
+          (notice) => notice.id === action.payload.id
+        );
+        if (allIndex !== -1) {
+          state.allNotices[allIndex] = action.payload;
+        }
+      })
+      .addCase(updatePrivateNotice.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.error.message;
       });
 
     // Add other case handlers for public/private notices...

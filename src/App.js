@@ -43,6 +43,10 @@ import InvoiceHistory from "./pages/InvoiceHistory";
 import BookingList from "./pages/admin/BookingList";
 import AddPayment from "./pages/AddPayment";
 import NoticeList from "./pages/admin/NoticeList";
+import InvoiceForm from "./pages/admin/InvoiceForm";
+import SettingsPage from "./pages/admin/SettingsPage";
+import EventList from "./pages/admin/EventList";
+import AddSettings from "./pages/admin/AddSettings";
 
 function App() {
   return (
@@ -301,6 +305,10 @@ function App() {
           <Route path="residences" element={<Residences />} />
           <Route path="attendance" element={<Attendance />} />
           <Route path="booking" element={<BookingList />} />
+          <Route path="addinvoice" element={<InvoiceForm />} />
+          <Route path="settings" element={<SettingsPage />} />
+          <Route path="eventlist" element={<EventList />} />
+          <Route path="addsettings" element={<AddSettings />} />
         </Route>
       </Routes>
     </Router>

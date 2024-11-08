@@ -7,10 +7,9 @@ import {
   CreditCardOutlined,
   HomeOutlined,
   UserOutlined,
-  MenuFoldOutlined,
-  MenuUnfoldOutlined,
   CheckSquareOutlined,
   LogoutOutlined,
+  SettingOutlined,
 } from "@ant-design/icons";
 
 const { Sider, Content } = Layout;
@@ -31,10 +30,6 @@ const Admindash = () => {
       window.removeEventListener("resize", handleResize);
     };
   }, []);
-
-  const toggleCollapsed = () => {
-    setCollapsed(!collapsed);
-  };
 
   const handleLogout = () => {
     const confirmLogout = window.confirm("Are you sure you want to log out?");
@@ -73,10 +68,10 @@ const Admindash = () => {
       link: "booking",
     },
     {
-      key: "addevent",
+      key: "eventlist",
       icon: <CalendarOutlined style={{ color: "#0298a9" }} />,
       label: "Event",
-      link: "addevent",
+      link: "eventlist",
     },
     {
       key: "residences",
@@ -89,6 +84,12 @@ const Admindash = () => {
       icon: <UserOutlined style={{ color: "#f2545a" }} />,
       label: "Attendance",
       link: "attendance",
+    },
+    {
+      key: "settings",
+      icon: <SettingOutlined style={{ color: "#3c91e6" }} />,
+      label: "Settings",
+      link: "settings", // Direct link to Settings page
     },
   ];
 
@@ -112,7 +113,7 @@ const Admindash = () => {
               <img
                 src="../assets/images/image.jpeg"
                 alt="logo"
-                className="rounded-full w-30 h-30 mx-auto"
+                className="rounded-full w-28 h-28 mx-auto"
               />
             )}
           </div>
