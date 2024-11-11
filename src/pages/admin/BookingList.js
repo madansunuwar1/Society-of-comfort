@@ -52,7 +52,7 @@ const BookingList = () => {
     dispatch(
       declineBooking({
         bookingId: selectedBookingId,
-        rejected_reason: declineReason,
+        reason: declineReason,
       })
     )
       .unwrap()

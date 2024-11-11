@@ -29,10 +29,10 @@ const ConfirmPayment = () => {
     dispatch(paymentActions.getPayments());
   }, [dispatch]);
 
-  const handleUpdateStatus = (paymentId, status) => {
+  const handleUpdateStatus = (paymentId, currentstatus) => {
     setSelectedPaymentId(paymentId);
-    setNewStatus(status);
-    console.log(status, paymentId);
+    setNewStatus(currentstatus);
+    console.log();
     setIsModalVisible(true);
   };
 
@@ -53,7 +53,7 @@ const ConfirmPayment = () => {
         .then(() => {
           message.success("Payment status updated successfully!");
           setIsModalVisible(false);
-          setNewStatus("Pending");
+          setNewStatus("");
           setRejectedReason(""); // Reset rejected reason
           dispatch(paymentActions.getPayments());
         })
@@ -65,7 +65,7 @@ const ConfirmPayment = () => {
 
   const handleCancel = () => {
     setIsModalVisible(false);
-    setNewStatus("Pending");
+    setNewStatus("");
     setRejectedReason(""); // Reset rejected reason
   };
 
@@ -186,7 +186,7 @@ const ConfirmPayment = () => {
         onCancel={handleCancel}
       >
         <Select
-          defaultValue={newStatus}
+          value={newStatus}
           onChange={setNewStatus}
           className="w-full mb-4"
         >

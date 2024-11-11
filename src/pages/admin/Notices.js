@@ -95,8 +95,7 @@ const Notices = () => {
             noticeType.charAt(0).toUpperCase() + noticeType.slice(1)
           } notice sent successfully.`,
         });
-
-        navigate("/dashboard");
+        navigate("/dashboard/noticelist");
       })
       .catch((error) => {
         console.error("Error:", error);

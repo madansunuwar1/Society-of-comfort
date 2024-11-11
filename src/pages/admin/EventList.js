@@ -60,7 +60,7 @@ const EventList = () => {
     setImageUrl(null);
   };
   // Paginate events
-  const paginatedEvents = events?.data?.slice(
+  const paginatedEvents = events?.slice(
     (currentPage - 1) * pageSize,
     currentPage * pageSize
   );

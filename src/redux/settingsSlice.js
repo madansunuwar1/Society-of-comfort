@@ -3,7 +3,7 @@ import api from "../utils/api";
 
 // Define the initial state for settings
 const initialState = {
-  settings: {},
+  settings: [], // Array of settings
   loading: false,
   error: null,
 };
@@ -14,7 +14,7 @@ export const getSettings = createAsyncThunk(
   async (_, { rejectWithValue }) => {
     try {
       const response = await api.get("/setting");
-      return response.data.data; // Assuming the API returns an object with settings
+      return response.data.data; // Assuming the API returns an object with 'data' that contains an array of settings
     } catch (error) {
       console.error("API Error:", error.response?.data);
       return rejectWithValue(
@@ -30,7 +30,7 @@ export const updateSettings = createAsyncThunk(
   async (settingsData, { rejectWithValue }) => {
     try {
       const response = await api.post("/setting", settingsData);
-      return response.data; // Return updated settings data
+      return response.data; // Assuming the API returns the updated settings
     } catch (error) {
       console.error("API Error:", error.response?.data);
       return rejectWithValue(
@@ -46,7 +46,7 @@ export const resetSettings = createAsyncThunk(
   async (_, { rejectWithValue }) => {
     try {
       const response = await api.post("/settings/reset");
-      return response.data; // Return default settings data
+      return response.data; // Assuming it returns the default settings
     } catch (error) {
       console.error("API Error:", error.response?.data);
       return rejectWithValue(
@@ -69,35 +69,47 @@ const settingsSlice = createSlice({
       })
       .addCase(getSettings.fulfilled, (state, action) => {
         state.loading = false;
-        state.settings = action.payload; // Set the fetched settings
+        state.settings = action.payload; // Store fetched settings
+        state.error = null; // Clear any previous errors
       })
       .addCase(getSettings.rejected, (state, action) => {
         state.loading = false;
-        state.error = action.payload;
+        state.error = action.payload; // Store the error message
       })
+
       // Handle updateSettings
       .addCase(updateSettings.pending, (state) => {
         state.loading = true;
       })
       .addCase(updateSettings.fulfilled, (state, action) => {
         state.loading = false;
-        state.settings = { ...state.settings, ...action.payload };
+        // Assuming the API returns the updated settings array or individual settings
+        const updatedSetting = action.payload;
+        const updatedSettings = state.settings.map((setting) =>
+          setting.setting_name === updatedSetting.setting_name
+            ? { ...setting, setting_value: updatedSetting.setting_value }
+            : setting
+        );
+        state.settings = updatedSettings; // Update the settings array
+        state.error = null; // Clear any previous errors
       })
       .addCase(updateSettings.rejected, (state, action) => {
         state.loading = false;
-        state.error = action.payload;
+        state.error = action.payload; // Store the error message
       })
+
       // Handle resetSettings
       .addCase(resetSettings.pending, (state) => {
         state.loading = true;
       })
       .addCase(resetSettings.fulfilled, (state, action) => {
         state.loading = false;
-        state.settings = action.payload; // Set to default settings
+        state.settings = action.payload; // Set the default settings
+        state.error = null; // Clear any previous errors
       })
       .addCase(resetSettings.rejected, (state, action) => {
         state.loading = false;
-        state.error = action.payload;
+        state.error = action.payload; // Store the error message
       });
   },
 });

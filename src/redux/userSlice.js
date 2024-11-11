@@ -11,7 +11,7 @@ const initialState = {
 export const fetchResidences = createAsyncThunk(
   "user/fetchResidences",
   async () => {
-    const response = await api.post("/notices/userlist");
+    const response = await api.post("notices/userlist");
     return response.data;
   }
 );
