@@ -7,7 +7,7 @@ export const login = createAsyncThunk(
   async ({ email, password }, { rejectWithValue }) => {
     try {
       const response = await api.post(
-        `/my-login?email=${encodeURIComponent(
+        `/login?email=${encodeURIComponent(
           email
         )}&password=${encodeURIComponent(password)}`
       );
