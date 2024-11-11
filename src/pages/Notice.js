@@ -68,8 +68,8 @@ const Notice = () => {
       ) : (
         <>
           {!isPrivate &&
-            publicNotices?.data &&
-            publicNotices?.data.map((item) => (
+            publicNotices &&
+            publicNotices?.map((item) => (
               <div className="px-6 py-1" key={item.id}>
                 <div className="bg-white p-3 overflow-hidden rounded-md shadow-lg border-[1px] border-gray-400">
                   <div className="">
@@ -92,7 +92,7 @@ const Notice = () => {
             ))}
 
           {isPrivate &&
-            privateNotices?.data?.map((item) => (
+            privateNotices.map((item) => (
               <div className="px-6 py-1" key={item.id}>
                 <div className="bg-white p-3 overflow-hidden rounded-md shadow-lg border-[1px] border-gray-400">
                   <div className="">
