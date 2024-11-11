@@ -57,9 +57,15 @@ export const updatePayment = createAsyncThunk(
 // Async thunk to update payment status
 export const updatePaymentStatus = createAsyncThunk(
   "payments/updatePaymentStatus",
-  async ({ id, status }, { rejectWithValue }) => {
+  async ({ id, status, rejected_reason }, { rejectWithValue }) => {
     try {
-      const response = await api.post(`/payments/confirm`, { id, status });
+      // Create the payload dynamically
+      const payload = { id, status };
+      if (status === "Rejected") {
+        payload.rejected_reason = rejected_reason;
+      }
+
+      const response = await api.post(`/payments/confirm`, payload); // Send the payload to the API
       return response.data;
     } catch (error) {
       return rejectWithValue(error.response?.data || "Failed to update status");

@@ -41,23 +41,39 @@ const NoticeList = () => {
   // Handle form submission for editing notice
   const handleSubmitEdit = async (values) => {
     try {
+      const id = selectedNotice?.id;
+      if (!id) {
+        throw new Error("Notice ID is missing.");
+      }
+
+      const updateData = { ...values };
       if (selectedNotice.notice_type === "private") {
+        updateData.users = values.users || [];
+        console.log("Updating private notice with data:", updateData);
+
+        // Dispatch with error handling
         await dispatch(
-          noticeActions.updatePrivateNotice({
-            id: selectedNotice.id,
-            ...values,
-            users: values.users || [], // Add users for private notice
-          })
+          noticeActions.updatePrivateNotice({ id, noticeData: updateData })
         ).unwrap();
       } else {
+        console.log("Updating public notice with data:", updateData);
+
+        // Dispatch with error handling
         await dispatch(
-          noticeActions.updatePublicNotice({ id: selectedNotice.id, ...values })
+          noticeActions.updatePublicNotice({ id, noticeData: updateData })
         ).unwrap();
       }
+
       message.success("Notice updated successfully");
-      setIsEditModalVisible(false); // Close modal after update
+      setIsEditModalVisible(false);
+      form.resetFields();
+      await dispatch(noticeActions.getAllNotices()).unwrap(); // Refetch notices after the update
+
+      // Navigate after refetching data
+      navigate("/dashboard/noticelist");
     } catch (error) {
-      message.error("Failed to update notice");
+      console.error("Error updating notice:", error);
+      message.error(error.message || "Failed to update notice");
     }
   };
 
@@ -68,6 +84,7 @@ const NoticeList = () => {
 
   // Open edit modal and populate form with selected notice data
   const handleEdit = (notice) => {
+    if (!notice) return;
     setSelectedNotice(notice);
     setNoticeType(notice.notice_type); // Set notice type (private or public)
     form.setFieldsValue({

@@ -42,8 +42,6 @@ const ConfirmPayment = () => {
         id: selectedPaymentId,
         status: newStatus,
       };
-
-      // If status is 'Rejected', add the rejected_reason
       if (newStatus === "Rejected") {
         payload.rejected_reason = rejectedReason;
       }

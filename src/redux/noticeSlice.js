@@ -83,7 +83,7 @@ export const addPrivateNotice = createAsyncThunk(
 export const updatePublicNotice = createAsyncThunk(
   "notices/updatePublicNotice",
   async ({ id, noticeData }) => {
-    const response = await api.put(`/v1/bazaar/notices/${id}`, noticeData);
+    const response = await api.put(`/notices/${id}`, noticeData);
     return response.data;
   }
 );
@@ -92,10 +92,7 @@ export const updatePublicNotice = createAsyncThunk(
 export const updatePrivateNotice = createAsyncThunk(
   "notices/updatePrivateNotice",
   async ({ id, noticeData }) => {
-    const response = await api.put(
-      `/v1/bazaar/notices/private/${id}`,
-      noticeData
-    );
+    const response = await api.put(`/notices/private/${id}`, noticeData);
     return response.data;
   }
 );

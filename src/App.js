@@ -47,6 +47,7 @@ import InvoiceForm from "./pages/admin/InvoiceForm";
 import SettingsPage from "./pages/admin/SettingsPage";
 import EventList from "./pages/admin/EventList";
 import AddSettings from "./pages/admin/AddSettings";
+import UserList from "./pages/admin/UserList";
 
 function App() {
   return (
@@ -309,6 +310,7 @@ function App() {
           <Route path="settings" element={<SettingsPage />} />
           <Route path="eventlist" element={<EventList />} />
           <Route path="addsettings" element={<AddSettings />} />
+          <Route path="userlist" element={<UserList />} />
         </Route>
       </Routes>
     </Router>

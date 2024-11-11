@@ -140,7 +140,7 @@ const BookingList = () => {
                   </td>
                   <td className="py-2 px-4 border border-gray-300">
                     {/* Show Decline button only if the status is not "declined" */}
-                    {booking.status !== "booked" && (
+                    {booking.status == "booked" && (
                       <>
                         <Button
                           onClick={() => handleApprove(booking.id)}
@@ -160,6 +160,17 @@ const BookingList = () => {
                         Approve
                       </Button>
                     )}
+                    {booking.status === "pending" && (
+                      <>
+                        <Button onClick={() => handleApprove(booking.id)}>
+                          Approve
+                        </Button>
+                        <Button onClick={() => handleDecline(booking.id)}>
+                          Decline
+                        </Button>
+                      </>
+                    )}
+                    {booking.status === "cancled" && <></>}
                   </td>
                 </tr>
               ))}

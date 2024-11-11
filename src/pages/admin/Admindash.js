@@ -74,10 +74,10 @@ const Admindash = () => {
       link: "eventlist",
     },
     {
-      key: "residences",
+      key: "userlist",
       icon: <HomeOutlined style={{ color: "#FFAE00" }} />,
-      label: "Residences",
-      link: "residences",
+      label: "Users",
+      link: "userlist",
     },
     {
       key: "attendance",
