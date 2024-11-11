@@ -5,14 +5,20 @@ import {
   approveBooking,
   declineBooking,
 } from "../../redux/bookingSlice";
-import { Skeleton, Button, message, Pagination } from "antd";
+import { Skeleton, Button, message, Pagination, Modal, Input } from "antd";
 
 const BookingList = () => {
   const dispatch = useDispatch();
   const { bookings, loading } = useSelector((state) => state.bookings);
+
   // State for pagination
   const [currentPage, setCurrentPage] = useState(1);
-  const [pageSize] = useState(10); // Adjust page size as needed
+  const [pageSize] = useState(10);
+
+  // State for decline reason and modal visibility
+  const [declineReason, setDeclineReason] = useState("");
+  const [selectedBookingId, setSelectedBookingId] = useState(null);
+  const [isDeclineModalVisible, setIsDeclineModalVisible] = useState(false);
 
   useEffect(() => {
     dispatch(bookingActions.fetchBookings());
@@ -23,24 +29,41 @@ const BookingList = () => {
       .unwrap()
       .then(() => {
         message.success("Booking approved successfully!");
-        // Optionally refetch the bookings if needed
         dispatch(bookingActions.fetchBookings());
       })
       .catch(() => {
-        message.error("Failed to approve booking."); // Error message only in case of failure
+        message.error("Failed to approve booking.");
       });
   };
 
   const handleDecline = (bookingId) => {
-    dispatch(declineBooking(bookingId))
+    setSelectedBookingId(bookingId); // Set the booking ID for the decline action
+    setIsDeclineModalVisible(true);
+    console.log(bookingId); // Show the decline modal
+  };
+
+  const confirmDecline = () => {
+    if (!declineReason) {
+      message.warning("Please provide a reason for declining the booking.");
+      return;
+    }
+    console.log(selectedBookingId);
+
+    dispatch(
+      declineBooking({
+        bookingId: selectedBookingId,
+        rejected_reason: declineReason,
+      })
+    )
       .unwrap()
       .then(() => {
         message.success("Booking declined successfully!");
-        // Optionally refetch the bookings if needed
+        setIsDeclineModalVisible(false);
+        setDeclineReason(""); // Clear the reason input
         dispatch(bookingActions.fetchBookings());
       })
       .catch(() => {
-        message.error("Failed to decline booking."); // Error message only in case of failure
+        message.error("Failed to decline booking.");
       });
   };
 
@@ -116,6 +139,7 @@ const BookingList = () => {
                     </span>
                   </td>
                   <td className="py-2 px-4 border border-gray-300">
+                    {/* Show Decline button only if the status is not "declined" */}
                     {booking.status !== "booked" && (
                       <>
                         <Button
@@ -128,6 +152,13 @@ const BookingList = () => {
                           Decline
                         </Button>
                       </>
+                    )}
+
+                    {/* Show Approve button only if the status is "declined" */}
+                    {booking.status === "declined" && (
+                      <Button onClick={() => handleApprove(booking.id)}>
+                        Approve
+                      </Button>
                     )}
                   </td>
                 </tr>
@@ -145,6 +176,21 @@ const BookingList = () => {
         onChange={handlePageChange}
         className="mt-4 text-center"
       />
+
+      {/* Decline Booking Modal */}
+      <Modal
+        title="Decline Booking"
+        visible={isDeclineModalVisible}
+        onOk={confirmDecline}
+        onCancel={() => setIsDeclineModalVisible(false)}
+      >
+        <Input.TextArea
+          value={declineReason}
+          onChange={(e) => setDeclineReason(e.target.value)}
+          placeholder="Enter decline reason"
+          rows={4}
+        />
+      </Modal>
     </div>
   );
 };

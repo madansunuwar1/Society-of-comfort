@@ -1,28 +1,81 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { noticeActions } from "../../redux/noticeSlice"; // Adjust import path as needed
-import { Skeleton, Button, Modal, Pagination, message } from "antd";
+import { noticeActions } from "../../redux/noticeSlice";
+import { fetchResidences } from "../../redux/userSlice";
+import {
+  Skeleton,
+  Button,
+  Modal,
+  Pagination,
+  message,
+  Form,
+  Input,
+  Select,
+} from "antd";
 import { Link, useNavigate } from "react-router-dom";
 
 const NoticeList = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const { allNotices, loading } = useSelector((state) => state.notices); // Get allNotices from Redux store
+  const { allNotices, loading } = useSelector((state) => state.notices); // Get allNotices and residences from Redux store
+  const { residences } = useSelector((state) => state.user);
   const [currentPage, setCurrentPage] = useState(1);
   const [pageSize] = useState(10); // Adjust page size as needed
   const [viewNotice, setViewNotice] = useState(null); // Store selected notice for viewing
+  const [isEditModalVisible, setIsEditModalVisible] = useState(false); // Show/hide edit modal
+  const [selectedNotice, setSelectedNotice] = useState(null); // Store selected notice for editing
+  const [noticeType, setNoticeType] = useState(null); // Store notice type (private or public)
+  const [form] = Form.useForm();
 
   useEffect(() => {
-    dispatch(noticeActions.getAllNotices()); // Dispatch getAllNotices to load all notices
-  }, [dispatch]);
+    dispatch(noticeActions.getAllNotices());
+    if (noticeType === "private") {
+      dispatch(fetchResidences()); // Fetch residences for private notices
+    }
+  }, [dispatch, noticeType]);
 
   const handlePageChange = (page) => {
     setCurrentPage(page);
   };
 
-  // Edit notice handler
+  // Handle form submission for editing notice
+  const handleSubmitEdit = async (values) => {
+    try {
+      if (selectedNotice.notice_type === "private") {
+        await dispatch(
+          noticeActions.updatePrivateNotice({
+            id: selectedNotice.id,
+            ...values,
+            users: values.users || [], // Add users for private notice
+          })
+        ).unwrap();
+      } else {
+        await dispatch(
+          noticeActions.updatePublicNotice({ id: selectedNotice.id, ...values })
+        ).unwrap();
+      }
+      message.success("Notice updated successfully");
+      setIsEditModalVisible(false); // Close modal after update
+    } catch (error) {
+      message.error("Failed to update notice");
+    }
+  };
+
+  // Show the details of a notice in a modal
+  const handleView = (notice) => {
+    setViewNotice(notice); // Set the selected notice for viewing
+  };
+
+  // Open edit modal and populate form with selected notice data
   const handleEdit = (notice) => {
-    navigate(`/editnotice/${notice.id}`);
+    setSelectedNotice(notice);
+    setNoticeType(notice.notice_type); // Set notice type (private or public)
+    form.setFieldsValue({
+      title: notice.title,
+      notice_body: notice.notice_body,
+      users: notice.users || [], // Set the users for private notice
+    });
+    setIsEditModalVisible(true); // Show the edit modal
   };
 
   // Delete notice handler
@@ -38,19 +91,15 @@ const NoticeList = () => {
           await dispatch(noticeActions.deleteNotice(id)).unwrap();
           message.success("Notice deleted successfully");
         } catch (error) {
+          console.error(error); // Log error to check details
           message.error("Failed to delete notice");
         }
       },
     });
   };
 
-  // Show the details of a notice in a modal
-  const handleView = (notice) => {
-    setViewNotice(notice); // Set the selected notice for viewing
-  };
-
   // Paginate notices data
-  const paginatedNotices = allNotices?.data?.slice(
+  const paginatedNotices = allNotices?.slice(
     (currentPage - 1) * pageSize,
     currentPage * pageSize
   );
@@ -84,13 +133,14 @@ const NoticeList = () => {
               </tr>
             </thead>
             <tbody>
-              {paginatedNotices?.map((notice, index) => (
-                <tr key={notice.index} className="hover:bg-gray-50">
+              {paginatedNotices?.map((notice) => (
+                <tr key={notice.id} className="hover:bg-gray-50">
                   <td className="py-2 px-4 border border-gray-300">
                     {notice.title}
                   </td>
                   <td className="py-2 px-4 border border-gray-300">
-                    {notice.created_at}
+                    {new Date(notice.created_at).toLocaleDateString("en-GB")}{" "}
+                    {/* Change to your desired format */}
                   </td>
                   <td className="py-2 px-4 border border-gray-300">
                     <span className="px-2 py-1 rounded">
@@ -101,6 +151,7 @@ const NoticeList = () => {
                     <Button
                       type="default"
                       className="bg-blue-800 text-white hover:bg-blue-600"
+                      onClick={() => handleEdit(notice)}
                     >
                       Edit
                     </Button>
@@ -139,12 +190,76 @@ const NoticeList = () => {
       {viewNotice && (
         <Modal
           title={viewNotice.title}
-          visible={true}
+          open={true}
           onCancel={() => setViewNotice(null)}
           footer={null}
         >
           <h3>Description:</h3>
           <p>{viewNotice.notice_body}</p>
+        </Modal>
+      )}
+
+      {/* Edit Modal */}
+      {isEditModalVisible && (
+        <Modal
+          title="Edit Notice"
+          visible={isEditModalVisible}
+          onCancel={() => setIsEditModalVisible(false)}
+          footer={null}
+        >
+          <Form
+            form={form}
+            onFinish={handleSubmitEdit}
+            initialValues={{
+              title: selectedNotice?.title,
+              notice_body: selectedNotice?.notice_body,
+              users: selectedNotice?.users || [],
+            }}
+          >
+            <Form.Item
+              name="title"
+              label="Title"
+              rules={[{ required: true, message: "Please enter the title" }]}
+            >
+              <Input />
+            </Form.Item>
+            <Form.Item
+              name="notice_body"
+              label="Notice Body"
+              rules={[
+                { required: true, message: "Please enter the notice body" },
+              ]}
+            >
+              <Input.TextArea />
+            </Form.Item>
+            {noticeType === "private" && (
+              <Form.Item
+                name="users"
+                label="Select Residences"
+                rules={[
+                  { required: true, message: "Please select residences" },
+                ]}
+              >
+                <Select
+                  mode="multiple"
+                  options={
+                    !loading &&
+                    residences?.data?.map((residence) => ({
+                      value: residence.id,
+                      label: residence.name,
+                      disabled: selectedNotice?.users?.includes(
+                        residence.id.toString()
+                      ), // Disable already selected users
+                    }))
+                  }
+                  value={selectedNotice?.users || []} // Set initial value as selected users
+                />
+              </Form.Item>
+            )}
+            <Button type="primary" htmlType="submit" className="w-full">
+              Save Changes
+            </Button>
+          </Form>
         </Modal>
       )}
     </div>

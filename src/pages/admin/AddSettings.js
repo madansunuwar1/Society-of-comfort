@@ -35,13 +35,13 @@ const SettingsPage = () => {
 
       <form onSubmit={handleSubmit} className="flex flex-col gap-2 mt-8">
         <div>
-          <label className="font-bold text-md">Water Supply</label>
+          <label className="font-bold text-md">Water fee</label>
           <input
             className="rounded-md py-3 px-4 w-full border-[2px] border-gray-400 mt-2"
             type="text"
             value={waterSupply}
             onChange={(e) => setWaterSupply(e.target.value)}
-            placeholder="Enter water supply status"
+            placeholder="Enter water amount per unit"
             required
           />
         </div>
@@ -53,19 +53,19 @@ const SettingsPage = () => {
             type="text"
             value={internet}
             onChange={(e) => setInternet(e.target.value)}
-            placeholder="Enter internet status"
+            placeholder="Enter internet fee"
             required
           />
         </div>
 
         <div>
-          <label className="font-bold text-md">Security Level</label>
+          <label className="font-bold text-md">Security</label>
           <input
             className="rounded-md py-3 px-4 w-full border-[2px] border-gray-400 mt-2"
             type="text"
             value={securityLevel}
             onChange={(e) => setSecurityLevel(e.target.value)}
-            placeholder="Enter security level"
+            placeholder="Enter security fee"
             required
           />
         </div>
@@ -77,7 +77,7 @@ const SettingsPage = () => {
             type="text"
             value={backupPower}
             onChange={(e) => setBackupPower(e.target.value)}
-            placeholder="Enter backup power type"
+            placeholder="Enter backup power fee"
             required
           />
         </div>

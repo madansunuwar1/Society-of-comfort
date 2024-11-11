@@ -71,8 +71,8 @@ const InvoiceForm = () => {
     // Validate form
     if (!validateForm()) {
       notification.error({
-        message: "Form validation Error",
-        description: "Please fix the errors in the form.",
+        message: "Error",
+        description: "errors in the form.",
       });
       return;
     }
@@ -94,9 +94,9 @@ const InvoiceForm = () => {
       })
       .catch(() => {
         setSuccessMessage("Invoice added successfully!");
-        notification.success({
-          message: "Success",
-          description: "Invoice added successfully!",
+        notification.error({
+          message: "error",
+          description: "Invoice added unsucessfull",
         });
       });
 

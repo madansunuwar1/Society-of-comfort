@@ -15,7 +15,7 @@ export const getAllNotices = createAsyncThunk(
   "notices/getAllNotices",
   async () => {
     const response = await api.get("/notices");
-    return response.data;
+    return response.data.data;
   }
 );
 
@@ -23,7 +23,7 @@ export const getAllNotices = createAsyncThunk(
 export const editNotice = createAsyncThunk(
   "notices/editNotice",
   async ({ id, noticeData }) => {
-    const response = await api.put(`/notices/${id}/`, noticeData);
+    const response = await api.put(`/notices/${id}`, noticeData);
     return response.data;
   }
 );
@@ -31,9 +31,14 @@ export const editNotice = createAsyncThunk(
 // Async thunk to delete any notice
 export const deleteNotice = createAsyncThunk(
   "notices/deleteNotice",
-  async (id) => {
-    await api.delete(`/notices/${id}/`);
-    return id; // Return ID so we can remove it from the state
+  async (id, { rejectWithValue }) => {
+    try {
+      await api.delete(`/notices/${id}`);
+      return id; // Return ID so we can remove it from the state
+    } catch (error) {
+      console.error("Error in deleteNotice:", error); // Log the error for more insights
+      return rejectWithValue(error.response?.data || error.message); // Provide more specific error information
+    }
   }
 );
 
@@ -43,7 +48,7 @@ export const getPublicNotices = createAsyncThunk(
   "notices/getPublicNotices",
   async () => {
     const response = await api.get("/notices");
-    return response.data;
+    return response.data.data;
   }
 );
 
@@ -52,7 +57,7 @@ export const getPrivateNotices = createAsyncThunk(
   "notices/getPrivateNotices",
   async () => {
     const response = await api.post("/notices/mineNotice");
-    return response.data;
+    return response.data.data;
   }
 );
 
@@ -78,10 +83,7 @@ export const addPrivateNotice = createAsyncThunk(
 export const updatePublicNotice = createAsyncThunk(
   "notices/updatePublicNotice",
   async ({ id, noticeData }) => {
-    const response = await api.put(
-      `/v1/bazaar/notices/public/update/${id}/`,
-      noticeData
-    );
+    const response = await api.put(`/v1/bazaar/notices/${id}`, noticeData);
     return response.data;
   }
 );
@@ -91,7 +93,7 @@ export const updatePrivateNotice = createAsyncThunk(
   "notices/updatePrivateNotice",
   async ({ id, noticeData }) => {
     const response = await api.put(
-      `/v1/bazaar/notices/private/update/${id}/`,
+      `/v1/bazaar/notices/private/${id}`,
       noticeData
     );
     return response.data;

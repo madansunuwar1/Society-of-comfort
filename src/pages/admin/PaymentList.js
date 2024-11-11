@@ -52,7 +52,7 @@ const PaymentList = () => {
   };
 
   // Paginate invoices
-  const paginatedInvoices = invoices?.data?.slice(
+  const paginatedInvoices = invoices?.slice(
     (currentPage - 1) * pageSize,
     currentPage * pageSize
   );

@@ -1,7 +1,15 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { paymentActions } from "../../redux/paymentSlice";
-import { Skeleton, Button, Modal, Select, Pagination, message } from "antd";
+import {
+  Skeleton,
+  Button,
+  Modal,
+  Select,
+  Pagination,
+  message,
+  Input,
+} from "antd";
 
 const ConfirmPayment = () => {
   const dispatch = useDispatch();
@@ -9,7 +17,8 @@ const ConfirmPayment = () => {
 
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [selectedPaymentId, setSelectedPaymentId] = useState(null);
-  const [newStatus, setNewStatus] = useState("Pending");
+  const [newStatus, setNewStatus] = useState("");
+  const [rejectedReason, setRejectedReason] = useState(""); // For rejected reason
   const [imageUrl, setImageUrl] = useState(null);
 
   // Pagination state
@@ -20,24 +29,32 @@ const ConfirmPayment = () => {
     dispatch(paymentActions.getPayments());
   }, [dispatch]);
 
-  const handleUpdateStatus = (paymentId) => {
+  const handleUpdateStatus = (paymentId, status) => {
     setSelectedPaymentId(paymentId);
+    setNewStatus(status);
+    console.log(status, paymentId);
     setIsModalVisible(true);
   };
 
   const handleConfirmUpdate = () => {
     if (selectedPaymentId) {
-      dispatch(
-        paymentActions.updatePaymentStatus({
-          id: selectedPaymentId,
-          status: newStatus,
-        })
-      )
+      const payload = {
+        id: selectedPaymentId,
+        status: newStatus,
+      };
+
+      // If status is 'Rejected', add the rejected_reason
+      if (newStatus === "Rejected") {
+        payload.rejected_reason = rejectedReason;
+      }
+
+      dispatch(paymentActions.updatePaymentStatus(payload))
         .unwrap()
         .then(() => {
           message.success("Payment status updated successfully!");
           setIsModalVisible(false);
           setNewStatus("Pending");
+          setRejectedReason(""); // Reset rejected reason
           dispatch(paymentActions.getPayments());
         })
         .catch(() => {
@@ -49,6 +66,7 @@ const ConfirmPayment = () => {
   const handleCancel = () => {
     setIsModalVisible(false);
     setNewStatus("Pending");
+    setRejectedReason(""); // Reset rejected reason
   };
 
   const handleImageClick = (url) => {
@@ -70,6 +88,8 @@ const ConfirmPayment = () => {
         return "bg-green-500";
       case "Pending":
         return "bg-yellow-500";
+      case "Rejected":
+        return "bg-red-500"; // Color for rejected status
       default:
         return "bg-gray-500";
     }
@@ -132,7 +152,12 @@ const ConfirmPayment = () => {
                   </td>
                   <td className="py-2 px-4 border border-gray-300">
                     <Button
-                      onClick={() => handleUpdateStatus(payment.payment.id)}
+                      onClick={() =>
+                        handleUpdateStatus(
+                          payment.payment.id,
+                          payment.payment.status
+                        )
+                      }
                     >
                       Update Status
                     </Button>
@@ -163,11 +188,23 @@ const ConfirmPayment = () => {
         <Select
           defaultValue={newStatus}
           onChange={setNewStatus}
-          className="w-full"
+          className="w-full mb-4"
         >
           <Select.Option value="Pending">Pending</Select.Option>
           <Select.Option value="Confirmed">Confirmed</Select.Option>
+          <Select.Option value="Rejected">Rejected</Select.Option>
         </Select>
+
+        {newStatus === "Rejected" && (
+          <div>
+            <Input.TextArea
+              rows={4}
+              value={rejectedReason}
+              onChange={(e) => setRejectedReason(e.target.value)}
+              placeholder="Enter rejection reason"
+            />
+          </div>
+        )}
       </Modal>
 
       {/* Modal for Image Preview */}

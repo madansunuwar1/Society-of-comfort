@@ -14,7 +14,7 @@ export const getEvents = createAsyncThunk(
   async (_, { rejectWithValue }) => {
     try {
       const response = await api.get("/events");
-      return response.data; // Assuming the API returns an array of events
+      return response.data.data; // Assuming the API returns an array of events
     } catch (error) {
       console.error("API Error:", error.response?.data);
       return rejectWithValue(error.response?.data || "Failed to fetch events");

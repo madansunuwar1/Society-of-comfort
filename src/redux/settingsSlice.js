@@ -14,7 +14,7 @@ export const getSettings = createAsyncThunk(
   async (_, { rejectWithValue }) => {
     try {
       const response = await api.get("/setting");
-      return response.data; // Assuming the API returns an object with settings
+      return response.data.data; // Assuming the API returns an object with settings
     } catch (error) {
       console.error("API Error:", error.response?.data);
       return rejectWithValue(

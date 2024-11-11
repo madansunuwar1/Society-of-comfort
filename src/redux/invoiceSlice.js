@@ -14,7 +14,7 @@ export const getInvoices = createAsyncThunk(
   async (_, { rejectWithValue }) => {
     try {
       const response = await api.get("/invoices");
-      return response.data; // Assuming the API returns an array of invoices
+      return response.data.data; // Assuming the API returns an array of invoices
     } catch (error) {
       console.error("API Error:", error.response?.data);
       return rejectWithValue(

@@ -73,9 +73,12 @@ export const approveBooking = createAsyncThunk(
 
 export const declineBooking = createAsyncThunk(
   "bookings/declineBooking",
-  async (bookingId, { rejectWithValue }) => {
+  async ({ bookingId, rejected_reason }, { rejectWithValue }) => {
     try {
-      const response = await api.post(`/hall-bookings/decline/${bookingId}`);
+      // Sending both bookingId and reason in the request body
+      const response = await api.post(`/hall-bookings/decline/${bookingId}`, {
+        rejected_reason, // Include the reason here
+      });
       return response.data; // Assuming success response structure
     } catch (error) {
       return rejectWithValue(
