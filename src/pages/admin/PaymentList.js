@@ -60,13 +60,13 @@ const PaymentList = () => {
   return (
     <div className="w-full bg-slate-200 p-6 pb-20 rounded-lg shadow-md">
       <div className="mb-4 flex justify-between">
-        <h1 className="text-xl font-semibold mb-4">Invoice List</h1>
+        <h1 className="text-xl font-semibold mb-4">List Of Invoices</h1>
         <Link to="/dashboard/addinvoice">
           <Button
             type="default"
             className="bg-blue-800 text-white hover:bg-blue-600"
           >
-            Add Invoice
+            Add New Invoice
           </Button>
         </Link>
       </div>

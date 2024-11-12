@@ -92,9 +92,7 @@ export const cancelMyBooking = createAsyncThunk(
   "bookings/cancelMyBooking",
   async (bookingId, { rejectWithValue }) => {
     try {
-      const response = await api.post(
-        `/hall-bookings/cancel-booking/${bookingId}`
-      );
+      const response = await api.post(`/cancel-booking/${bookingId}`);
       return response.data; // Assuming success response structure
     } catch (error) {
       return rejectWithValue(

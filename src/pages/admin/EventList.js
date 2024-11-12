@@ -1,18 +1,35 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { eventActions } from "../../redux/eventSlice";
-import { Link, useNavigate } from "react-router-dom";
-import { Skeleton, Button, Modal, Pagination, message } from "antd";
+import { Link } from "react-router-dom";
+import {
+  Skeleton,
+  Button,
+  Modal,
+  Pagination,
+  Input,
+  DatePicker,
+  Upload,
+  Form,
+  message,
+} from "antd";
+import dayjs from "dayjs";
 
 const EventList = () => {
   const dispatch = useDispatch();
-  const navigate = useNavigate();
   const { events, loading, error } = useSelector((state) => state.events);
   const [currentPage, setCurrentPage] = useState(1);
-  const [pageSize] = useState(10); // Items per page
+  const [pageSize] = useState(10);
   const [isEventOpen, setIsEventOpen] = useState(false);
+  const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [selectedEvent, setSelectedEvent] = useState(null);
-  const [imageUrl, setImageUrl] = useState(null);
+  const [editForm, setEditForm] = useState({
+    name: "",
+    description: "",
+    date: "",
+    time: "",
+    venue: "",
+  });
 
   useEffect(() => {
     dispatch(eventActions.getEvents());
@@ -22,18 +39,30 @@ const EventList = () => {
     setCurrentPage(page);
   };
 
-  // Show event details in modal
   const handleShowEvent = (event) => {
     setSelectedEvent(event);
     setIsEventOpen(true);
   };
 
-  // Edit event handler
   const handleEdit = (event) => {
-    navigate(`/editEvent/${event.id}`);
+    setSelectedEvent(event);
+    setEditForm({
+      name: event.event.name,
+      description: event.event.description || "",
+      date: dayjs(event.event.date),
+      time: event.event.time || "",
+      venue: event.event.venue || "",
+    });
+    setIsEditModalOpen(true);
   };
 
-  // Delete event handler
+  const handleEditFormChange = (key, value) => {
+    setEditForm((prevForm) => ({
+      ...prevForm,
+      [key]: value,
+    }));
+  };
+
   const handleDelete = (id) => {
     Modal.confirm({
       title: "Are you sure you want to delete this event?",
@@ -45,6 +74,7 @@ const EventList = () => {
         try {
           await dispatch(eventActions.deleteEvent(id)).unwrap();
           message.success("Event deleted successfully");
+          dispatch(eventActions.getEvents());
         } catch (error) {
           message.error("Failed to delete event");
         }
@@ -52,14 +82,20 @@ const EventList = () => {
     });
   };
 
-  const handleImageClick = (url) => {
-    setImageUrl(url);
+  const handleUpdateEvent = async () => {
+    try {
+      await dispatch(
+        eventActions.updateEvent({ id: selectedEvent.event.id, ...editForm })
+      ).unwrap();
+      message.success("Event updated successfully");
+      setIsEditModalOpen(false);
+      console.log(editForm);
+      dispatch(eventActions.getEvents());
+    } catch (error) {
+      message.error("Failed to update event");
+    }
   };
 
-  const handleImageModalClose = () => {
-    setImageUrl(null);
-  };
-  // Paginate events
   const paginatedEvents = events?.slice(
     (currentPage - 1) * pageSize,
     currentPage * pageSize
@@ -105,7 +141,6 @@ const EventList = () => {
                     <img
                       src={event.file_url}
                       alt="event"
-                      onClick={() => handleImageClick(event.file_url)}
                       className="cursor-pointer h-10 w-10 object-cover"
                     />
                   </td>
@@ -116,7 +151,7 @@ const EventList = () => {
                     >
                       Edit
                     </Button>
-                    <Button onClick={() => handleDelete(event.id)} danger>
+                    <Button onClick={() => handleDelete(event.event.id)} danger>
                       Delete
                     </Button>
                     <Button
@@ -133,11 +168,10 @@ const EventList = () => {
         )}
       </div>
 
-      {/* Pagination Component */}
       <Pagination
         current={currentPage}
         pageSize={pageSize}
-        total={events?.data?.length || 0}
+        total={events?.length || 0}
         onChange={handlePageChange}
         className="mt-4 text-center"
       />
@@ -164,6 +198,56 @@ const EventList = () => {
               </p>
             </div>
           </div>
+        </Modal>
+      )}
+
+      {/* Edit Event Modal */}
+      {isEditModalOpen && (
+        <Modal
+          visible={isEditModalOpen}
+          onCancel={() => setIsEditModalOpen(false)}
+          onOk={handleUpdateEvent}
+          title="Edit Event"
+        >
+          <Form layout="vertical">
+            <Form.Item label="Event Name">
+              <Input
+                placeholder="Event Name"
+                value={editForm.name}
+                onChange={(e) => handleEditFormChange("name", e.target.value)}
+              />
+            </Form.Item>
+            <Form.Item label="Description">
+              <Input.TextArea
+                placeholder="Description"
+                value={editForm.description}
+                onChange={(e) =>
+                  handleEditFormChange("description", e.target.value)
+                }
+              />
+            </Form.Item>
+            <Form.Item label="Date">
+              <DatePicker
+                value={editForm.date}
+                onChange={(date) => handleEditFormChange("date", date)}
+                className="w-full"
+              />
+            </Form.Item>
+            <Form.Item label="Time">
+              <Input
+                placeholder="Time"
+                value={editForm.time}
+                onChange={(e) => handleEditFormChange("time", e.target.value)}
+              />
+            </Form.Item>
+            <Form.Item label="Venue">
+              <Input
+                placeholder="Venue"
+                value={editForm.venue}
+                onChange={(e) => handleEditFormChange("venue", e.target.value)}
+              />
+            </Form.Item>
+          </Form>
         </Modal>
       )}
     </div>

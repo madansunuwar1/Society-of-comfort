@@ -14,10 +14,10 @@ const Booking = () => {
   const dispatch = useDispatch();
   const { bookings, loading, error } = useSelector((state) => state.bookings);
   const [hallName, setHallName] = useState(null);
-  const [bookingDate, setBookingDate] = useState("2020-12-13"); // Default date for testing
-  const [remarks, setRemarks] = useState("for birthday"); // Default remarks for testing
-  const [startTime, setStartTime] = useState("15:30"); // Default start time
-  const [endTime, setEndTime] = useState("16:01"); // Default end time
+  const [bookingDate, setBookingDate] = useState(""); // Default date for testing
+  const [remarks, setRemarks] = useState(""); // Default remarks for testing
+  const [startTime, setStartTime] = useState(""); // Default start time
+  const [endTime, setEndTime] = useState(""); // Default end time
   const [submitError, setSubmitError] = useState(null); // Local state for submission errors
   const [cancelError, setCancelError] = useState(null); // Local state for cancellation errors
   const [errors, setErrors] = useState({}); // Validation errors
@@ -253,7 +253,9 @@ const Booking = () => {
                   <p>
                     <strong>Status:</strong> {book.status}
                   </p>
-                  {book.status !== "booked" && (
+                  {book.status == "canceled" ? (
+                    <></>
+                  ) : (
                     <button
                       onClick={() => handleCancel(book.id)}
                       className="bg-red-500 text-white px-4 py-2 rounded-lg mt-2"

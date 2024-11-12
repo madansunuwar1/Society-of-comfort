@@ -14,7 +14,7 @@ export const getEvents = createAsyncThunk(
   async (_, { rejectWithValue }) => {
     try {
       const response = await api.get("/events");
-      return response.data.data; // Assuming the API returns an array of events
+      return response.data.data;
     } catch (error) {
       console.error("API Error:", error.response?.data);
       return rejectWithValue(error.response?.data || "Failed to fetch events");
@@ -48,7 +48,7 @@ export const updateEvent = createAsyncThunk(
   "events/updateEvent",
   async ({ id, eventData }, { rejectWithValue }) => {
     try {
-      const response = await api.put(`/events/${id}/`, eventData);
+      const response = await api.put(`/events/${id}`, eventData);
       return response.data;
     } catch (error) {
       console.error("API Error:", error.response?.data);
@@ -62,7 +62,7 @@ export const deleteEvent = createAsyncThunk(
   "events/deleteEvent",
   async (id, { rejectWithValue }) => {
     try {
-      await api.delete(`/events/${id}/`);
+      await api.delete(`/events/${id}`);
       return id; // Return the ID of the deleted event to remove from state
     } catch (error) {
       console.error("API Error:", error.response?.data);

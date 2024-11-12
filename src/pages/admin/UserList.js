@@ -86,13 +86,13 @@ const UserList = () => {
   return (
     <div className="w-full bg-slate-200 p-6 pb-20 rounded-lg shadow-md">
       <div className="mb-4 flex justify-between">
-        <h1 className="text-xl font-semibold mb-4">User List</h1>
+        <h1 className="text-xl font-semibold mb-4">List Of Users</h1>
         <Link to="/dashboard/add-user">
           <Button
             type="default"
             className="bg-blue-800 text-white hover:bg-blue-600"
           >
-            Add User
+            Add New User
           </Button>
         </Link>
       </div>
@@ -106,7 +106,7 @@ const UserList = () => {
             <thead>
               <tr className="bg-gray-100">
                 <th className="py-2 px-4 border border-gray-300">Name</th>
-                <th className="py-2 px-4 border border-gray-300">Email</th>
+                <th className="py-2 px-4 border border-gray-300">Number</th>
                 <th className="py-2 px-4 border border-gray-300">Action</th>
               </tr>
             </thead>
@@ -114,10 +114,10 @@ const UserList = () => {
               {paginatedUsers?.map((user) => (
                 <tr key={user.id} className="hover:bg-gray-50">
                   <td className="py-2 px-4 border border-gray-300">
-                    {user.name}
+                    {user.apartment_number}-{user.block} /{user.name}
                   </td>
                   <td className="py-2 px-4 border border-gray-300">
-                    {user.email}
+                    {user.phone_number}
                   </td>
                   <td className="py-2 px-4 border border-gray-200 flex gap-2">
                     <Button

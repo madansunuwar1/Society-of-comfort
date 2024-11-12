@@ -1,8 +1,7 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { SlArrowLeft } from "react-icons/sl";
-import { Link } from "react-router-dom";
-import api from "../../utils/api"; // Import the axios instance
+import api from "../../utils/api";
+import NepaliDateInput from "../../components/NepaliDatePicker";
 
 const AddEvent = () => {
   const navigate = useNavigate();
@@ -93,13 +92,10 @@ const AddEvent = () => {
           />
         </div>
         <div>
-          <label className="font-bold text-md"> Event Date</label>
-          <input
-            className="rounded-md py-3 px-4 w-full border-[2px] border-gray-400 mt-2"
-            type="date"
-            placeholder="Event Date"
+          <label className="font-bold text-md pb-2"> Event Date</label>
+          <NepaliDateInput
             value={eventDate}
-            onChange={(e) => setEventDate(e.target.value)}
+            onChange={setEventDate} // Update event date with the selected Nepali date
             required
           />
         </div>

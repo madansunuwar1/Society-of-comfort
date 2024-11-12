@@ -142,12 +142,6 @@ const BookingList = () => {
                     {/* Show Decline button only if the status is not "declined" */}
                     {booking.status == "booked" && (
                       <>
-                        <Button
-                          onClick={() => handleApprove(booking.id)}
-                          className="mr-2"
-                        >
-                          Approve
-                        </Button>
                         <Button onClick={() => handleDecline(booking.id)}>
                           Decline
                         </Button>

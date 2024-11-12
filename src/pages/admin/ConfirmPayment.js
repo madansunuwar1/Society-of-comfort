@@ -149,16 +149,20 @@ const ConfirmPayment = () => {
                     />
                   </td>
                   <td className="py-2 px-4 border border-gray-300">
-                    <Button
-                      onClick={() =>
-                        handleUpdateStatus(
-                          payment.payment.id,
-                          payment.payment.status
-                        )
-                      }
-                    >
-                      Update Status
-                    </Button>
+                    {payment.payment.status === "Confirmed" ? (
+                      <></>
+                    ) : (
+                      <Button
+                        onClick={() =>
+                          handleUpdateStatus(
+                            payment.payment.id,
+                            payment.payment.status
+                          )
+                        }
+                      >
+                        Update Status
+                      </Button>
+                    )}
                   </td>
                 </tr>
               ))}

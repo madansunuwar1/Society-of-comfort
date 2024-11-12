@@ -2,10 +2,8 @@ import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { invoiceActions } from "../../redux/invoiceSlice";
 import { notification } from "antd";
-import { NepaliDatePicker } from "nepali-datepicker-reactjs";
-import "nepali-datepicker-reactjs/dist/index.css";
-import NepaliDate from "nepali-date-converter";
 import api from "../../utils/api";
+import NepaliDateInput from "../../components/NepaliDatePicker";
 
 const InvoiceForm = () => {
   const dispatch = useDispatch();
@@ -81,6 +79,7 @@ const InvoiceForm = () => {
       house_id: houseId,
       total_amount: totalAmount,
       month: selectedMonth,
+      invoice_date: date,
       items,
     };
 
@@ -134,12 +133,6 @@ const InvoiceForm = () => {
     setItems(items.filter((_, i) => i !== index));
   };
 
-  const today = new NepaliDate();
-  const bsToday = `${today.getYear()}-${String(today.getMonth() + 1).padStart(
-    2,
-    "0"
-  )}-${String(today.getDate()).padStart(2, "0")}`;
-
   return (
     <div className="bg-white pb-20 pt-8 mx-6">
       <div>
@@ -170,13 +163,8 @@ const InvoiceForm = () => {
               )}
             </div>
             <div className="flex flex-col gap-2 w-full">
-              <label>Select bill date</label>
-              <NepaliDatePicker
-                value={bsToday}
-                onChange={handleDateChange}
-                options={{ calenderLocale: "ne", valueLocale: "en" }}
-                className="custom-date-picker"
-              />
+              <label>Select month</label>
+              <NepaliDateInput value={date} onChange={handleDateChange} />
             </div>
             <div className="flex flex-col gap-2 w-full">
               <label>Select month</label>
@@ -189,18 +177,18 @@ const InvoiceForm = () => {
                   Select a month
                 </option>
                 {[
-                  "बैशाख",
-                  "जेठ",
-                  "असार",
-                  "साउन",
-                  "भदौ",
-                  "असोज",
-                  "कार्तिक",
-                  "मंसिर",
-                  "पौष",
-                  "माघ",
-                  "फाल्गुण",
-                  "चैत्र",
+                  "Baisakh",
+                  "Jeth",
+                  "Asar",
+                  "Shrawn",
+                  "Bhadau",
+                  "Ashoj",
+                  "Kartik",
+                  "Mangsir",
+                  "Poush",
+                  "Magh",
+                  "Falgun",
+                  "Chaitra",
                 ].map((month, index) => (
                   <option key={index} value={month}>
                     {month}

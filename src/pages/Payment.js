@@ -44,8 +44,7 @@ const Payment = () => {
   }
 
   // Check if the first invoice exists
-  const firstInvoice =
-    invoices?.data && invoices?.data?.length > 0 ? invoices.data[0] : null;
+  const firstInvoice = invoices && invoices?.length > 0 ? invoices[0] : null;
 
   return (
     <div className=" bg-slate-200 p-1 md:p-6 pb-20 pt-2 rounded-lg shadow-md">

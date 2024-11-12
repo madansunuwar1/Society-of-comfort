@@ -124,13 +124,13 @@ const NoticeList = () => {
   return (
     <div className="w-full bg-slate-200 p-6 pb-20 rounded-lg shadow-md">
       <div className="mb-4 flex justify-between">
-        <h1 className="text-xl font-semibold mb-4">Notice List</h1>
+        <h1 className="text-xl font-semibold mb-4">List Of Notices</h1>
         <Link to="/dashboard/notices">
           <Button
             type="default"
             className="bg-blue-800 text-white hover:bg-blue-600"
           >
-            Add Notice
+            Add New Notice
           </Button>
         </Link>
       </div>

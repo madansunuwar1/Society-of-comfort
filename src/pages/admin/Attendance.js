@@ -187,7 +187,7 @@ const Attendance = () => {
         </div>
       </form>
       <div className="pt-8">
-        <h1 className="text-xl font-semibold mb-4">Payment List</h1>
+        <h1 className="text-xl font-semibold mb-4">Attendent List</h1>
         <div className="overflow-x-auto min-w-full">
           {loading ? (
             <div className="p-12">

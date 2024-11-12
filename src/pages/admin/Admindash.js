@@ -58,19 +58,19 @@ const Admindash = () => {
     {
       key: "confirmpayment",
       icon: <CreditCardOutlined style={{ color: "#c31fde" }} />,
-      label: "Confirm Payment",
+      label: "Manage Payment",
       link: "confirmpayment",
     },
     {
       key: "booking",
       icon: <CheckSquareOutlined style={{ color: "#f2545a" }} />,
-      label: "Confirm Booking",
+      label: "Manage Booking",
       link: "booking",
     },
     {
       key: "eventlist",
       icon: <CalendarOutlined style={{ color: "#0298a9" }} />,
-      label: "Event",
+      label: "Events",
       link: "eventlist",
     },
     {
