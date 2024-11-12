@@ -13,6 +13,7 @@ import {
 } from "@ant-design/icons";
 import { PiNotebookFill } from "react-icons/pi";
 import { FaFileInvoice } from "react-icons/fa";
+import { MdDashboardCustomize } from "react-icons/md";
 
 const { Sider, Content } = Layout;
 
@@ -45,6 +46,12 @@ const Admindash = () => {
   const selectedKey = location.pathname.split("/").pop();
 
   const menuItems = [
+    {
+      key: "/dashboard",
+      icon: <MdDashboardCustomize style={{ color: "" }} />,
+      label: "Dashboard",
+      link: "/dashboard",
+    },
     {
       key: "noticelist",
       icon: <PiNotebookFill style={{ color: "" }} />,
