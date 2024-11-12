@@ -11,6 +11,8 @@ import {
   LogoutOutlined,
   SettingOutlined,
 } from "@ant-design/icons";
+import { PiNotebookFill } from "react-icons/pi";
+import { FaFileInvoice } from "react-icons/fa";
 
 const { Sider, Content } = Layout;
 
@@ -45,49 +47,49 @@ const Admindash = () => {
   const menuItems = [
     {
       key: "noticelist",
-      icon: <NotificationOutlined style={{ color: "#F55A70" }} />,
+      icon: <PiNotebookFill style={{ color: "" }} />,
       label: "Notices",
       link: "noticelist",
     },
     {
       key: "paymentlist",
-      icon: <CreditCardOutlined style={{ color: "#c31fde" }} />,
+      icon: <FaFileInvoice style={{ color: "" }} />,
       label: "Create Bill",
       link: "paymentlist",
     },
     {
       key: "confirmpayment",
-      icon: <CreditCardOutlined style={{ color: "#c31fde" }} />,
+      icon: <CreditCardOutlined style={{ color: "" }} />,
       label: "Manage Payment",
       link: "confirmpayment",
     },
     {
       key: "booking",
-      icon: <CheckSquareOutlined style={{ color: "#f2545a" }} />,
+      icon: <CheckSquareOutlined style={{ color: "" }} />,
       label: "Manage Booking",
       link: "booking",
     },
     {
       key: "eventlist",
-      icon: <CalendarOutlined style={{ color: "#0298a9" }} />,
+      icon: <CalendarOutlined style={{ color: "" }} />,
       label: "Events",
       link: "eventlist",
     },
     {
       key: "userlist",
-      icon: <HomeOutlined style={{ color: "#FFAE00" }} />,
-      label: "Users",
+      icon: <HomeOutlined style={{ color: "" }} />,
+      label: "Residence",
       link: "userlist",
     },
     {
       key: "attendance",
-      icon: <UserOutlined style={{ color: "#f2545a" }} />,
+      icon: <UserOutlined style={{ color: "" }} />,
       label: "Attendance",
       link: "attendance",
     },
     {
       key: "settings",
-      icon: <SettingOutlined style={{ color: "#3c91e6" }} />,
+      icon: <SettingOutlined style={{ color: "" }} />,
       label: "Settings",
       link: "settings", // Direct link to Settings page
     },
@@ -118,7 +120,7 @@ const Admindash = () => {
             )}
           </div>
           <p className="text-white font-bold text-lg text-center pb-4">
-            Society Of Comfort
+            TCH II Thaiba
           </p>
           <Menu
             mode="inline"
@@ -144,7 +146,7 @@ const Admindash = () => {
             ))}
             <Menu.Item
               key="logout"
-              icon={<LogoutOutlined style={{ color: "#FF4D4F" }} />}
+              icon={<LogoutOutlined style={{ color: "" }} />}
               onClick={handleLogout}
               style={{ color: "white" }}
             >

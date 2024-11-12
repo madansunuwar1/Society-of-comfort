@@ -86,13 +86,13 @@ const UserList = () => {
   return (
     <div className="w-full bg-slate-200 p-6 pb-20 rounded-lg shadow-md">
       <div className="mb-4 flex justify-between">
-        <h1 className="text-xl font-semibold mb-4">List Of Users</h1>
+        <h1 className="text-xl font-semibold mb-4">List Of Residence</h1>
         <Link to="/dashboard/add-user">
           <Button
             type="default"
             className="bg-blue-800 text-white hover:bg-blue-600"
           >
-            Add New User
+            Add New Residence
           </Button>
         </Link>
       </div>

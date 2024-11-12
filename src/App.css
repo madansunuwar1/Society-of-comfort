@@ -2,6 +2,10 @@
   text-align: center;
 }
 
+* {
+  @apply font-roboto;
+}
+
 .App-logo {
   height: 40vmin;
   pointer-events: none;

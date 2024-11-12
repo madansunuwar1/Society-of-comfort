@@ -198,7 +198,7 @@ const NoticeList = () => {
       <Pagination
         current={currentPage}
         pageSize={pageSize}
-        total={allNotices?.data?.length || 0}
+        total={allNotices?.length || 0}
         onChange={handlePageChange}
         className="mt-4 text-center"
       />
