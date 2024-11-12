@@ -101,7 +101,7 @@ const ConfirmPayment = () => {
 
   return (
     <div className="w-full bg-slate-200 p-6 pb-20 rounded-lg shadow-md">
-      <h1 className="text-xl font-semibold mb-4">Payment List</h1>
+      <h1 className="text-xl font-semibold mb-4">Manage Payment</h1>
       <div className="overflow-x-auto">
         {loading ? (
           <div className="p-12">
@@ -175,7 +175,7 @@ const ConfirmPayment = () => {
       <Pagination
         current={currentPage}
         pageSize={pageSize}
-        total={payments?.data?.length || 0}
+        total={payments?.length || 0}
         onChange={handlePageChange}
         className="mt-4 text-center"
       />

@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { eventActions } from "../../redux/eventSlice";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import {
   Skeleton,
   Button,
@@ -14,9 +14,11 @@ import {
   message,
 } from "antd";
 import dayjs from "dayjs";
+import { PlusOutlined } from "@ant-design/icons";
 
 const EventList = () => {
   const dispatch = useDispatch();
+  const navigate = useNavigate();
   const { events, loading, error } = useSelector((state) => state.events);
   const [currentPage, setCurrentPage] = useState(1);
   const [pageSize] = useState(10);
@@ -85,12 +87,14 @@ const EventList = () => {
   const handleUpdateEvent = async () => {
     try {
       await dispatch(
-        eventActions.updateEvent({ id: selectedEvent.event.id, ...editForm })
+        eventActions.updateEvent({
+          id: selectedEvent.event.id,
+          eventData: { ...editForm, _method: "PUT" },
+        })
       ).unwrap();
       message.success("Event updated successfully");
       setIsEditModalOpen(false);
-      console.log(editForm);
-      dispatch(eventActions.getEvents());
+      navigate("/dashboard/eventlist");
     } catch (error) {
       message.error("Failed to update event");
     }
@@ -109,6 +113,7 @@ const EventList = () => {
           <Button
             type="default"
             className="bg-blue-800 text-white hover:bg-blue-600"
+            icon={<PlusOutlined />}
           >
             Add Event
           </Button>

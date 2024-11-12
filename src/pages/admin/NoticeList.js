@@ -13,6 +13,7 @@ import {
   Select,
 } from "antd";
 import { Link, useNavigate } from "react-router-dom";
+import { PlusOutlined } from "@ant-design/icons";
 
 const NoticeList = () => {
   const dispatch = useDispatch();
@@ -129,6 +130,7 @@ const NoticeList = () => {
           <Button
             type="default"
             className="bg-blue-800 text-white hover:bg-blue-600"
+            icon={<PlusOutlined />}
           >
             Add New Notice
           </Button>

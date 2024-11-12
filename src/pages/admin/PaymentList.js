@@ -3,6 +3,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { invoiceActions } from "../../redux/invoiceSlice";
 import { Link, useNavigate } from "react-router-dom";
 import { Skeleton, Button, Modal, Pagination, message } from "antd";
+import { PlusOutlined } from "@ant-design/icons";
 
 const PaymentList = () => {
   const dispatch = useDispatch();
@@ -65,6 +66,7 @@ const PaymentList = () => {
           <Button
             type="default"
             className="bg-blue-800 text-white hover:bg-blue-600"
+            icon={<PlusOutlined />}
           >
             Add New Invoice
           </Button>
@@ -93,11 +95,9 @@ const PaymentList = () => {
                 <tr key={payment.id} className="border-b hover:bg-gray-100">
                   <td className="py-2 px-4 border-r">{payment.id}</td>
                   <td className="py-2 px-4 border-r">{payment.total_amount}</td>
-                  <td className="py-2 px-4 border-r">
-                    {new Date(payment.created_at).toLocaleDateString()}
-                  </td>
+                  <td className="py-2 px-4 border-r">{payment.invoice_date}</td>
                   <td className="py-2 px-4 flex gap-2">
-                    <Button
+                    {/* <Button
                       onClick={() => handleEdit(payment)}
                       className="bg-blue-600 text-white"
                     >
@@ -105,7 +105,7 @@ const PaymentList = () => {
                     </Button>
                     <Button onClick={() => handleDelete(payment.id)} danger>
                       Delete
-                    </Button>
+                    </Button> */}
                     <Button
                       onClick={() => handleShowInvoice(payment)}
                       className="bg-[#403F93] text-white"

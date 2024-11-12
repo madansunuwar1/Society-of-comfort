@@ -92,7 +92,7 @@ const BookingList = () => {
 
   return (
     <div className="w-full bg-slate-200 p-6 pb-20 rounded-lg shadow-md">
-      <h1 className="text-xl font-semibold mb-4">Booking List</h1>
+      <h1 className="text-xl font-semibold mb-4">Manage Booking</h1>
       <div className="overflow-x-auto">
         {loading ? (
           <Skeleton active className="p-12" />
@@ -155,14 +155,14 @@ const BookingList = () => {
                       </Button>
                     )}
                     {booking.status === "pending" && (
-                      <>
+                      <div className="flex gap-2">
                         <Button onClick={() => handleApprove(booking.id)}>
                           Approve
                         </Button>
                         <Button onClick={() => handleDecline(booking.id)}>
                           Decline
                         </Button>
-                      </>
+                      </div>
                     )}
                     {booking.status === "cancled" && <></>}
                   </td>

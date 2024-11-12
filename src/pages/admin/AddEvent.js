@@ -56,7 +56,7 @@ const AddEvent = () => {
       setEventAttachment(null); // Clear file input
 
       alert("Event added successfully!");
-      navigate("/dashboard"); // Redirect after success
+      navigate("/dashboard/eventlist"); // Redirect after success
     } catch (err) {
       console.error("Error adding event:", err);
       setError("Failed to add event. Please try again.");

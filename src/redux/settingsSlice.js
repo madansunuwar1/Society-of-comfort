@@ -24,12 +24,26 @@ export const getSettings = createAsyncThunk(
   }
 );
 
-// Async thunk to update settings
+// Async thunk to add a setting
+export const addSettings = createAsyncThunk(
+  "settings/addSettings",
+  async (newSetting, { rejectWithValue }) => {
+    try {
+      const response = await api.post("/setting", newSetting);
+      return response.data; // Assuming the API returns the added setting
+    } catch (error) {
+      console.error("API Error:", error.response?.data);
+      return rejectWithValue(error.response?.data || "Failed to add setting");
+    }
+  }
+);
+
+// Async thunk to update a setting
 export const updateSettings = createAsyncThunk(
   "settings/updateSettings",
-  async (settingsData, { rejectWithValue }) => {
+  async ({ settingId, settingsData }, { rejectWithValue }) => {
     try {
-      const response = await api.post("/setting", settingsData);
+      const response = await api.put(`/setting/${settingId}`, settingsData);
       return response.data; // Assuming the API returns the updated settings
     } catch (error) {
       console.error("API Error:", error.response?.data);
@@ -40,17 +54,17 @@ export const updateSettings = createAsyncThunk(
   }
 );
 
-// Async thunk to reset settings to default
-export const resetSettings = createAsyncThunk(
-  "settings/resetSettings",
-  async (_, { rejectWithValue }) => {
+// Async thunk to delete a setting
+export const deleteSettings = createAsyncThunk(
+  "settings/deleteSettings",
+  async (settingId, { rejectWithValue }) => {
     try {
-      const response = await api.post("/settings/reset");
-      return response.data; // Assuming it returns the default settings
+      const response = await api.delete(`/setting/${settingId}`);
+      return settingId; // Assuming the API returns the ID of the deleted setting
     } catch (error) {
       console.error("API Error:", error.response?.data);
       return rejectWithValue(
-        error.response?.data || "Failed to reset settings"
+        error.response?.data || "Failed to delete setting"
       );
     }
   }
@@ -77,13 +91,26 @@ const settingsSlice = createSlice({
         state.error = action.payload; // Store the error message
       })
 
+      // Handle addSettings
+      .addCase(addSettings.pending, (state) => {
+        state.loading = true;
+      })
+      .addCase(addSettings.fulfilled, (state, action) => {
+        state.loading = false;
+        state.settings.push(action.payload); // Add the new setting to the state
+        state.error = null; // Clear any previous errors
+      })
+      .addCase(addSettings.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload; // Store the error message
+      })
+
       // Handle updateSettings
       .addCase(updateSettings.pending, (state) => {
         state.loading = true;
       })
       .addCase(updateSettings.fulfilled, (state, action) => {
         state.loading = false;
-        // Assuming the API returns the updated settings array or individual settings
         const updatedSetting = action.payload;
         const updatedSettings = state.settings.map((setting) =>
           setting.setting_name === updatedSetting.setting_name
@@ -98,16 +125,18 @@ const settingsSlice = createSlice({
         state.error = action.payload; // Store the error message
       })
 
-      // Handle resetSettings
-      .addCase(resetSettings.pending, (state) => {
+      // Handle deleteSettings
+      .addCase(deleteSettings.pending, (state) => {
         state.loading = true;
       })
-      .addCase(resetSettings.fulfilled, (state, action) => {
+      .addCase(deleteSettings.fulfilled, (state, action) => {
         state.loading = false;
-        state.settings = action.payload; // Set the default settings
+        state.settings = state.settings.filter(
+          (setting) => setting.id !== action.payload // Remove the deleted setting from the array
+        );
         state.error = null; // Clear any previous errors
       })
-      .addCase(resetSettings.rejected, (state, action) => {
+      .addCase(deleteSettings.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload; // Store the error message
       });
@@ -118,6 +147,7 @@ const settingsSlice = createSlice({
 export const settingsReducer = settingsSlice.reducer;
 export const settingsActions = {
   getSettings,
+  addSettings,
   updateSettings,
-  resetSettings,
+  deleteSettings,
 };

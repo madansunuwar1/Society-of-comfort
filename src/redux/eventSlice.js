@@ -48,7 +48,11 @@ export const updateEvent = createAsyncThunk(
   "events/updateEvent",
   async ({ id, eventData }, { rejectWithValue }) => {
     try {
-      const response = await api.put(`/events/${id}`, eventData);
+      console.log("Payload Sent to API:", { ...eventData, _method: "PUT" });
+      const response = await api.post(`/events/${id}`, {
+        ...eventData,
+        _method: "PUT",
+      });
       return response.data;
     } catch (error) {
       console.error("API Error:", error.response?.data);

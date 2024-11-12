@@ -115,7 +115,7 @@ const Admindash = () => {
               <img
                 src="../assets/images/image.jpeg"
                 alt="logo"
-                className="rounded-full w-28 h-28 mx-auto"
+                className="rounded-full w-32 h-32 mx-auto"
               />
             )}
           </div>

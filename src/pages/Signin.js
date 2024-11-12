@@ -45,8 +45,8 @@ const Signin = () => {
   };
 
   return (
-    <div className="flex justify-center bg-slate-800 w-[100%] h-[100vh]">
-      <div className="w-[421px] bg-[#F9F9FF] h-[100vh] pb-20">
+    <div className=" h-[100vh]">
+      <div className=" bg-[#F9F9FF] h-[100vh] pb-20">
         <div className="flex bg-white px-4 py-4">
           <div className="items-center my-auto">
             <Link to="/">
@@ -56,8 +56,15 @@ const Signin = () => {
           <h3 className="font-bold flex justify-center mx-auto">Signin</h3>
         </div>
         <div className="bg-slate-200 min-h-[100vh]">
-          <h1 className="text-[#3F3F95] text-[42px] font-bold font-roboto text-center pt-16">
-            Residency App
+          <div className="py-4">
+            <img
+              src="../assets/images/image.jpeg"
+              alt="logo"
+              className="rounded-full w-44 h-44 mx-auto"
+            />
+          </div>
+          <h1 className="text-[#3F3F95] text-[42px] font-bold font-roboto text-center">
+            TCH II Thaiba
           </h1>
           <div className="text-center">
             <p className="text-[#3F3F95] font-bold text-[22px] font-roboto">
@@ -68,7 +75,7 @@ const Signin = () => {
             </p>
           </div>
           <form
-            className="bg-white mx-6 p-5 my-4 rounded-lg"
+            className="bg-white mx-auto p-5 my-4 rounded-lg max-w-[600px]"
             onSubmit={handlesubmit}
           >
             <div className="pt-6">

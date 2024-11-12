@@ -16,6 +16,7 @@ import {
   Input,
 } from "antd";
 import { Link } from "react-router-dom";
+import { PlusOutlined } from "@ant-design/icons";
 
 const UserList = () => {
   const dispatch = useDispatch();
@@ -91,6 +92,7 @@ const UserList = () => {
           <Button
             type="default"
             className="bg-blue-800 text-white hover:bg-blue-600"
+            icon={<PlusOutlined />}
           >
             Add New Residence
           </Button>
