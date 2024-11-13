@@ -2,14 +2,15 @@ import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { invoiceActions } from "../../redux/invoiceSlice";
 import { settingsActions } from "../../redux/settingsSlice";
-import { notification } from "antd";
+import { notification, Button } from "antd";
 import api from "../../utils/api";
 import NepaliDateInput from "../../components/NepaliDatePicker";
+import { EditOutlined, DeleteOutlined, EyeOutlined } from "@ant-design/icons";
 
 const InvoiceForm = () => {
   const dispatch = useDispatch();
   const settings = useSelector((state) => state.settings.settings);
-  const [date, setDate] = useState("");
+  const [date, setDate] = useState(null);
   const [houseId, setHouseId] = useState("");
   const [houses, setHouses] = useState([]);
   const [totalAmount, setTotalAmount] = useState("");
@@ -169,11 +170,11 @@ const InvoiceForm = () => {
   };
 
   return (
-    <div className="bg-white pb-20 pt-8 mx-6">
+    <div className=" pb-20 pt-8 px-8">
       <div>
         <h1 className="font-bold mx-auto text-[22px]">Add invoice</h1>
       </div>
-      <div className="mt-8">
+      <div className=" bg-slate-200 rounded-lg p-8">
         <form onSubmit={handleSubmit}>
           <div className="flex gap-4 flex-col md:flex-row justify-evenly">
             <div className="flex flex-col gap-2 w-full">
@@ -237,26 +238,26 @@ const InvoiceForm = () => {
               )}
             </div>
           </div>
-          <div className="overflow-x-auto min-w-full">
-            <table className="min-w-full bg-white border border-gray-300 mt-8">
+          <div className="overflow-x-auto min-w-full rounded-lg p-4 bg-white mt-8">
+            <table className="min-w-full bg-white">
               <thead>
                 <tr className="bg-white">
-                  <th className="py-2 px-4 border border-gray-300 text-left">
+                  <th className="py-2 px-4 border-r border-b border-gray-300 text-left">
                     S.no
                   </th>
-                  <th className="py-2 px-4 border border-gray-300 text-left">
+                  <th className="py-2 px-4 border-r border-b border-gray-300 text-left">
                     Particular
                   </th>
-                  <th className="py-2 px-4 border border-gray-300 text-left">
+                  <th className="py-2 px-4 border-r border-b border-gray-300 text-left">
                     Quantity
                   </th>
-                  <th className="py-2 px-4 border border-gray-300 text-left">
+                  <th className="py-2 px-4 border-r border-b border-gray-300 text-left">
                     Rate
                   </th>
-                  <th className="py-2 px-4 border border-gray-300 text-left">
+                  <th className="py-2 px-4 border-r border-b border-gray-300 text-left">
                     Total
                   </th>
-                  <th className="py-2 px-4 border border-gray-300 text-left">
+                  <th className="py-2 px-4 border-b border-gray-300 text-left">
                     Actions
                   </th>
                 </tr>
@@ -264,10 +265,10 @@ const InvoiceForm = () => {
               <tbody>
                 {items.map((item, index) => (
                   <tr key={index}>
-                    <td className="py-2 px-4 border border-gray-300">
+                    <td className="py-2 px-4 border-r border-gray-300">
                       {index + 1}
                     </td>
-                    <td className="py-2 px-4 border border-gray-300">
+                    <td className="py-2 px-4 border-r border-gray-300">
                       <select
                         value={item.particular}
                         onChange={(e) =>
@@ -315,7 +316,7 @@ const InvoiceForm = () => {
                         />
                       )}
                     </td>
-                    <td className="py-2 px-4 border border-gray-300">
+                    <td className="py-2 px-4 border-r border-gray-300">
                       <input
                         type="number"
                         value={item.quantity}
@@ -336,7 +337,7 @@ const InvoiceForm = () => {
                         </span>
                       )}
                     </td>
-                    <td className="py-2 px-4 border border-gray-300">
+                    <td className="py-2 px-4 border-r border-gray-300">
                       <input
                         type="number"
                         value={item.rate}
@@ -357,37 +358,57 @@ const InvoiceForm = () => {
                         </span>
                       )}
                     </td>
-                    <td className="py-2 px-4 border border-gray-300">
+                    <td className="py-2 px-4 border-r border-gray-300">
                       {item.quantity * item.rate}
                     </td>
-                    <td className="py-2 px-4 border border-gray-300">
-                      <button
-                        type="button"
-                        className="text-red-600"
+                    <td className="py-2 px-4">
+                      <Button
+                        danger
                         onClick={() => removeItem(index)}
-                      >
-                        Remove
-                      </button>
+                        className="bg-red-600 hover:bg-red-800"
+                        icon={<DeleteOutlined />}
+                      />
                     </td>
                   </tr>
                 ))}
+                <tr className="">
+                  <td className="py-2 px-4 border-r border-b border-gray-300 pt-20"></td>
+                  <td className="py-2 px-4 border-r border-b border-gray-300 pt-20">
+                    Due
+                  </td>
+                  <td className="py-2 px-4 border-r border-b border-gray-300 pt-20"></td>
+                  <td className="py-2 px-4 border-r border-b border-gray-300 pt-20"></td>
+                  <td className="py-2 px-4 border-r border-b border-gray-300 pt-20">
+                    {dueAmount}
+                  </td>
+                  <td className="py-2 px-4 pt-20 border-b"> </td>
+                </tr>
+                <tr className="">
+                  <td className="py-2 px-4 border-r border-b border-gray-300"></td>
+                  <td className="py-2 px-4 border-r border-b border-gray-300">
+                    Grand Total
+                  </td>
+                  <td className="py-2 px-4 border-r border-b border-gray-300"></td>
+                  <td className="py-2 px-4 border-r border-b border-gray-300"></td>
+                  <td className="py-2 px-4 border-r border-b border-gray-300">
+                    {totalAmount}
+                  </td>
+                  <td className="py-2 px-4 border-b"> </td>
+                </tr>
               </tbody>
             </table>
+          </div>
+          <div className="mt-4">
             <button
               type="button"
-              className="mt-4 text-blue-600"
+              className="bg-orange-800 text-white py-1 px-4 rounded mt-4 mr-4"
               onClick={addItem}
             >
               Add Item
             </button>
-          </div>
-          <div className="flex flex-col items-end mt-4">
-            <div>Total Amount: {totalAmount}</div>
-            {dueUnit !== null && <div>Previous unit: {dueUnit}</div>}
-            {dueAmount !== null && <div>Due Amount: {dueAmount}</div>}
             <button
               type="submit"
-              className="bg-blue-600 text-white py-2 px-4 rounded mt-4"
+              className="bg-green-800 text-white py-1 px-4 rounded mt-4"
             >
               Submit Invoice
             </button>
