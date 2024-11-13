@@ -1,12 +1,14 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { invoiceActions } from "../../redux/invoiceSlice";
+import { settingsActions } from "../../redux/settingsSlice";
 import { notification } from "antd";
 import api from "../../utils/api";
 import NepaliDateInput from "../../components/NepaliDatePicker";
 
 const InvoiceForm = () => {
   const dispatch = useDispatch();
+  const settings = useSelector((state) => state.settings.settings);
   const [date, setDate] = useState("");
   const [houseId, setHouseId] = useState("");
   const [houses, setHouses] = useState([]);
@@ -15,8 +17,10 @@ const InvoiceForm = () => {
     { particular: "", quantity: 1, rate: 0 },
   ]);
   const [dueAmount, setDueAmount] = useState(null);
+  const [dueUnit, setDueUnit] = useState(null);
   const [selectedMonth, setSelectedMonth] = useState("");
   const [formErrors, setFormErrors] = useState({});
+  const [newWaterUnit, setNewWaterUnit] = useState(0);
   const [successMessage, setSuccessMessage] = useState("");
 
   const handleDateChange = (date) => {
@@ -24,7 +28,7 @@ const InvoiceForm = () => {
   };
 
   useEffect(() => {
-    dispatch(invoiceActions.getInvoices());
+    dispatch(settingsActions.getSettings());
     api
       .get("/houses")
       .then((response) => {
@@ -80,6 +84,7 @@ const InvoiceForm = () => {
       total_amount: totalAmount,
       month: selectedMonth,
       invoice_date: date,
+      water_unit: newWaterUnit,
       items,
     };
 
@@ -104,6 +109,8 @@ const InvoiceForm = () => {
     setTotalAmount("");
     setItems([{ particular: "", quantity: 1, rate: 0 }]);
     setFormErrors({});
+    setNewWaterUnit(0);
+    setDate("");
     dispatch(invoiceActions.getInvoices());
   };
 
@@ -116,14 +123,42 @@ const InvoiceForm = () => {
       (house) => house.house_number === selectedHouseId
     );
     setDueAmount(selectedHouse ? selectedHouse.dues : 0); // Update due amount
+    setDueUnit(selectedHouse ? selectedHouse.water_unit : 0);
   };
 
   const handleItemChange = (index, field, value) => {
-    const updatedItems = items.map((item, i) =>
-      i === index ? { ...item, [field]: value } : item
-    );
+    const updatedItems = items.map((item, i) => {
+      if (i === index) {
+        if (field === "particular") {
+          const selectedSetting = settings.find(
+            (setting) => setting.setting_name === value
+          );
+          return {
+            ...item,
+            particular: value,
+            rate: selectedSetting ? selectedSetting.setting_value : item.rate,
+          };
+        } else if (field === "newWaterUnit") {
+          setNewWaterUnit(value);
+          const selectedHouse = houses.data.find(
+            (house) => house.house_number === houseId
+          );
+          const oldWaterUnit = selectedHouse?.water_unit || 0;
+          const calculatedQuantity = value - oldWaterUnit;
+          return {
+            ...item,
+            quantity: calculatedQuantity >= 0 ? calculatedQuantity : 0,
+          };
+        } else {
+          return { ...item, [field]: value };
+        }
+      }
+      return item;
+    });
     setItems(updatedItems);
   };
+
+  const getSelectedItems = () => items.map((item) => item.particular);
 
   const addItem = () => {
     setItems([...items, { particular: "", quantity: 1, rate: 0 }]);
@@ -163,7 +198,7 @@ const InvoiceForm = () => {
               )}
             </div>
             <div className="flex flex-col gap-2 w-full">
-              <label>Select month</label>
+              <label>Select Date</label>
               <NepaliDateInput value={date} onChange={handleDateChange} />
             </div>
             <div className="flex flex-col gap-2 w-full">
@@ -233,19 +268,51 @@ const InvoiceForm = () => {
                       {index + 1}
                     </td>
                     <td className="py-2 px-4 border border-gray-300">
-                      <input
-                        type="text"
+                      <select
                         value={item.particular}
                         onChange={(e) =>
                           handleItemChange(index, "particular", e.target.value)
                         }
                         className="w-full border px-2 py-1"
                         required
-                      />
+                      >
+                        <option value="" disabled>
+                          Select Particular
+                        </option>
+                        {settings.map((setting) => (
+                          <option
+                            key={setting.setting_name}
+                            value={setting.setting_name}
+                            disabled={
+                              getSelectedItems().includes(
+                                setting.setting_name
+                              ) && setting.setting_name !== item.particular
+                            }
+                          >
+                            {setting.setting_name}
+                          </option>
+                        ))}
+                      </select>
                       {formErrors[`item-${index}-particular`] && (
                         <span className="text-red-600 text-sm">
                           {formErrors[`item-${index}-particular`]}
                         </span>
+                      )}
+                      {item.particular === "water_supply" && (
+                        <input
+                          type="number"
+                          value={item.newWaterUnit}
+                          onChange={(e) =>
+                            handleItemChange(
+                              index,
+                              "newWaterUnit",
+                              parseInt(e.target.value, 10)
+                            )
+                          }
+                          placeholder="New Water Unit"
+                          className="w-full border px-2 py-1"
+                          min="0"
+                        />
                       )}
                     </td>
                     <td className="py-2 px-4 border border-gray-300">
@@ -316,6 +383,7 @@ const InvoiceForm = () => {
           </div>
           <div className="flex flex-col items-end mt-4">
             <div>Total Amount: {totalAmount}</div>
+            {dueUnit !== null && <div>Previous unit: {dueUnit}</div>}
             {dueAmount !== null && <div>Due Amount: {dueAmount}</div>}
             <button
               type="submit"

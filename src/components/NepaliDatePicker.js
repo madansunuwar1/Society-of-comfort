@@ -11,7 +11,7 @@ const NepaliDateInput = ({ value, onChange, ...props }) => {
   };
 
   // If no value is provided, leave it undefined so the input is empty
-  const dateToDisplay = value ? convertToEnglishDigits(value) : undefined;
+  const dateToDisplay = value ? convertToEnglishDigits(value) : "";
 
   return (
     <div className="flex flex-col gap-2 w-full">
