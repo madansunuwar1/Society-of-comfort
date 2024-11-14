@@ -2,12 +2,15 @@ import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { invoiceActions } from "../../redux/invoiceSlice";
 import { settingsActions } from "../../redux/settingsSlice";
-import { notification, Button } from "antd";
+import { notification, Button, Select, Input } from "antd";
 import api from "../../utils/api";
 import NepaliDateInput from "../../components/NepaliDatePicker";
 import { EditOutlined, DeleteOutlined, EyeOutlined } from "@ant-design/icons";
+import { useNavigate, useLocation } from "react-router-dom";
 
 const InvoiceForm = () => {
+  const navigate = useNavigate();
+  const location = useLocation();
   const dispatch = useDispatch();
   const settings = useSelector((state) => state.settings.settings);
   const [date, setDate] = useState(null);
@@ -23,10 +26,30 @@ const InvoiceForm = () => {
   const [formErrors, setFormErrors] = useState({});
   const [newWaterUnit, setNewWaterUnit] = useState(0);
   const [successMessage, setSuccessMessage] = useState("");
+  const [customOptions, setCustomOptions] = useState([]);
+  const [isDuplicating, setIsDuplicating] = useState(false);
 
   const handleDateChange = (date) => {
     setDate(date);
   };
+
+  useEffect(() => {
+    // Check if we have duplicate data in location state
+    if (location.state?.duplicateData) {
+      const duplicateData = location.state.duplicateData;
+      setHouseId(duplicateData.house_id);
+      setSelectedMonth(duplicateData.month);
+      setItems(
+        duplicateData.items.map((item) => ({
+          particular: item.particular,
+          quantity: item.quantity,
+          rate: item.rate,
+        }))
+      );
+      setNewWaterUnit(duplicateData.water_unit);
+      setIsDuplicating(true);
+    }
+  }, [location.state]);
 
   useEffect(() => {
     dispatch(settingsActions.getSettings());
@@ -51,7 +74,14 @@ const InvoiceForm = () => {
 
   const validateForm = () => {
     const errors = {};
-    if (!houseId) errors.houseId = "House ID is required.";
+    if (!houseId) {
+      errors.houseId = "Please select a house first";
+      notification.error({
+        message: "Error",
+        description: "Please select a house first",
+      });
+      return false;
+    }
     if (!selectedMonth) errors.selectedMonth = "Month is required.";
     if (items.length === 0) errors.items = "At least one item is required.";
 
@@ -94,8 +124,11 @@ const InvoiceForm = () => {
         setSuccessMessage("Invoice added successfully!");
         notification.success({
           message: "Success",
-          description: "Invoice added successfully!",
+          description: isDuplicating
+            ? "Duplicated invoice added successfully!"
+            : "Invoice added successfully!",
         });
+        navigate("/dashboard/paymentlist");
       })
       .catch(() => {
         setSuccessMessage("Invoice added successfully!");
@@ -112,6 +145,7 @@ const InvoiceForm = () => {
     setFormErrors({});
     setNewWaterUnit(0);
     setDate("");
+    setIsDuplicating(false);
     dispatch(invoiceActions.getInvoices());
   };
 
@@ -131,9 +165,16 @@ const InvoiceForm = () => {
     const updatedItems = items.map((item, i) => {
       if (i === index) {
         if (field === "particular") {
+          // Check if the value exists in settings
           const selectedSetting = settings.find(
             (setting) => setting.setting_name === value
           );
+
+          // If it's a custom value and not in customOptions, add it
+          if (!selectedSetting && !customOptions.includes(value)) {
+            setCustomOptions([...customOptions, value]);
+          }
+
           return {
             ...item,
             particular: value,
@@ -159,7 +200,75 @@ const InvoiceForm = () => {
     setItems(updatedItems);
   };
 
-  const getSelectedItems = () => items.map((item) => item.particular);
+  const getSelectedParticulars = () => {
+    return items.map((item) => item.particular).filter(Boolean);
+  };
+
+  const renderParticularSelect = (item, index) => (
+    <Select
+      showSearch
+      value={item.particular || undefined}
+      onChange={(value) => handleItemChange(index, "particular", value)}
+      placeholder="Select or Type Particular"
+      style={{ width: 200 }}
+      filterOption={(input, option) => {
+        // Handle both predefined and custom options
+        const optionValue = option.value?.toLowerCase() || "";
+        return optionValue.includes(input.toLowerCase());
+      }}
+      allowClear
+      onSearch={(value) => {
+        // When user types, temporarily add it as an option
+        if (
+          value &&
+          !settings.some((s) => s.setting_name === value) &&
+          !customOptions.includes(value)
+        ) {
+          setCustomOptions([...customOptions, value]);
+        }
+      }}
+      onBlur={() => {
+        // If there's a value in the input, ensure it's added to options
+        if (
+          item.particular &&
+          !settings.some((s) => s.setting_name === item.particular) &&
+          !customOptions.includes(item.particular)
+        ) {
+          setCustomOptions([...customOptions, item.particular]);
+        }
+      }}
+    >
+      {/* Render predefined settings */}
+      <Select.OptGroup label="Predefined Settings">
+        {settings.map((setting) => {
+          const isSelected = getSelectedParticulars().includes(
+            setting.setting_name
+          );
+          const isCurrentItem = item.particular === setting.setting_name;
+          return (
+            <Select.Option
+              key={setting.setting_name}
+              value={setting.setting_name}
+              disabled={isSelected && !isCurrentItem}
+            >
+              {setting.setting_name}
+            </Select.Option>
+          );
+        })}
+      </Select.OptGroup>
+
+      {/* Render custom options if any */}
+      {customOptions.length > 0 && (
+        <Select.OptGroup label="Custom Items">
+          {customOptions.map((option) => (
+            <Select.Option key={option} value={option}>
+              {option}
+            </Select.Option>
+          ))}
+        </Select.OptGroup>
+      )}
+    </Select>
+  );
 
   const addItem = () => {
     setItems([...items, { particular: "", quantity: 1, rate: 0 }]);
@@ -172,7 +281,9 @@ const InvoiceForm = () => {
   return (
     <div className=" pb-20 pt-8 px-8">
       <div>
-        <h1 className="font-bold mx-auto text-[22px]">Add invoice</h1>
+        <h1 className="font-bold mx-auto text-[22px]">
+          {isDuplicating ? "Duplicate Invoice" : "Add Invoice"}
+        </h1>
       </div>
       <div className=" bg-slate-200 rounded-lg p-8">
         <form onSubmit={handleSubmit}>
@@ -269,31 +380,7 @@ const InvoiceForm = () => {
                       {index + 1}
                     </td>
                     <td className="py-2 px-4 border-r border-gray-300">
-                      <select
-                        value={item.particular}
-                        onChange={(e) =>
-                          handleItemChange(index, "particular", e.target.value)
-                        }
-                        className="w-full border px-2 py-1"
-                        required
-                      >
-                        <option value="" disabled>
-                          Select Particular
-                        </option>
-                        {settings.map((setting) => (
-                          <option
-                            key={setting.setting_name}
-                            value={setting.setting_name}
-                            disabled={
-                              getSelectedItems().includes(
-                                setting.setting_name
-                              ) && setting.setting_name !== item.particular
-                            }
-                          >
-                            {setting.setting_name}
-                          </option>
-                        ))}
-                      </select>
+                      {renderParticularSelect(item, index)}
                       {formErrors[`item-${index}-particular`] && (
                         <span className="text-red-600 text-sm">
                           {formErrors[`item-${index}-particular`]}

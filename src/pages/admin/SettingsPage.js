@@ -84,92 +84,104 @@ const SettingsPage = () => {
   };
 
   return (
-    <div className="w-full bg-slate-200 p-6 pb-20">
-      <div className="flex justify-between mb-4">
-        <h1 className="text-xl font-semibold">Settings</h1>
-        <Link to="/dashboard/addsettings">
-          <Button
-            type="default"
-            className="bg-blue-800 text-white hover:bg-blue-600"
-            icon={<PlusOutlined />}
-          >
-            Add New Settings
-          </Button>
-        </Link>
-      </div>
-
-      <div className="overflow-x-auto">
-        {loading ? (
-          <div className="p-12">
-            <Skeleton active />
-            <Skeleton active />
-            <Skeleton active />
-          </div>
-        ) : (
-          <table className="min-w-full bg-white border border-gray-300">
-            <thead>
-              <tr className="bg-gray-100">
-                <th className="py-2 px-4 text-left border-r">Setting Title</th>
-                <th className="py-2 px-4 text-left border-r">Amount</th>
-                <th className="py-2 px-4 text-left border-r">Actions</th>
-              </tr>
-            </thead>
-            <tbody>
-              {settings?.map((setting) => (
-                <tr key={setting.id} className="border-b hover:bg-gray-100">
-                  <td className="py-2 px-4 border-r">{setting.setting_name}</td>
-                  <td className="py-2 px-4 border-r">
-                    {setting.setting_value}
-                  </td>
-                  <td className="py-2 px-4 border-r">
-                    <Button
-                      type="default"
-                      icon={<EditOutlined />}
-                      onClick={() => handleEdit(setting)}
-                      className="mr-2"
-                    >
-                      Edit
-                    </Button>
-                    <Button
-                      type="default"
-                      icon={<DeleteOutlined />}
-                      onClick={() => handleDelete(setting.id)}
-                      danger
-                    >
-                      Delete
-                    </Button>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        )}
-      </div>
-
-      {/* Edit Settings Modal */}
-      <Modal
-        title="Edit Setting"
-        visible={isModalVisible}
-        onOk={handleUpdate}
-        onCancel={handleCancel}
-      >
-        <div>
-          <div className="mb-4">
-            <label className="block text-sm font-semibold">Setting Name</label>
-            <Input
-              value={newSettingName}
-              onChange={(e) => setNewSettingName(e.target.value)}
-            />
-          </div>
-          <div className="mb-4">
-            <label className="block text-sm font-semibold">Setting Value</label>
-            <Input
-              value={newSettingValue}
-              onChange={(e) => setNewSettingValue(e.target.value)}
-            />
-          </div>
+    <div className="w-full bg-slate-200 p-6 pb-20 rounded-lg shadow-md">
+      <div className="bg-white rounded-lg p-4">
+        <div className="flex justify-between mb-4">
+          <h1 className="text-xl font-semibold">Settings</h1>
+          <Link to="/dashboard/addsettings">
+            <Button
+              type="default"
+              className="bg-green-800 text-white hover:bg-green-600"
+              icon={<PlusOutlined />}
+            >
+              Add New Settings
+            </Button>
+          </Link>
         </div>
-      </Modal>
+
+        <div className="bg-gray-200 p-5 rounded-lg">
+          {loading ? (
+            <div className="p-12">
+              <Skeleton active />
+              <Skeleton active />
+              <Skeleton active />
+            </div>
+          ) : (
+            <div className="bg-white p-4 rounded-lg overflow-x-auto">
+              <table className="min-w-full">
+                <thead>
+                  <tr className="text-left">
+                    <th className="py-2 px-4 border-r border-b border-gray-300">
+                      Setting Title
+                    </th>
+                    <th className="py-2 px-4 border-r border-b border-gray-300">
+                      Amount
+                    </th>
+                    <th className="py-2 px-4 border-b border-gray-300">
+                      Actions
+                    </th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {settings?.map((setting) => (
+                    <tr key={setting.id} className="border-b hover:bg-gray-100">
+                      <td className="py-2 px-4 border-r">
+                        {setting.setting_name}
+                      </td>
+                      <td className="py-2 px-4 border-r">
+                        {setting.setting_value}
+                      </td>
+                      <td className="py-2 px-4 flex gap-2">
+                        <Button
+                          type="default"
+                          icon={<EditOutlined />}
+                          onClick={() => handleEdit(setting)}
+                          className="bg-blue-600 text-white"
+                        ></Button>
+                        <Button
+                          type="default"
+                          icon={<DeleteOutlined />}
+                          onClick={() => handleDelete(setting.id)}
+                          danger
+                        ></Button>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          )}
+        </div>
+
+        {/* Edit Settings Modal */}
+        <Modal
+          title="Edit Setting"
+          visible={isModalVisible}
+          onOk={handleUpdate}
+          onCancel={handleCancel}
+        >
+          <div>
+            <div className="mb-4">
+              <label className="block text-sm font-semibold">
+                Setting Name
+              </label>
+              <Input
+                value={newSettingName}
+                onChange={(e) => setNewSettingName(e.target.value)}
+              />
+            </div>
+            <div className="mb-4">
+              <label className="block text-sm font-semibold">
+                Setting Value
+              </label>
+              <Input
+                value={newSettingValue}
+                onChange={(e) => setNewSettingValue(e.target.value)}
+              />
+            </div>
+          </div>
+        </Modal>
+      </div>
     </div>
   );
 };

@@ -7,6 +7,7 @@ import { invoiceReducer } from "../redux/invoiceSlice";
 import bookingReducer from "../redux/bookingSlice";
 import { settingsReducer } from "../redux/settingsSlice";
 import { eventReducer } from "../redux/eventSlice";
+import { workerReducer } from "../redux/workerSlice";
 
 export const store = configureStore({
   reducer: {
@@ -18,5 +19,6 @@ export const store = configureStore({
     bookings: bookingReducer,
     settings: settingsReducer,
     events: eventReducer,
+    workers: workerReducer,
   },
 });

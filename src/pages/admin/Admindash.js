@@ -10,6 +10,7 @@ import {
   CheckSquareOutlined,
   LogoutOutlined,
   SettingOutlined,
+  TeamOutlined,
 } from "@ant-design/icons";
 import { PiNotebookFill } from "react-icons/pi";
 import { FaFileInvoice } from "react-icons/fa";
@@ -87,6 +88,12 @@ const Admindash = () => {
       icon: <HomeOutlined style={{ color: "" }} />,
       label: "Residence",
       link: "userlist",
+    },
+    {
+      key: "workerlist",
+      icon: <TeamOutlined style={{ color: "" }} />,
+      label: "Workers",
+      link: "workerlist",
     },
     {
       key: "attendance",

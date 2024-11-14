@@ -48,6 +48,8 @@ import SettingsPage from "./pages/admin/SettingsPage";
 import EventList from "./pages/admin/EventList";
 import AddSettings from "./pages/admin/AddSettings";
 import UserList from "./pages/admin/UserList";
+import AddWorker from "./pages/admin/AddWorker";
+import WorkerList from "./pages/admin/WorkerList";
 
 function App() {
   return (
@@ -311,6 +313,8 @@ function App() {
           <Route path="eventlist" element={<EventList />} />
           <Route path="addsettings" element={<AddSettings />} />
           <Route path="userlist" element={<UserList />} />
+          <Route path="addworker" element={<AddWorker />} />
+          <Route path="workerlist" element={<WorkerList />} />
         </Route>
       </Routes>
     </Router>

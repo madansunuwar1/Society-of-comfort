@@ -4,7 +4,12 @@ import { invoiceActions } from "../../redux/invoiceSlice";
 import { Link, useNavigate } from "react-router-dom";
 import { Skeleton, Button, Modal, Pagination, message } from "antd";
 import { PlusOutlined } from "@ant-design/icons";
-import { EditOutlined, DeleteOutlined, EyeOutlined } from "@ant-design/icons";
+import {
+  EditOutlined,
+  DeleteOutlined,
+  EyeOutlined,
+  CopyOutlined,
+} from "@ant-design/icons";
 
 const PaymentList = () => {
   const dispatch = useDispatch();
@@ -48,6 +53,19 @@ const PaymentList = () => {
     });
   };
 
+  const handleDuplicate = (payment) => {
+    navigate("/dashboard/addinvoice", {
+      state: {
+        duplicateData: {
+          house_id: payment.house_id,
+          month: payment.month,
+          items: payment.invoice_items,
+          water_unit: payment.water_unit,
+        },
+      },
+    });
+  };
+
   // Paginate invoices
   const paginatedInvoices = invoices?.slice(
     (currentPage - 1) * pageSize,
@@ -78,7 +96,7 @@ const PaymentList = () => {
             <div className="bg-white p-4 rounded-lg overflow-x-auto">
               <table className="min-w-full ">
                 <thead>
-                  <tr className="">
+                  <tr className="text-left">
                     <th className="py-2 px-4 border-r border-b border-gray-300">
                       S.N
                     </th>
@@ -98,7 +116,7 @@ const PaymentList = () => {
                 </thead>
                 <tbody>
                   {paginatedInvoices?.map((payment, index) => (
-                    <tr key={payment.id} className="hover:bg-gray-50">
+                    <tr key={payment.id} className="hover:bg-gray-50 border-b">
                       <td className="py-2 px-4 border-r border-gray-300">
                         {index + 1}
                       </td>
@@ -121,6 +139,12 @@ const PaymentList = () => {
                           type="default"
                           className="bg-gray-200 text-gray-800 hover:bg-gray-300"
                           icon={<EyeOutlined />}
+                        />
+                        <Button
+                          icon={<CopyOutlined />}
+                          onClick={() => handleDuplicate(payment)}
+                          className="text-orange-600"
+                          title="Duplicate Invoice"
                         />
                       </td>
                     </tr>

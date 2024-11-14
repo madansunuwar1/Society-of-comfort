@@ -147,7 +147,7 @@ const NoticeList = () => {
             <div className="bg-white p-4 rounded-lg overflow-x-auto">
               <table className="min-w-full ">
                 <thead>
-                  <tr className="">
+                  <tr className="text-left">
                     <th className="py-2 px-4 border-r border-b border-gray-300">
                       S.N
                     </th>
@@ -167,7 +167,7 @@ const NoticeList = () => {
                 </thead>
                 <tbody>
                   {paginatedNotices?.map((notice, index) => (
-                    <tr key={notice.id} className="hover:bg-gray-50">
+                    <tr key={notice.id} className="hover:bg-gray-50 border-b">
                       <td className="py-2 px-4 border-r border-gray-300">
                         {index + 1}
                       </td>
