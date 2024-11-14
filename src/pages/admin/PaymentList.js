@@ -123,9 +123,12 @@ const PaymentList = () => {
                       <td className="py-2 px-4 border-r border-gray-300">
                         {payment.invoice_date}
                       </td>
-                      <td className="py-2 px-4 border-r border-gray-300">22</td>
                       <td className="py-2 px-4 border-r border-gray-300">
-                        ramesh
+                        {" "}
+                        {payment.house.house_number}
+                      </td>
+                      <td className="py-2 px-4 border-r border-gray-300">
+                        {payment?.house?.users?.map((user) => user.name)}
                       </td>
                       <td className="py-2 px-4 flex gap-2">
                         <Button

@@ -11,6 +11,9 @@ import {
   LogoutOutlined,
   SettingOutlined,
   TeamOutlined,
+  InfoCircleOutlined,
+  UnlockOutlined,
+  ProfileOutlined,
 } from "@ant-design/icons";
 import { PiNotebookFill } from "react-icons/pi";
 import { FaFileInvoice } from "react-icons/fa";
@@ -103,9 +106,34 @@ const Admindash = () => {
     },
     {
       key: "settings",
-      icon: <SettingOutlined style={{ color: "" }} />,
+      icon: <SettingOutlined style={{ color: "white" }} />,
       label: "Settings",
-      link: "settings", // Direct link to Settings page
+      children: [
+        {
+          key: "invoicesettings",
+          icon: <InfoCircleOutlined style={{ color: "" }} />,
+          label: "Invoice Setting",
+          link: "invoicesettings",
+        },
+        {
+          key: "housesettings",
+          label: "House Setting",
+          icon: <HomeOutlined style={{ color: "" }} />,
+          link: "housesettings",
+        },
+        {
+          key: "changepassword",
+          icon: <UnlockOutlined style={{ color: "" }} />,
+          label: "Change Password",
+          link: "changepassword",
+        },
+        {
+          key: "editprofile",
+          icon: <ProfileOutlined style={{ color: "" }} />,
+          label: "Edit Profile",
+          link: "editprofile",
+        },
+      ],
     },
   ];
 
@@ -145,22 +173,43 @@ const Admindash = () => {
               backgroundColor: "#3F3F95",
             }}
           >
-            {menuItems.map(({ key, icon, label, link }) => (
-              <Menu.Item
-                key={key}
-                icon={icon}
-                style={{
-                  color: selectedKey === key ? "blue" : "white",
-                }}
-              >
-                <Link to={link}>
-                  <span>{label}</span>
-                </Link>
-              </Menu.Item>
-            ))}
+            {menuItems.map(({ key, icon, label, link, children }) =>
+              children ? (
+                <Menu.SubMenu
+                  key={key}
+                  icon={icon}
+                  title={<span style={{ color: "white" }}>{label}</span>}
+                  style={{ color: "white" }}
+                >
+                  {children.map((subItem) => (
+                    <Menu.Item
+                      key={subItem.key}
+                      icon={subItem.icon}
+                      style={{
+                        color: selectedKey === subItem.key ? "blue" : "white",
+                      }}
+                    >
+                      <Link to={subItem.link}>{subItem.label}</Link>
+                    </Menu.Item>
+                  ))}
+                </Menu.SubMenu>
+              ) : (
+                <Menu.Item
+                  key={key}
+                  icon={icon}
+                  style={{
+                    color: selectedKey === key ? "blue" : "white",
+                  }}
+                >
+                  <Link to={link}>
+                    <span>{label}</span>
+                  </Link>
+                </Menu.Item>
+              )
+            )}
             <Menu.Item
               key="logout"
-              icon={<LogoutOutlined style={{ color: "" }} />}
+              icon={<LogoutOutlined />}
               onClick={handleLogout}
               style={{ color: "white" }}
             >

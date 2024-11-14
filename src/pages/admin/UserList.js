@@ -10,11 +10,12 @@ import {
   Form,
   Input,
 } from "antd";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { PlusOutlined } from "@ant-design/icons";
 import { EditOutlined, DeleteOutlined, EyeOutlined } from "@ant-design/icons";
 
 const UserList = () => {
+  const navigate = useNavigate();
   const dispatch = useDispatch();
   const { users, loading } = useSelector((state) => state.user);
   const [currentPage, setCurrentPage] = useState(1);
@@ -23,6 +24,12 @@ const UserList = () => {
   const [isEditModalVisible, setIsEditModalVisible] = useState(false);
   const [selectedUser, setSelectedUser] = useState(null);
   const [form] = Form.useForm();
+
+  const handleSendPrivateNotice = (user) => {
+    navigate("/dashboard/notices", {
+      state: { noticeType: "private", selectedUser: [String(user.id)] }, // Pass the selected user as state
+    });
+  };
 
   useEffect(() => {
     dispatch(fetchUsers());
@@ -81,7 +88,7 @@ const UserList = () => {
       <div className="bg-white rounded-lg p-4">
         <div className="mb-4 flex justify-between">
           <h1 className="text-xl font-semibold mb-4">List Of Residence</h1>
-          <Link to="/dashboard/add-user">
+          <Link to="/dashboard/adduser">
             <Button
               type="default"
               className="bg-green-800 text-white hover:bg-green-600"
@@ -140,6 +147,13 @@ const UserList = () => {
                           className="hover:bg-gray-300"
                           icon={<EyeOutlined />}
                         ></Button>
+                        <Button
+                          type="default"
+                          className="bg-yellow-500 text-white hover:bg-yellow-400"
+                          onClick={() => handleSendPrivateNotice(user)} // Add the new button
+                        >
+                          Send Private Notice
+                        </Button>
                       </td>
                     </tr>
                   ))}

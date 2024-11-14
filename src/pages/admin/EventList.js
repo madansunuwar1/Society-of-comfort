@@ -229,7 +229,12 @@ const EventList = () => {
                 Date: {new Date(selectedEvent.event.date).toLocaleDateString()}
               </p>
               <div className="mt-8 text-sm font-mono border-gray-400 pb-2 mb-4">
-                <p>
+                <img
+                  src={selectedEvent.file_url}
+                  alt="event"
+                  className="cursor-pointer object-cover"
+                />
+                <p className="mt-4">
                   <strong>Description:</strong>{" "}
                   {selectedEvent.event.description ||
                     "No description available"}

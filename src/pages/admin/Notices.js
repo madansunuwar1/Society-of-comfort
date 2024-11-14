@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import Select from "react-select"; // Import react-select
 import { useDispatch, useSelector } from "react-redux";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import { addPublicNotice, addPrivateNotice } from "../../redux/noticeSlice";
 import { fetchResidences } from "../../redux/userSlice";
 import { notification } from "antd"; // Import notification from antd
@@ -9,18 +9,30 @@ import { notification } from "antd"; // Import notification from antd
 const Notices = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
+  const location = useLocation();
   const user = JSON.parse(localStorage.getItem("user"));
   const { residences, loading } = useSelector((state) => state.user);
   const [noticeType, setNoticeType] = useState("public"); // Toggle between public and private notice
   const [formData, setFormData] = useState({
     title: "",
     notice_body: "",
-    user_id: user.user.id,
-    notice_type: noticeType,
-    users: [], // Only used for private notice
+    users: [],
   });
   const [errors, setErrors] = useState({}); // State for form validation errors
   const [isSending, setIsSending] = useState(false); // State for sending status
+
+  useEffect(() => {
+    if (location.state) {
+      const { noticeType, selectedUser } = location.state;
+      setNoticeType(noticeType);
+      setFormData((prevFormData) => ({
+        ...prevFormData,
+        users: selectedUser || [],
+      }));
+      console.log(selectedUser);
+      console.log(noticeType);
+    }
+  }, [location.state]);
 
   useEffect(() => {
     if (noticeType === "private") {
@@ -45,6 +57,7 @@ const Notices = () => {
       ...prevFormData,
       users: selectedIds,
     }));
+    console.log(selectedIds);
     setErrors((prevErrors) => ({ ...prevErrors, users: null })); // Clear error for residence selection
   };
 
@@ -194,13 +207,10 @@ const Notices = () => {
                 <Select
                   isMulti
                   isDisabled={loading || isSending} // Disable Select when loading or sending
-                  options={
-                    !loading &&
-                    residences?.data?.map((residence) => ({
-                      value: residence.id,
-                      label: residence.name,
-                    }))
-                  }
+                  options={residences?.data?.map((residence) => ({
+                    value: residence.id,
+                    label: residence.name,
+                  }))}
                   value={residences?.data
                     ?.filter((residence) =>
                       formData.users.includes(residence.id.toString())

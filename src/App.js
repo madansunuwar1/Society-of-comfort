@@ -50,6 +50,10 @@ import AddSettings from "./pages/admin/AddSettings";
 import UserList from "./pages/admin/UserList";
 import AddWorker from "./pages/admin/AddWorker";
 import WorkerList from "./pages/admin/WorkerList";
+import HouseSetting from "./pages/admin/HouseSetting";
+import ChangePassword from "./pages/admin/ChangePassword";
+import EditProfile from "./pages/admin/EditProfile";
+import AddUser from "./pages/admin/AddUser";
 
 function App() {
   return (
@@ -309,12 +313,16 @@ function App() {
           <Route path="attendance" element={<Attendance />} />
           <Route path="booking" element={<BookingList />} />
           <Route path="addinvoice" element={<InvoiceForm />} />
-          <Route path="settings" element={<SettingsPage />} />
+          <Route path="invoicesettings" element={<SettingsPage />} />
           <Route path="eventlist" element={<EventList />} />
           <Route path="addsettings" element={<AddSettings />} />
           <Route path="userlist" element={<UserList />} />
           <Route path="addworker" element={<AddWorker />} />
           <Route path="workerlist" element={<WorkerList />} />
+          <Route path="housesettings" element={<HouseSetting />} />
+          <Route path="changepassword" element={<ChangePassword />} />
+          <Route path="editprofile" element={<EditProfile />} />
+          <Route path="adduser" element={<AddUser />} />
         </Route>
       </Routes>
     </Router>

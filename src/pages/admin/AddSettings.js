@@ -33,7 +33,7 @@ const SettingsPage = () => {
         // Reset form fields
         setNewSettingName("");
         setNewSettingValue("");
-        navigate("/dashboard/settings");
+        navigate("/dashboard/invoicesettings");
       })
       .catch((err) => {
         notification.error({

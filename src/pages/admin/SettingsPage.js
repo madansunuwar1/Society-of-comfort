@@ -87,14 +87,14 @@ const SettingsPage = () => {
     <div className="w-full bg-slate-200 p-6 pb-20 rounded-lg shadow-md">
       <div className="bg-white rounded-lg p-4">
         <div className="flex justify-between mb-4">
-          <h1 className="text-xl font-semibold">Settings</h1>
+          <h1 className="text-xl font-semibold">Invoice Settings</h1>
           <Link to="/dashboard/addsettings">
             <Button
               type="default"
               className="bg-green-800 text-white hover:bg-green-600"
               icon={<PlusOutlined />}
             >
-              Add New Settings
+              Add New Invoice Settings
             </Button>
           </Link>
         </div>

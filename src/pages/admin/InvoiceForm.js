@@ -34,8 +34,8 @@ const InvoiceForm = () => {
   };
 
   useEffect(() => {
-    // Check if we have duplicate data in location state
     if (location.state?.duplicateData) {
+      // Duplicate data is present, set values for duplication
       const duplicateData = location.state.duplicateData;
       setHouseId(duplicateData.house_id);
       setSelectedMonth(duplicateData.month);
@@ -48,8 +48,23 @@ const InvoiceForm = () => {
       );
       setNewWaterUnit(duplicateData.water_unit);
       setIsDuplicating(true);
+    } else {
+      // Set default values when no duplication
+      const monthlyFeeSetting = settings.find(
+        (setting) => setting.setting_name === "monthly fee"
+      );
+
+      if (monthlyFeeSetting) {
+        setItems(() => [
+          {
+            particular: "monthly fee",
+            quantity: 1,
+            rate: monthlyFeeSetting.setting_value || 0,
+          },
+        ]);
+      }
     }
-  }, [location.state]);
+  }, [location.state, settings]);
 
   useEffect(() => {
     dispatch(settingsActions.getSettings());
@@ -386,7 +401,7 @@ const InvoiceForm = () => {
                           {formErrors[`item-${index}-particular`]}
                         </span>
                       )}
-                      {item.particular === "water_supply" && (
+                      {item.particular === "water_charges" && (
                         <input
                           type="number"
                           value={item.newWaterUnit}
