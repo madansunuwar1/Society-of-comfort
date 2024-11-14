@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import api from "../../utils/api";
 import NepaliDateInput from "../../components/NepaliDatePicker";
+import { notification } from "antd";
 
 const AddEvent = () => {
   const navigate = useNavigate();
@@ -55,7 +56,10 @@ const AddEvent = () => {
       setEventVenue("");
       setEventAttachment(null); // Clear file input
 
-      alert("Event added successfully!");
+      notification.success({
+        message: "Success",
+        description: "Setting added successfully",
+      });
       navigate("/dashboard/eventlist"); // Redirect after success
     } catch (err) {
       console.error("Error adding event:", err);
