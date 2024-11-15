@@ -136,7 +136,6 @@ const InvoiceForm = () => {
     };
 
     dispatch(invoiceActions.addInvoice(formData))
-      .unwrap()
       .then(() => {
         setSuccessMessage("Invoice added successfully!");
         notification.success({
@@ -147,10 +146,11 @@ const InvoiceForm = () => {
         });
         navigate("/dashboard/paymentlist");
       })
-      .catch((err) => {
+      .catch(() => {
+        setSuccessMessage("Invoice added successfully!");
         notification.error({
           message: "error",
-          description: err?.message,
+          description: "Invoice added unsucessfull",
         });
       });
 
@@ -171,10 +171,11 @@ const InvoiceForm = () => {
 
     // Find the selected house and set its due amount
     const selectedHouse = houses.data.find(
-      (house) => house.house_number === selectedHouseId
+      (house) => String(house.id) === selectedHouseId
     );
     setDueAmount(selectedHouse ? selectedHouse.dues : 0); // Update due amount
     setDueUnit(selectedHouse ? selectedHouse.water_unit : 0);
+    console.log(selectedHouseId);
   };
 
   const handleItemChange = (index, field, value) => {
@@ -314,7 +315,7 @@ const InvoiceForm = () => {
               >
                 <option value="">Select House Id</option>
                 {houses?.data?.map((house) => (
-                  <option key={house.house_number} value={house.house_number}>
+                  <option key={house.house_number} value={house.id}>
                     {house.user_names || `House ID: ${house.house_number}`}
                   </option>
                 ))}
@@ -329,9 +330,9 @@ const InvoiceForm = () => {
               <label>Select Date</label>
               <NepaliDatePicker
                 options={{ calenderLocale: "en", valueLocale: "en" }}
-                className="custom-date-picker"
                 value={date}
                 onChange={handleDateChange}
+                className="custom-date-picker"
               />
             </div>
             <div className="flex flex-col gap-2 w-full">

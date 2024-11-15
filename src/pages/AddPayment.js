@@ -3,6 +3,8 @@ import { useDispatch, useSelector } from "react-redux";
 import { paymentActions } from "../redux/paymentSlice";
 import { Link } from "react-router-dom";
 import { SlArrowLeft } from "react-icons/sl";
+import { NepaliDatePicker } from "nepali-datepicker-reactjs";
+import "nepali-datepicker-reactjs/dist/index.css";
 
 const AddPayment = () => {
   const dispatch = useDispatch();
@@ -20,6 +22,10 @@ const AddPayment = () => {
   const [status, setStatus] = useState("Pending");
   const [remarks, setRemarks] = useState(""); // Default status
   const [errors, setErrors] = useState({}); // To store validation errors
+
+  const handleDateChange = (date) => {
+    setDate(date);
+  };
 
   const handleFileChange = (e) => {
     if (e.target.files && e.target.files.length > 0) {
@@ -142,12 +148,11 @@ const AddPayment = () => {
         </div>
         <div>
           <label className="font-bold text-md">Date</label>
-          <input
-            className="rounded-md py-2 px-4 w-full border-[2px] border-gray-400 mt-2"
-            type="date"
-            placeholder="Date"
+          <NepaliDatePicker
+            options={{ calenderLocale: "en", valueLocale: "en" }}
             value={date}
-            onChange={(e) => setDate(e.target.value)}
+            onChange={handleDateChange}
+            className="w-full custom-date-picker"
             required
           />
           {errors.date && <p className="text-red-500">{errors.date}</p>}

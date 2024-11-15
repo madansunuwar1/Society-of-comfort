@@ -22,7 +22,9 @@ const AddEvent = () => {
 
   // Handle file selection
   const handleFileChange = (e) => {
-    setEventAttachment(e.target.files[0]); // Set the selected file
+    const file = e.target.files[0];
+    setEventAttachment(file);
+    console.log(file);
   };
 
   const handleSubmit = async (e) => {
@@ -42,36 +44,39 @@ const AddEvent = () => {
       formData.append("file", eventAttachment); // Add the file to formData
     }
 
-    try {
-      // Dispatch the addEvent action and unwrap the result
-      await dispatch(addEvent(formData)).unwrap();
+    console.log("my formdata", formData);
 
-      // If successful, show success notification and reset form
-      notification.success({
-        message: "Success",
-        description: "Event added successfully",
+    // Dispatch the addEvent action and unwrap the result
+    dispatch(addEvent(formData))
+      .unwrap()
+      .then(() => {
+        notification.success({
+          message: "Success",
+          description: "Event added successfully",
+        });
+        setLoading(false);
+      })
+      .catch((err) => {
+        console.error("Error:", err?.errors);
+
+        // Display the error notification
+        notification.error({
+          message: "Error",
+          description: err?.errors,
+        });
+        setLoading(false);
       });
 
-      // Reset the form
-      setEventName("");
-      setEventDescription("");
-      setEventDate("");
-      setEventTime("");
-      setEventVenue("");
-      setEventAttachment(null); // Clear file input
-      navigate("/dashboard/eventlist"); // Redirect after success
-    } catch (err) {
-      // Handle the error response
-      console.error("Error:", err?.errors);
+    // If successful, show success notification and reset form
 
-      // Display the error notification
-      notification.error({
-        message: "Error",
-        description: err?.errors,
-      });
-    } finally {
-      setLoading(false); // Stop loading
-    }
+    // Reset the form
+    setEventName("");
+    setEventDescription("");
+    setEventDate("");
+    setEventTime("");
+    setEventVenue("");
+    setEventAttachment(null); // Clear file input
+    navigate("/dashboard/eventlist"); // Redirect after success
   };
 
   return (

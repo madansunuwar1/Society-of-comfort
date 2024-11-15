@@ -92,11 +92,27 @@ export const cancelMyBooking = createAsyncThunk(
   "bookings/cancelMyBooking",
   async (bookingId, { rejectWithValue }) => {
     try {
+      console.log(`Requesting cancellation for booking ID: ${bookingId}`);
       const response = await api.post(`/cancel-booking/${bookingId}`);
+      console.log("Response:", response);
       return response.data; // Assuming success response structure
     } catch (error) {
       return rejectWithValue(
         error.response?.data || "Failed to cancel booking"
+      );
+    }
+  }
+);
+
+export const myBookings = createAsyncThunk(
+  "bookings/myBookings",
+  async (_, { rejectWithValue }) => {
+    try {
+      const response = await api.post("/hall-bookings/my-bookings");
+      return response.data.data; // Assuming response.data contains an array of bookings
+    } catch (error) {
+      return rejectWithValue(
+        error.response?.data || "Failed to fetch bookings"
       );
     }
   }
@@ -228,6 +244,19 @@ const bookingSlice = createSlice({
       .addCase(cancelMyBooking.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload || action.error.message;
+      })
+      .addCase(myBookings.pending, (state) => {
+        state.loading = true;
+        state.error = null; // Clear previous errors
+      })
+      .addCase(myBookings.fulfilled, (state, action) => {
+        state.loading = false;
+        state.bookings = action.payload; // Set the user's bookings
+        state.error = null; // Clear errors
+      })
+      .addCase(myBookings.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload || action.error.message;
       });
   },
 });
@@ -240,6 +269,7 @@ export const bookingActions = {
   approveBooking,
   declineBooking,
   cancelMyBooking,
+  myBookings,
 };
 
 export default bookingSlice.reducer;

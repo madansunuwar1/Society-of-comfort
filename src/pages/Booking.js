@@ -7,7 +7,9 @@ import {
   addBooking,
   bookingActions,
   cancelMyBooking,
+  myBookings,
 } from "../redux/bookingSlice";
+import { notification } from "antd";
 
 const Booking = () => {
   const navigate = useNavigate();
@@ -29,7 +31,7 @@ const Booking = () => {
   ];
 
   useEffect(() => {
-    dispatch(bookingActions.fetchBookings());
+    dispatch(myBookings());
   }, [dispatch]);
 
   useEffect(() => {
@@ -90,38 +92,41 @@ const Booking = () => {
     setErrors({}); // Clear previous errors
 
     // Dispatch the addBooking action
-    const response = await dispatch(addBooking(bookingData));
-
-    // Check if the action was fulfilled successfully
-    if (addBooking.fulfilled.match(response)) {
-      alert("Booking successful! Your booking has been confirmed.");
-      navigate("/userdash");
-    } else {
-      // Handle validation errors from the backend
-      if (response.payload?.errors) {
-        setErrors(response.payload.errors); // Set errors state with backend validation errors
-      } else {
-        alert("Booking failed: " + response.error.message); // Generic error message
-      }
-    }
+    dispatch(addBooking(bookingData))
+      .unwrap()
+      .then(() => {
+        notification.success({
+          message: "Success",
+          description: "Booking added successfully",
+        });
+      })
+      .catch((err) => {
+        notification.error({
+          message: "Error",
+          description: err?.error || "Failed to add setting",
+        });
+      });
   };
+
   const handleCancel = async (bookingId) => {
     setCancelError(null); // Reset any previous cancellation error
-    try {
-      // Dispatch the cancelMyBooking action with bookingId
-      const response = await dispatch(cancelMyBooking(bookingId));
 
-      // Check if the action was fulfilled successfully
-      if (cancelMyBooking.fulfilled.match(response)) {
-        alert("Booking canceled successfully.");
-        dispatch(bookingActions.fetchBookings()); // Refresh bookings list after cancellation
-      } else {
-        alert("Cancellation failed.");
-      }
-    } catch (error) {
-      setCancelError(error.message); // Set error message if cancellation fails
-      alert("Cancellation failed: " + error.message); // Alert the user
-    }
+    // Dispatch the cancelMyBooking action with bookingId
+    dispatch(cancelMyBooking(bookingId))
+      .unwrap()
+      .then(() => {
+        notification.success({
+          message: "Success",
+          description: "Booking cancled successfully",
+        });
+      })
+      .catch((err) => {
+        console.log(err);
+        notification.error({
+          message: "Error",
+          description: err?.error || "Failed to add setting",
+        });
+      });
   };
 
   const formatOptionLabel = ({ label, available }) => (
