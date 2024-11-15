@@ -35,7 +35,7 @@ const AddHouseSettingPage = () => {
       .catch((err) => {
         notification.error({
           message: "Error",
-          description: err.message || "Failed to add house setting",
+          description: err.error || "Failed to add house setting",
         });
       })
       .finally(() => {

@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { addUser } from "../../redux/userSlice";
+import { notification } from "antd";
 
 const AddUser = () => {
   const dispatch = useDispatch();
@@ -70,11 +71,18 @@ const AddUser = () => {
     dispatch(addUser(formData))
       .unwrap()
       .then(() => {
-        alert("User added successfully!");
+        notification.success({
+          message: "Success",
+          description: "Event added successfully",
+        });
         navigate("/dashboard/userlist"); // Redirect on success
       })
       .catch((err) => {
         console.error("Failed to add user:", err);
+        notification.error({
+          message: "Error",
+          description: err?.errors,
+        });
       });
   };
 

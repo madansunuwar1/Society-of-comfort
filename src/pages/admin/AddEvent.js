@@ -1,11 +1,14 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import api from "../../utils/api";
-import NepaliDateInput from "../../components/NepaliDatePicker";
+import { useDispatch } from "react-redux"; // Import useDispatch
 import { notification } from "antd";
+import { NepaliDatePicker } from "nepali-datepicker-reactjs";
+import "nepali-datepicker-reactjs/dist/index.css";
+import { addEvent } from "../../redux/eventSlice";
 
 const AddEvent = () => {
   const navigate = useNavigate();
+  const dispatch = useDispatch(); // Initialize useDispatch
 
   // State for form inputs
   const [eventName, setEventName] = useState("");
@@ -40,30 +43,32 @@ const AddEvent = () => {
     }
 
     try {
-      // POST request to the API using the axios instance
-      const response = await api.post("/events", formData, {
-        headers: {
-          "Content-Type": "multipart/form-data", // Set the correct header for file upload
-        },
-      });
-      console.log("Event created successfully:", response.data);
+      // Dispatch the addEvent action and unwrap the result
+      await dispatch(addEvent(formData)).unwrap();
 
-      // Reset form after successful submission
+      // If successful, show success notification and reset form
+      notification.success({
+        message: "Success",
+        description: "Event added successfully",
+      });
+
+      // Reset the form
       setEventName("");
       setEventDescription("");
       setEventDate("");
       setEventTime("");
       setEventVenue("");
       setEventAttachment(null); // Clear file input
-
-      notification.success({
-        message: "Success",
-        description: "Setting added successfully",
-      });
       navigate("/dashboard/eventlist"); // Redirect after success
     } catch (err) {
-      console.error("Error adding event:", err);
-      setError("Failed to add event. Please try again.");
+      // Handle the error response
+      console.error("Error:", err?.errors);
+
+      // Display the error notification
+      notification.error({
+        message: "Error",
+        description: err?.errors,
+      });
     } finally {
       setLoading(false); // Stop loading
     }
@@ -99,9 +104,11 @@ const AddEvent = () => {
             </div>
             <div>
               <label className="font-bold text-md pb-2"> Event Date</label>
-              <NepaliDateInput
+              <NepaliDatePicker
+                options={{ calenderLocale: "en", valueLocale: "en" }}
                 value={eventDate}
-                onChange={setEventDate} // Update event date with the selected Nepali date
+                onChange={setEventDate}
+                className="custom-date-picker"
                 required
               />
             </div>
@@ -127,14 +134,13 @@ const AddEvent = () => {
                 required
               />
             </div>
-            {/* File input for attachment */}
             <div>
-              <label className="font-bold text-md">Iamge</label>
+              <label className="font-bold text-md"> Image</label>
               <input
                 type="file"
                 onChange={handleFileChange}
                 className="rounded-md py-3 px-4 w-full border-[2px] border-gray-400 mt-2 bg-white"
-                accept=".jpg,.jpeg,.png,.pdf" // Accept only images and PDFs
+                accept=".jpg,.jpeg,.png,.pdf"
               />
             </div>
 

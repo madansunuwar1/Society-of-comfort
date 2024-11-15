@@ -28,17 +28,10 @@ export const addEvent = createAsyncThunk(
   async (eventData, { rejectWithValue }) => {
     try {
       const response = await api.post("/events", eventData);
-
-      if (response.status === 200 && response.data) {
-        return response.data;
-      } else {
-        return rejectWithValue("Failed to add event.");
-      }
+      return response.data.data;
     } catch (error) {
       console.error("API Error:", error);
-      return rejectWithValue(
-        error.response?.data?.message || "An error occurred"
-      );
+      return rejectWithValue(error.response?.data || "An error occurred");
     }
   }
 );

@@ -38,7 +38,7 @@ const SettingsPage = () => {
       .catch((err) => {
         notification.error({
           message: "Error",
-          description: err.message || "Failed to add setting",
+          description: err?.error || "Failed to add setting",
         });
       })
       .finally(() => {
@@ -58,7 +58,6 @@ const SettingsPage = () => {
             value={newSettingName}
             onChange={(e) => setNewSettingName(e.target.value)}
             placeholder="Enter setting name"
-            required
           />
         </div>
 
@@ -70,7 +69,6 @@ const SettingsPage = () => {
             value={newSettingValue}
             onChange={(e) => setNewSettingValue(e.target.value)}
             placeholder="Enter setting value"
-            required
           />
         </div>
 

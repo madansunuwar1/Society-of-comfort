@@ -8,17 +8,17 @@ import {
   Modal,
   Pagination,
   Input,
-  DatePicker,
   Form,
   message,
 } from "antd";
-import dayjs from "dayjs";
 import {
   PlusOutlined,
   EditOutlined,
   DeleteOutlined,
   EyeOutlined,
 } from "@ant-design/icons";
+import { NepaliDatePicker } from "nepali-datepicker-reactjs";
+import "nepali-datepicker-reactjs/dist/index.css";
 
 const EventList = () => {
   const dispatch = useDispatch();
@@ -28,9 +28,7 @@ const EventList = () => {
   const [pageSize] = useState(10);
   const [isEventOpen, setIsEventOpen] = useState(false);
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
-  const [isImageModalOpen, setIsImageModalOpen] = useState(false); // Image modal state
   const [selectedEvent, setSelectedEvent] = useState(null);
-  const [imageToView, setImageToView] = useState(null); // State to hold selected image
   const [editForm, setEditForm] = useState({
     name: "",
     description: "",
@@ -57,7 +55,7 @@ const EventList = () => {
     setEditForm({
       name: event.event.name,
       description: event.event.description || "",
-      date: dayjs(event.event.date),
+      date: event.event.date, // Directly use the event date here
       time: event.event.time || "",
       venue: event.event.venue || "",
     });
@@ -92,27 +90,18 @@ const EventList = () => {
 
   const handleUpdateEvent = async () => {
     try {
-      // Format the date to just send the date without time
-      const formattedDate = dayjs(editForm.date).format("YYYY-MM-DD");
-
       await dispatch(
         eventActions.updateEvent({
           id: selectedEvent.event.id,
-          eventData: { ...editForm, date: formattedDate, _method: "PUT" },
+          eventData: { ...editForm, _method: "PUT" },
         })
       ).unwrap();
       message.success("Event updated successfully");
       setIsEditModalOpen(false);
-      navigate("/dashboard/eventlist");
+      dispatch(eventActions.getEvents());
     } catch (err) {
       message.error("Failed to update event");
     }
-  };
-
-  // Handle image click to view full size
-  const handleImageClick = (url) => {
-    setImageToView(url);
-    setIsImageModalOpen(true);
   };
 
   const paginatedEvents = events?.slice(
@@ -166,17 +155,17 @@ const EventList = () => {
                   {paginatedEvents?.map((event) => (
                     <tr key={event.id} className=" hover:bg-gray-50 border-b">
                       <td className="py-2 px-4 border-r border-gray-300">
-                        {event.event.date}
+                        {event?.event?.date || "No date available"}
+                        {/* You can leave this as is if you're not converting to Nepali */}
                       </td>
                       <td className="py-2 px-4 border-r border-gray-300">
-                        {event.event.name}
+                        {event?.event?.name}
                       </td>
                       <td className="py-2 px-4 border-r border-gray-300">
                         <img
-                          src={event.file_url}
+                          src={event?.file_url}
                           alt="event"
                           className="cursor-pointer h-10 w-10 object-cover"
-                          onClick={() => handleImageClick(event.file_url)} // Image click handler
                         />
                       </td>
                       <td className="py-2 px-4 flex gap-2">
@@ -186,14 +175,12 @@ const EventList = () => {
                           onClick={() => handleEdit(event)}
                           className="bg-blue-600 text-white"
                         />
-
                         {/* Delete Button */}
                         <Button
                           icon={<DeleteOutlined />}
-                          onClick={() => handleDelete(event.event.id)}
+                          onClick={() => handleDelete(event?.event?.id)}
                           danger
                         />
-
                         {/* Show Event Button */}
                         <Button
                           icon={<EyeOutlined />}
@@ -216,7 +203,6 @@ const EventList = () => {
           />
         </div>
 
-        {/* Event Details Modal */}
         {isEventOpen && selectedEvent && (
           <Modal
             visible={isEventOpen}
@@ -273,10 +259,11 @@ const EventList = () => {
                 />
               </Form.Item>
               <Form.Item label="Date">
-                <DatePicker
+                <NepaliDatePicker
+                  options={{ calenderLocale: "en", valueLocale: "en" }}
                   value={editForm.date}
                   onChange={(date) => handleEditFormChange("date", date)}
-                  className="w-full"
+                  className="w-full custom-date-picker"
                 />
               </Form.Item>
               <Form.Item label="Time">
@@ -296,22 +283,6 @@ const EventList = () => {
                 />
               </Form.Item>
             </Form>
-          </Modal>
-        )}
-
-        {/* Image View Modal */}
-        {isImageModalOpen && (
-          <Modal
-            visible={isImageModalOpen}
-            onCancel={() => setIsImageModalOpen(false)}
-            footer={null}
-            width={600}
-          >
-            <img
-              src={imageToView}
-              alt="Event"
-              className="w-full h-auto object-cover rounded-md"
-            />
           </Modal>
         )}
       </div>

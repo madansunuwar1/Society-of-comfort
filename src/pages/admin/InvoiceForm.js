@@ -4,7 +4,8 @@ import { invoiceActions } from "../../redux/invoiceSlice";
 import { settingsActions } from "../../redux/settingsSlice";
 import { notification, Button, Select, Input } from "antd";
 import api from "../../utils/api";
-import NepaliDateInput from "../../components/NepaliDatePicker";
+import { NepaliDatePicker } from "nepali-datepicker-reactjs";
+import "nepali-datepicker-reactjs/dist/index.css";
 import { EditOutlined, DeleteOutlined, EyeOutlined } from "@ant-design/icons";
 import { useNavigate, useLocation } from "react-router-dom";
 
@@ -135,6 +136,7 @@ const InvoiceForm = () => {
     };
 
     dispatch(invoiceActions.addInvoice(formData))
+      .unwrap()
       .then(() => {
         setSuccessMessage("Invoice added successfully!");
         notification.success({
@@ -145,11 +147,10 @@ const InvoiceForm = () => {
         });
         navigate("/dashboard/paymentlist");
       })
-      .catch(() => {
-        setSuccessMessage("Invoice added successfully!");
+      .catch((err) => {
         notification.error({
           message: "error",
-          description: "Invoice added unsucessfull",
+          description: err?.message,
         });
       });
 
@@ -326,7 +327,12 @@ const InvoiceForm = () => {
             </div>
             <div className="flex flex-col gap-2 w-full">
               <label>Select Date</label>
-              <NepaliDateInput value={date} onChange={handleDateChange} />
+              <NepaliDatePicker
+                options={{ calenderLocale: "en", valueLocale: "en" }}
+                className="custom-date-picker"
+                value={date}
+                onChange={handleDateChange}
+              />
             </div>
             <div className="flex flex-col gap-2 w-full">
               <label>Select month</label>
