@@ -1,11 +1,12 @@
 import React, { useState } from "react";
 import { useDispatch } from "react-redux";
 import { Form, Input, Button, message } from "antd";
-import { addWorker } from "../../redux/workerSlice"; // Assuming workerSlice is correctly set up
+import { addWorker } from "../../redux/workerSlice";
+import { useNavigate } from "react-router-dom"; // Assuming workerSlice is correctly set up
 
 const AddWorker = () => {
   const dispatch = useDispatch();
-
+  const navigate = useNavigate();
   // Form validation and submit handler
   const [form] = Form.useForm();
 
@@ -21,7 +22,8 @@ const AddWorker = () => {
       // Dispatch the action to add the worker and unwrap the result
       const response = await dispatch(addWorker(workerData)).unwrap();
       message.success("Worker added successfully");
-      form.resetFields(); // Reset the form after successful submission
+      form.resetFields();
+      navigate("/dashboard/workerlist"); // Reset the form after successful submission
     } catch (err) {
       message.error(err || "Failed to add worker");
     }

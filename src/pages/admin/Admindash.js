@@ -150,7 +150,12 @@ const Admindash = () => {
           collapsedWidth={80}
           style={{
             backgroundColor: "#3F3F95",
+            height: "100vh",
+            overflowY: "auto", // Makes sidebar scrollable
+            position: "fixed", // Fixes the sidebar
+            left: 0,
           }}
+          className="no-scrollbar"
         >
           <div className="px-10 py-4">
             {!collapsed && (
@@ -242,7 +247,7 @@ const Admindash = () => {
       </div>
 
       <Layout style={{ padding: "0 0px 0px" }}>
-        <Content style={{ margin: 0, background: "#fff" }}>
+        <Content style={{ marginLeft: collapsed ? 80 : 250 }}>
           <Outlet />
         </Content>
       </Layout>

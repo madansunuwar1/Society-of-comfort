@@ -92,16 +92,19 @@ const EventList = () => {
 
   const handleUpdateEvent = async () => {
     try {
+      // Format the date to just send the date without time
+      const formattedDate = dayjs(editForm.date).format("YYYY-MM-DD");
+
       await dispatch(
         eventActions.updateEvent({
           id: selectedEvent.event.id,
-          eventData: { ...editForm, _method: "PUT" },
+          eventData: { ...editForm, date: formattedDate, _method: "PUT" },
         })
       ).unwrap();
       message.success("Event updated successfully");
       setIsEditModalOpen(false);
       navigate("/dashboard/eventlist");
-    } catch (error) {
+    } catch (err) {
       message.error("Failed to update event");
     }
   };

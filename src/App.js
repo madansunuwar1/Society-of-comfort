@@ -54,6 +54,7 @@ import HouseSetting from "./pages/admin/HouseSetting";
 import ChangePassword from "./pages/admin/ChangePassword";
 import EditProfile from "./pages/admin/EditProfile";
 import AddUser from "./pages/admin/AddUser";
+import AddHouseSettingPage from "./pages/admin/AddHouseSettingPage";
 
 function App() {
   return (
@@ -212,15 +213,7 @@ function App() {
             </>
           }
         />
-        <Route
-          path="/changepassword"
-          element={
-            <>
-              <Password />
-              <Botnav />
-            </>
-          }
-        />
+
         <Route
           path="/changeprofile"
           element={
@@ -323,6 +316,16 @@ function App() {
           <Route path="changepassword" element={<ChangePassword />} />
           <Route path="editprofile" element={<EditProfile />} />
           <Route path="adduser" element={<AddUser />} />
+          <Route path="addhousesetting" element={<AddHouseSettingPage />} />
+          <Route
+            path="changepassword"
+            element={
+              <>
+                <Password />
+                <Botnav />
+              </>
+            }
+          />
         </Route>
       </Routes>
     </Router>

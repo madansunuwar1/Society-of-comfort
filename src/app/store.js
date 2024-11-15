@@ -8,6 +8,7 @@ import bookingReducer from "../redux/bookingSlice";
 import { settingsReducer } from "../redux/settingsSlice";
 import { eventReducer } from "../redux/eventSlice";
 import { workerReducer } from "../redux/workerSlice";
+import { houseSettingsReducer } from "../redux/houseSettingsSlice";
 
 export const store = configureStore({
   reducer: {
@@ -20,5 +21,6 @@ export const store = configureStore({
     settings: settingsReducer,
     events: eventReducer,
     workers: workerReducer,
+    houseSettings: houseSettingsReducer,
   },
 });
