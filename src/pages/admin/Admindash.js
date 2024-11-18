@@ -95,7 +95,7 @@ const Admindash = () => {
     {
       key: "workerlist",
       icon: <TeamOutlined style={{ color: "" }} />,
-      label: "Workers",
+      label: "Staffs",
       link: "workerlist",
     },
     {

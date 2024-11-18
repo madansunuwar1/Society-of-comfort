@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { addUser } from "../../redux/userSlice";
-import { notification } from "antd";
+import { notification, Form, Input } from "antd";
 
 const AddUser = () => {
   const dispatch = useDispatch();
@@ -169,6 +169,20 @@ const AddUser = () => {
                 rows="4"
               />
             </div>
+            <label className="font-bold text-md">Enter new password</label>
+            <Form.Item
+              name="password"
+              rules={[{ required: true, message: "New password is required" }]}
+            >
+              <Input.Password placeholder="Enter new password" />
+            </Form.Item>
+            <label className="font-bold text-md">Re-enter password</label>
+            <Form.Item
+              name="password"
+              rules={[{ required: true, message: "New password is required" }]}
+            >
+              <Input.Password placeholder="Enter new password" />
+            </Form.Item>
 
             {error && <p className="text-red-500">{error}</p>}
             <div>

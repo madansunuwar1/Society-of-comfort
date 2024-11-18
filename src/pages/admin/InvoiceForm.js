@@ -14,6 +14,8 @@ const InvoiceForm = () => {
   const location = useLocation();
   const dispatch = useDispatch();
   const settings = useSelector((state) => state.settings.settings);
+  const { invoices, loading, error } = useSelector((state) => state.invoices);
+
   const [date, setDate] = useState(null);
   const [houseId, setHouseId] = useState("");
   const [houses, setHouses] = useState([]);
@@ -29,28 +31,54 @@ const InvoiceForm = () => {
   const [successMessage, setSuccessMessage] = useState("");
   const [customOptions, setCustomOptions] = useState([]);
   const [isDuplicating, setIsDuplicating] = useState(false);
+  const [isEditing, setIsEditing] = useState(false);
+  const [invoiceId, setInvoiceId] = useState(null);
+  const [water, setWater] = useState(0);
 
   const handleDateChange = (date) => {
     setDate(date);
   };
 
   useEffect(() => {
-    if (location.state?.duplicateData) {
-      // Duplicate data is present, set values for duplication
-      const duplicateData = location.state.duplicateData;
-      setHouseId(duplicateData.house_id);
-      setSelectedMonth(duplicateData.month);
-      setItems(
-        duplicateData.items.map((item) => ({
-          particular: item.particular,
-          quantity: item.quantity,
-          rate: item.rate,
-        }))
-      );
-      setNewWaterUnit(duplicateData.water_unit);
-      setIsDuplicating(true);
+    if (location.state) {
+      console.log(water);
+      // Check if invoiceData exists for editing
+      if (location.state?.invoiceData) {
+        const invoiceData = location.state.invoiceData;
+        setHouseId(invoiceData.house_id);
+        setSelectedMonth(invoiceData.month);
+        setItems(
+          invoiceData.items.map((item) => ({
+            particular: item.particular,
+            quantity: item.quantity,
+            rate: item.rate,
+          }))
+        );
+        setDate(invoiceData.invoice_date);
+        setInvoiceId(invoiceData.id);
+        setDueAmount(invoiceData?.due);
+        setWater(invoiceData.old_water_unit); // Store the invoice ID for update
+        setIsEditing(true);
+      }
+      // Check if duplicateData exists for duplicating
+      else if (location.state?.duplicateData) {
+        const duplicateData = location.state.duplicateData;
+        setHouseId(duplicateData.house_id);
+        setSelectedMonth(duplicateData.month);
+        setItems(
+          duplicateData.items.map((item) => ({
+            particular: item.particular,
+            quantity: item.quantity,
+            rate: item.rate,
+          }))
+        );
+        setDate(duplicateData.invoice_date);
+        setDueAmount(duplicateData?.due);
+        setWater(duplicateData.old_water_unit);
+        setIsDuplicating(true);
+      }
     } else {
-      // Set default values when no duplication
+      // Default case when there is no editing or duplicating
       const activeSettings = settings.filter((setting) => setting.status === 1);
 
       // Map active settings to items and set the initial items
@@ -113,6 +141,8 @@ const InvoiceForm = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
+    setIsDuplicating(false);
+    setIsEditing(false);
 
     // Validate form
     if (!validateForm()) {
@@ -132,7 +162,84 @@ const InvoiceForm = () => {
       items,
     };
 
+    if (isEditing) {
+      dispatch(
+        invoiceActions.updateInvoice({ id: invoiceId, invoiceData: formData })
+      )
+        .unwrap()
+        .then(() => {
+          setSuccessMessage("Invoice updated successfully!");
+          notification.success({
+            message: "Success",
+            description: "Invoice updated successfully!",
+          });
+          dispatch(invoiceActions.getInvoices());
+          navigate("/dashboard/paymentlist");
+        })
+        .catch((err) => {
+          notification.error({
+            message: "Error",
+            description: `An error occurred while updating the invoice: ${err?.errors}`,
+          });
+        });
+    } else {
+      // Add new invoice
+      dispatch(invoiceActions.addInvoice(formData))
+        .unwrap()
+        .then(() => {
+          setSuccessMessage("Invoice added successfully!");
+          notification.success({
+            message: "Success",
+            description: isDuplicating
+              ? "Duplicated invoice added successfully!"
+              : "Invoice added successfully!",
+          });
+          dispatch(invoiceActions.getInvoices());
+          navigate("/dashboard/paymentlist");
+        })
+        .catch((err) => {
+          notification.error({
+            message: "Error",
+            description: `An error occurred while adding the invoice: ${err?.errors}`,
+          });
+        });
+    }
+
+    // Reset form state
+    setHouseId("");
+    setTotalAmount("");
+    setItems([{ particular: "", quantity: 1, rate: 0 }]);
+    setFormErrors({});
+    setNewWaterUnit(0);
+    setDate("");
+    setDueAmount(null);
+    setIsDuplicating(false);
+    setIsEditing(false);
+    setInvoiceId(null);
+    dispatch(invoiceActions.getInvoices());
+  };
+
+  const handleSaveAndAddNew = async () => {
+    // Validate form
+    if (!validateForm()) {
+      notification.error({
+        message: "Error",
+        description: "There are errors in the form.",
+      });
+      return;
+    }
+
+    const formData = {
+      house_id: houseId,
+      total_amount: totalAmount,
+      month: selectedMonth,
+      invoice_date: date,
+      water_unit: newWaterUnit,
+      items,
+    };
+
     dispatch(invoiceActions.addInvoice(formData))
+      .unwrap() // This will ensure we can handle the result directly
       .then(() => {
         setSuccessMessage("Invoice added successfully!");
         notification.success({
@@ -143,22 +250,20 @@ const InvoiceForm = () => {
         });
         navigate("/dashboard/paymentlist");
       })
-      .catch(() => {
-        setSuccessMessage("Invoice added successfully!");
+      .catch((err) => {
+        console.error("Error:", err?.errors);
+        const errorMessages = Array.isArray(err?.errors)
+          ? err.errors.join(", ")
+          : err?.errors || "An error occurred while adding the invoice.";
+
+        // Display the error notification
         notification.error({
-          message: "error",
-          description: "Invoice added unsucessfull",
+          message: "Error",
+          description: JSON.stringify(errorMessages),
         });
       });
 
-    // Reset form state
-    setHouseId("");
-    setTotalAmount("");
-    setItems([{ particular: "", quantity: 1, rate: 0 }]);
-    setFormErrors({});
-    setNewWaterUnit(0);
-    setDate("");
-    setIsDuplicating(false);
+    // Optionally, fetch the updated invoices list
     dispatch(invoiceActions.getInvoices());
   };
 
@@ -197,9 +302,9 @@ const InvoiceForm = () => {
         } else if (field === "newWaterUnit") {
           setNewWaterUnit(value);
           const selectedHouse = houses.data.find(
-            (house) => house.house_number === houseId
+            (house) => house.id === houseId
           );
-          const oldWaterUnit = selectedHouse?.water_unit || 0;
+          const oldWaterUnit = isEditing ? water : dueUnit || 0;
           const calculatedQuantity = value - oldWaterUnit;
           return {
             ...item,
@@ -296,7 +401,11 @@ const InvoiceForm = () => {
     <div className=" pb-20 pt-8 px-8">
       <div>
         <h1 className="font-bold mx-auto text-[22px]">
-          {isDuplicating ? "Duplicate Invoice" : "Add Invoice"}
+          {isEditing
+            ? "Edit Invoice"
+            : isDuplicating
+            ? "Duplicate Invoice"
+            : "Add Invoice"}
         </h1>
       </div>
       <div className=" bg-slate-200 rounded-lg p-8">
@@ -308,6 +417,7 @@ const InvoiceForm = () => {
                 className="rounded-md py-1 px-4 border-[2px] border-gray-400"
                 value={houseId}
                 onChange={handleHouseChange}
+                disabled={isEditing}
                 required
               >
                 <option value="">Select House Id</option>
@@ -329,8 +439,9 @@ const InvoiceForm = () => {
               <label>Select Date</label>
               <NepaliDatePicker
                 options={{ calenderLocale: "en", valueLocale: "en" }}
-                value={date}
+                value={date || ""}
                 onChange={handleDateChange}
+                disabled={isEditing}
                 className="custom-date-picker"
               />
             </div>
@@ -491,6 +602,19 @@ const InvoiceForm = () => {
                   </td>
                   <td className="py-2 px-4 pt-20 border-b"> </td>
                 </tr>
+
+                <tr className="">
+                  <td className="py-2 px-4 border-r border-b border-gray-300"></td>
+                  <td className="py-2 px-4 border-r border-b border-gray-300">
+                    old water unit
+                  </td>
+                  <td className="py-2 px-4 border-r border-b border-gray-300"></td>
+                  <td className="py-2 px-4 border-r border-b border-gray-300"></td>
+                  <td className="py-2 px-4 border-r border-b border-gray-300">
+                    {dueUnit}
+                  </td>
+                  <td className="py-2 px-4 border-b"> </td>
+                </tr>
                 <tr className="">
                   <td className="py-2 px-4 border-r border-b border-gray-300"></td>
                   <td className="py-2 px-4 border-r border-b border-gray-300">
@@ -516,9 +640,16 @@ const InvoiceForm = () => {
             </button>
             <button
               type="submit"
-              className="bg-green-800 text-white py-1 px-4 rounded mt-4"
+              className="bg-green-800 text-white py-1 px-4 rounded mt-4 mr-4"
             >
-              Submit Invoice
+              {isEditing ? "Update Invoice" : "Submit Invoice"}
+            </button>
+            <button
+              type="button"
+              className="bg-blue-800 text-white py-1 px-4 rounded mt-4"
+              onClick={handleSaveAndAddNew}
+            >
+              Save and Add New
             </button>
           </div>
         </form>

@@ -59,12 +59,42 @@ const PaymentList = () => {
         duplicateData: {
           house_id: payment.house_id,
           month: payment.month,
+          invoice_date: payment.invoice_date,
           items: payment.invoice_items,
           water_unit: payment.water_unit,
+          due: payment.due_at_invoice,
+          old_water_unit: payment.old_water_unit,
         },
       },
     });
   };
+
+  const handleEdit = (payment) => {
+    navigate("/dashboard/addinvoice", {
+      state: {
+        invoiceData: {
+          house_id: payment.house_id,
+          month: payment.month,
+          invoice_date: payment.invoice_date,
+          items: payment.invoice_items,
+          old_water_unit: payment.old_water_unit,
+          id: payment.id,
+          due: payment.due_at_invoice,
+        },
+      },
+    });
+  };
+
+  const latestInvoices = invoices.reduce((acc, invoice) => {
+    const currentLatest = acc[invoice.house_id];
+    if (
+      !currentLatest ||
+      new Date(invoice.created_at) > new Date(currentLatest.created_at)
+    ) {
+      acc[invoice.house_id] = invoice;
+    }
+    return acc;
+  }, {});
 
   // Paginate invoices
   const paginatedInvoices = invoices?.slice(
@@ -131,12 +161,15 @@ const PaymentList = () => {
                         {payment?.house?.users?.map((user) => user.name)}
                       </td>
                       <td className="py-2 px-4 flex gap-2">
-                        <Button
-                          type="default"
-                          className="bg-blue-800 text-white hover:bg-blue-600"
-                          // onClick={() => handleEdit(notice)}
-                          icon={<EditOutlined />}
-                        />
+                        {latestInvoices[payment.house_id]?.id ===
+                          payment.id && (
+                          <Button
+                            type="default"
+                            className="bg-blue-800 text-white hover:bg-blue-600"
+                            onClick={() => handleEdit(payment)}
+                            icon={<EditOutlined />}
+                          />
+                        )}
                         <Button
                           onClick={() => handleShowInvoice(payment)}
                           type="default"

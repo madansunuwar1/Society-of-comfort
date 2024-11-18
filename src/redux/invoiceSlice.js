@@ -30,9 +30,6 @@ export const addInvoice = createAsyncThunk(
   async (formData, { rejectWithValue }) => {
     try {
       const response = await api.post("/invoices", formData);
-
-      // Check if response status is 200 and has data
-
       return response.data; // Return the data containing the invoice details
     } catch (error) {
       console.error("API Error:", error); // Log the full error object
@@ -46,7 +43,7 @@ export const updateInvoice = createAsyncThunk(
   "invoices/updateInvoice",
   async ({ id, invoiceData }, { rejectWithValue }) => {
     try {
-      const response = await api.put(`/invoices/${id}/`, invoiceData);
+      const response = await api.put(`/invoices/${id}`, invoiceData);
       return response.data;
     } catch (error) {
       console.error("API Error:", error.response?.data);
