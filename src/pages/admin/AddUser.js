@@ -9,32 +9,21 @@ const AddUser = () => {
   const navigate = useNavigate();
   const { loading, error } = useSelector((state) => state.user);
 
+  const [houseNumber, setHouseNumber] = useState("");
   const [name, setName] = useState("");
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
   const [phoneNumber, setPhoneNumber] = useState("");
-  const [leaseStartDate, setLeaseStartDate] = useState("");
-  const [leaseEndDate, setLeaseEndDate] = useState("");
+  const [email, setEmail] = useState("");
   const [emergencyContact, setEmergencyContact] = useState("");
-  const [paymentInfo, setPaymentInfo] = useState("");
-  const [notes, setNotes] = useState("");
-  const [roleId, setRoleId] = useState(2);
-  const [houseId, setHouseId] = useState("");
   const [media, setMedia] = useState(null);
+  const [leaseStartDate, setLeaseStartDate] = useState("");
+  const [notes, setNotes] = useState("");
   const [fieldErrors, setFieldErrors] = useState({});
 
   const validateFields = () => {
     const errors = {};
+    if (!houseNumber.trim()) errors.houseNumber = "House number is required";
     if (!name.trim()) errors.name = "Name is required";
-    if (!email.trim() || !/^[\w-.]+@([\w-]+\.)+[\w-]{2,4}$/.test(email))
-      errors.email = "Valid email is required";
-    if (!password || password.length < 8)
-      errors.password = "Password must be at least 8 characters long";
     if (!phoneNumber.trim()) errors.phoneNumber = "Phone number is required";
-    if (!leaseStartDate) errors.leaseStartDate = "Lease start date is required";
-    if (!leaseEndDate) errors.leaseEndDate = "Lease end date is required";
-    if (new Date(leaseStartDate) >= new Date(leaseEndDate))
-      errors.leaseEndDate = "End date must be after start date";
 
     setFieldErrors(errors);
     return Object.keys(errors).length === 0;
@@ -52,28 +41,22 @@ const AddUser = () => {
     }
 
     const formData = new FormData();
+    formData.append("house_number", houseNumber);
     formData.append("name", name);
-    formData.append("email", email);
-    formData.append("password", password);
     formData.append("phone_number", phoneNumber);
-    formData.append("lease_start_date", leaseStartDate);
-    formData.append("lease_end_date", leaseEndDate);
-    formData.append("emergency_contact", emergencyContact);
-    formData.append("payment_info", paymentInfo);
-    formData.append("notes", notes);
-    formData.append("role_id", roleId);
-    formData.append("house_id", houseId);
-    if (media) {
-      formData.append("media", media);
-    }
+    if (email) formData.append("email", email);
+    if (emergencyContact)
+      formData.append("emergency_contact", emergencyContact);
+    if (media) formData.append("media", media);
+    if (leaseStartDate) formData.append("lease_start_date", leaseStartDate);
+    if (notes) formData.append("notes", notes);
 
-    // Dispatch addUser action with formData
     dispatch(addUser(formData))
       .unwrap()
       .then(() => {
         notification.success({
           message: "Success",
-          description: "Event added successfully",
+          description: "User added successfully",
         });
         navigate("/dashboard/userlist"); // Redirect on success
       })
@@ -93,6 +76,20 @@ const AddUser = () => {
         <div className="py-6 bg-white rounded-lg m-3 p-4">
           <form onSubmit={handleSubmit} className="flex flex-col gap-2">
             <div>
+              <label className="font-bold text-md">House Number</label>
+              <input
+                className="rounded-md py-3 px-4 w-full border-[2px] border-gray-400 mt-2"
+                type="text"
+                placeholder="House Number"
+                value={houseNumber}
+                onChange={(e) => setHouseNumber(e.target.value)}
+                required
+              />
+              {fieldErrors.houseNumber && (
+                <p className="text-red-500">{fieldErrors.houseNumber}</p>
+              )}
+            </div>
+            <div>
               <label className="font-bold text-md">Name</label>
               <input
                 className="rounded-md py-3 px-4 w-full border-[2px] border-gray-400 mt-2"
@@ -104,34 +101,6 @@ const AddUser = () => {
               />
               {fieldErrors.name && (
                 <p className="text-red-500">{fieldErrors.name}</p>
-              )}
-            </div>
-            <div>
-              <label className="font-bold text-md">Email</label>
-              <input
-                className="rounded-md py-3 px-4 w-full border-[2px] border-gray-400 mt-2"
-                type="email"
-                placeholder="Email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                required
-              />
-              {fieldErrors.email && (
-                <p className="text-red-500">{fieldErrors.email}</p>
-              )}
-            </div>
-            <div>
-              <label className="font-bold text-md">Password</label>
-              <input
-                className="rounded-md py-3 px-4 w-full border-[2px] border-gray-400 mt-2"
-                type="password"
-                placeholder="Password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                required
-              />
-              {fieldErrors.password && (
-                <p className="text-red-500">{fieldErrors.password}</p>
               )}
             </div>
             <div>
@@ -149,42 +118,19 @@ const AddUser = () => {
               )}
             </div>
             <div>
-              <label className="font-bold text-md">Lease Start Date</label>
+              <label className="font-bold text-md">Email (Optional)</label>
               <input
-                type="date"
                 className="rounded-md py-3 px-4 w-full border-[2px] border-gray-400 mt-2"
-                value={leaseStartDate}
-                onChange={(e) => setLeaseStartDate(e.target.value)}
-                required
-              />
-              {fieldErrors.leaseStartDate && (
-                <p className="text-red-500">{fieldErrors.leaseStartDate}</p>
-              )}
-            </div>
-            <div>
-              <label className="font-bold text-md">Lease End Date</label>
-              <input
-                type="date"
-                className="rounded-md py-3 px-4 w-full border-[2px] border-gray-400 mt-2"
-                value={leaseEndDate}
-                onChange={(e) => setLeaseEndDate(e.target.value)}
-                required
-              />
-              {fieldErrors.leaseEndDate && (
-                <p className="text-red-500">{fieldErrors.leaseEndDate}</p>
-              )}
-            </div>
-            <div>
-              <label className="font-bold text-md">Image</label>
-              <input
-                type="file"
-                onChange={handleFileChange}
-                className="rounded-md py-3 px-4 w-full border-[2px] border-gray-400 mt-2 bg-white"
-                accept=".jpg,.jpeg,.png,.pdf"
+                type="email"
+                placeholder="Email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
               />
             </div>
             <div>
-              <label className="font-bold text-md">Emergency Contact</label>
+              <label className="font-bold text-md">
+                Emergency Contact (Optional)
+              </label>
               <input
                 className="rounded-md py-3 px-4 w-full border-[2px] border-gray-400 mt-2"
                 type="text"
@@ -194,43 +140,33 @@ const AddUser = () => {
               />
             </div>
             <div>
-              <label className="font-bold text-md">Payment Info</label>
+              <label className="font-bold text-md">Image (Optional)</label>
               <input
-                className="rounded-md py-3 px-4 w-full border-[2px] border-gray-400 mt-2"
-                type="text"
-                placeholder="Payment Info"
-                value={paymentInfo}
-                onChange={(e) => setPaymentInfo(e.target.value)}
+                type="file"
+                onChange={handleFileChange}
+                className="rounded-md py-3 px-4 w-full border-[2px] border-gray-400 mt-2 bg-white"
+                accept=".jpg,.jpeg,.png,.pdf"
               />
             </div>
             <div>
-              <label className="font-bold text-md">Notes</label>
+              <label className="font-bold text-md">
+                Lease Start Date (Optional)
+              </label>
+              <input
+                type="date"
+                className="rounded-md py-3 px-4 w-full border-[2px] border-gray-400 mt-2"
+                value={leaseStartDate}
+                onChange={(e) => setLeaseStartDate(e.target.value)}
+              />
+            </div>
+            <div>
+              <label className="font-bold text-md">Notes (Optional)</label>
               <textarea
                 className="rounded-md w-full py-4 px-4 border-[2px] border-gray-400 mt-2"
                 placeholder="Additional Notes"
                 value={notes}
                 onChange={(e) => setNotes(e.target.value)}
                 rows="4"
-              />
-            </div>
-            <div>
-              <label className="font-bold text-md">Role ID</label>
-              <input
-                className="rounded-md py-3 px-4 w-full border-[2px] border-gray-400 mt-2"
-                type="number"
-                placeholder="Role ID"
-                value={roleId}
-                onChange={(e) => setRoleId(parseInt(e.target.value))}
-              />
-            </div>
-            <div>
-              <label className="font-bold text-md">House ID</label>
-              <input
-                className="rounded-md py-3 px-4 w-full border-[2px] border-gray-400 mt-2"
-                type="text"
-                placeholder="House ID"
-                value={houseId}
-                onChange={(e) => setHouseId(e.target.value)}
               />
             </div>
 

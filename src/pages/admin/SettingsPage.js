@@ -1,7 +1,15 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { settingsActions } from "../../redux/settingsSlice";
-import { Button, Modal, Input, Skeleton, message, notification } from "antd";
+import {
+  Button,
+  Modal,
+  Input,
+  Skeleton,
+  message,
+  notification,
+  Checkbox,
+} from "antd";
 import { Link } from "react-router-dom";
 import { PlusOutlined, EditOutlined, DeleteOutlined } from "@ant-design/icons";
 
@@ -14,6 +22,7 @@ const SettingsPage = () => {
   const [editSetting, setEditSetting] = useState(null);
   const [newSettingName, setNewSettingName] = useState("");
   const [newSettingValue, setNewSettingValue] = useState("");
+  const [newSettingStatus, setNewSettingStatus] = useState(0);
 
   useEffect(() => {
     dispatch(settingsActions.getSettings());
@@ -24,6 +33,7 @@ const SettingsPage = () => {
     setEditSetting(setting);
     setNewSettingName(setting.setting_name);
     setNewSettingValue(setting.setting_value);
+    setNewSettingStatus(setting.status || 0);
     setIsModalVisible(true);
   };
 
@@ -33,6 +43,7 @@ const SettingsPage = () => {
     setEditSetting(null);
     setNewSettingName("");
     setNewSettingValue("");
+    setNewSettingStatus(0);
   };
 
   // Handle updating the setting
@@ -47,6 +58,7 @@ const SettingsPage = () => {
         settingsData: {
           setting_name: newSettingName,
           setting_value: newSettingValue,
+          status: String(newSettingStatus),
         },
       })
     )
@@ -117,6 +129,9 @@ const SettingsPage = () => {
                     <th className="py-2 px-4 border-r border-b border-gray-300">
                       Amount
                     </th>
+                    <th className="py-2 px-4 border-r border-b border-gray-300">
+                      Status
+                    </th>
                     <th className="py-2 px-4 border-b border-gray-300">
                       Actions
                     </th>
@@ -130,6 +145,9 @@ const SettingsPage = () => {
                       </td>
                       <td className="py-2 px-4 border-r">
                         {setting.setting_value}
+                      </td>
+                      <td className="py-2 px-4 border-r">
+                        {setting.status === 1 ? "Default" : ""}
                       </td>
                       <td className="py-2 px-4 flex gap-2">
                         <Button
@@ -178,6 +196,14 @@ const SettingsPage = () => {
                 value={newSettingValue}
                 onChange={(e) => setNewSettingValue(e.target.value)}
               />
+            </div>
+            <div className="mb-4">
+              <Checkbox
+                checked={newSettingStatus === 1}
+                onChange={(e) => setNewSettingStatus(e.target.checked ? 1 : 0)}
+              >
+                Active
+              </Checkbox>
             </div>
           </div>
         </Modal>

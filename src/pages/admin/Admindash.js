@@ -112,7 +112,7 @@ const Admindash = () => {
         {
           key: "invoicesettings",
           icon: <InfoCircleOutlined style={{ color: "" }} />,
-          label: "Invoice Setting",
+          label: "Invoice Item Setting",
           link: "invoicesettings",
         },
         {

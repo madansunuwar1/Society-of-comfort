@@ -2,13 +2,14 @@ import React, { useState } from "react";
 import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { settingsActions } from "../../redux/settingsSlice";
-import { notification } from "antd"; // Adjust the path as needed
+import { notification, Checkbox } from "antd"; // Adjust the path as needed
 
 const SettingsPage = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const [newSettingName, setNewSettingName] = useState(""); // New setting name
-  const [newSettingValue, setNewSettingValue] = useState(""); // New setting value
+  const [newSettingValue, setNewSettingValue] = useState("");
+  const [newSettingStatus, setNewSettingStatus] = useState(0); // Checkbox status // New setting value
   const [loading, setLoading] = useState(false); // Handle loading state
 
   // Handle Add Setting Submit
@@ -20,6 +21,7 @@ const SettingsPage = () => {
     const newSetting = {
       setting_name: newSettingName,
       setting_value: newSettingValue,
+      status: String(newSettingStatus),
     };
 
     // Dispatch to add the setting
@@ -33,6 +35,7 @@ const SettingsPage = () => {
         // Reset form fields
         setNewSettingName("");
         setNewSettingValue("");
+        setNewSettingStatus(0);
         navigate("/dashboard/invoicesettings");
       })
       .catch((err) => {
@@ -71,7 +74,14 @@ const SettingsPage = () => {
             placeholder="Enter setting value"
           />
         </div>
-
+        <div className="flex items-center mt-4">
+          <Checkbox
+            checked={newSettingStatus === 1}
+            onChange={(e) => setNewSettingStatus(e.target.checked ? 1 : 0)}
+          >
+            Active
+          </Checkbox>
+        </div>
         <div>
           <button
             type="submit"

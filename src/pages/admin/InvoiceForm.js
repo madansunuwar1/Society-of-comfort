@@ -51,19 +51,16 @@ const InvoiceForm = () => {
       setIsDuplicating(true);
     } else {
       // Set default values when no duplication
-      const monthlyFeeSetting = settings.find(
-        (setting) => setting.setting_name === "monthly fee"
-      );
+      const activeSettings = settings.filter((setting) => setting.status === 1);
 
-      if (monthlyFeeSetting) {
-        setItems(() => [
-          {
-            particular: "monthly fee",
-            quantity: 1,
-            rate: monthlyFeeSetting.setting_value || 0,
-          },
-        ]);
-      }
+      // Map active settings to items and set the initial items
+      const initialItems = activeSettings.map((setting) => ({
+        particular: setting.setting_name,
+        quantity: 1,
+        rate: setting.setting_value || 0,
+      }));
+
+      setItems(initialItems);
     }
   }, [location.state, settings]);
 
@@ -316,7 +313,9 @@ const InvoiceForm = () => {
                 <option value="">Select House Id</option>
                 {houses?.data?.map((house) => (
                   <option key={house.house_number} value={house.id}>
-                    {house.user_names || `House ID: ${house.house_number}`}
+                    {house.user_names?.length > 0
+                      ? house.user_names
+                      : house.house_number}
                   </option>
                 ))}
               </select>

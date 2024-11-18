@@ -29,12 +29,14 @@ const EventList = () => {
   const [isEventOpen, setIsEventOpen] = useState(false);
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [selectedEvent, setSelectedEvent] = useState(null);
+  const [previewImage, setPreviewImage] = useState(null);
   const [editForm, setEditForm] = useState({
     name: "",
     description: "",
     date: "",
     time: "",
     venue: "",
+    file: null,
   });
 
   useEffect(() => {
@@ -55,10 +57,12 @@ const EventList = () => {
     setEditForm({
       name: event.event.name,
       description: event.event.description || "",
-      date: event.event.date, // Directly use the event date here
+      date: event.event.date,
       time: event.event.time || "",
       venue: event.event.venue || "",
+      file: null,
     });
+    setPreviewImage(event.file_url);
     setIsEditModalOpen(true);
   };
 
@@ -67,6 +71,18 @@ const EventList = () => {
       ...prevForm,
       [key]: value,
     }));
+  };
+
+  const handleImageChange = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      setEditForm((prevForm) => ({ ...prevForm, image: file })); // Store the selected file
+      const reader = new FileReader();
+      reader.onload = () => {
+        setPreviewImage(reader.result); // Show the selected image as a preview
+      };
+      reader.readAsDataURL(file);
+    }
   };
 
   const handleDelete = (id) => {
@@ -90,12 +106,24 @@ const EventList = () => {
 
   const handleUpdateEvent = async () => {
     try {
+      const formData = new FormData();
+      formData.append("name", editForm.name);
+      formData.append("description", editForm.description);
+      formData.append("date", editForm.date);
+      formData.append("time", editForm.time);
+      formData.append("venue", editForm.venue);
+      if (editForm.image) {
+        formData.append("file", editForm.image); // Append the new image if provided
+      }
+      formData.append("_method", "PUT");
+
       await dispatch(
         eventActions.updateEvent({
           id: selectedEvent.event.id,
-          eventData: { ...editForm, _method: "PUT" },
+          eventData: formData,
         })
       ).unwrap();
+
       message.success("Event updated successfully");
       setIsEditModalOpen(false);
       dispatch(eventActions.getEvents());
@@ -221,7 +249,7 @@ const EventList = () => {
                 <img
                   src={selectedEvent.file_url}
                   alt="event"
-                  className="cursor-pointer object-cover"
+                  className="cursor-pointer object-cover h-80 w-80 mx-auto"
                 />
                 <p className="mt-4">
                   <strong>Description:</strong>{" "}
@@ -280,6 +308,20 @@ const EventList = () => {
                   onChange={(e) =>
                     handleEditFormChange("venue", e.target.value)
                   }
+                />
+              </Form.Item>
+              <Form.Item label="Event Image">
+                {previewImage && (
+                  <img
+                    src={previewImage}
+                    alt="preview"
+                    className="mb-4 w-full h-40 object-cover rounded"
+                  />
+                )}
+                <Input
+                  type="file"
+                  accept="image/*"
+                  onChange={handleImageChange}
                 />
               </Form.Item>
             </Form>
