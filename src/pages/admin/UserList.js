@@ -1,18 +1,22 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchUsers, deleteUser, editUser } from "../../redux/userSlice";
+import { Link, useNavigate } from "react-router-dom";
 import {
   Skeleton,
   Button,
   Modal,
   Pagination,
-  message,
-  Form,
   Input,
+  Form,
+  message,
 } from "antd";
-import { Link, useNavigate } from "react-router-dom";
-import { PlusOutlined } from "@ant-design/icons";
-import { EditOutlined, DeleteOutlined, EyeOutlined } from "@ant-design/icons";
+import {
+  PlusOutlined,
+  EditOutlined,
+  DeleteOutlined,
+  EyeOutlined,
+} from "@ant-design/icons";
 
 const UserList = () => {
   const navigate = useNavigate();
@@ -20,16 +24,20 @@ const UserList = () => {
   const { users, loading } = useSelector((state) => state.user);
   const [currentPage, setCurrentPage] = useState(1);
   const [pageSize] = useState(10);
-  const [viewUser, setViewUser] = useState(null);
-  const [isEditModalVisible, setIsEditModalVisible] = useState(false);
+  const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+  const [isUserOpen, setIsUserOpen] = useState(false);
   const [selectedUser, setSelectedUser] = useState(null);
-  const [form] = Form.useForm();
-
-  const handleSendPrivateNotice = (user) => {
-    navigate("/dashboard/notices", {
-      state: { noticeType: "private", selectedUser: [String(user.id)] }, // Pass the selected user as state
-    });
-  };
+  const [previewImage, setPreviewImage] = useState(null);
+  const [editForm, setEditForm] = useState({
+    house_id: "",
+    name: "",
+    email: "",
+    phone_number: "",
+    emergencyContact: "",
+    lease_start_date: "",
+    notes: "",
+    media: null,
+  });
 
   useEffect(() => {
     dispatch(fetchUsers());
@@ -39,25 +47,44 @@ const UserList = () => {
     setCurrentPage(page);
   };
 
-  const handleSubmitEdit = async (values) => {
-    try {
-      await dispatch(
-        editUser({ userId: selectedUser.id, userData: values })
-      ).unwrap();
-      message.success("User updated successfully");
-      setIsEditModalVisible(false);
-    } catch (error) {
-      message.error("Failed to update user");
-    }
+  const handleShowUser = (user) => {
+    setSelectedUser(user);
+    setIsUserOpen(true);
   };
 
   const handleEdit = (user) => {
     setSelectedUser(user);
-    form.setFieldsValue({
+    setEditForm({
+      house_id: user.house_id,
       name: user.name,
       email: user.email,
+      lease_start_date: user.lease_start_date,
+      phone_number: user.phone_number,
+      emergencyContact: user.emergency_contact,
+      notes: user.notes,
+      media: null,
     });
-    setIsEditModalVisible(true);
+    setPreviewImage(user.documents.length > 0 ? user.documents[0] : null); // Show preview of the first image
+    setIsEditModalOpen(true);
+  };
+
+  const handleEditFormChange = (key, value) => {
+    setEditForm((prevForm) => ({
+      ...prevForm,
+      [key]: value,
+    }));
+  };
+
+  const handleImageChange = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      setEditForm((prevForm) => ({ ...prevForm, media: file }));
+      const reader = new FileReader();
+      reader.onload = () => {
+        setPreviewImage(reader.result); // Preview the selected image
+      };
+      reader.readAsDataURL(file);
+    }
   };
 
   const handleDelete = (id) => {
@@ -71,11 +98,41 @@ const UserList = () => {
         try {
           await dispatch(deleteUser(id)).unwrap();
           message.success("User deleted successfully");
+          dispatch(fetchUsers());
         } catch (error) {
           message.error("Failed to delete user");
         }
       },
     });
+  };
+
+  const handleUpdateUser = async () => {
+    try {
+      const formData = new FormData();
+      formData.append("house_id", String(editForm.house_id));
+      formData.append("name", editForm.name);
+      formData.append("email", editForm.email);
+      formData.append("phone_number", editForm.phone_number);
+      formData.append("emergency_contact", editForm.emergencyContact);
+      if (editForm.media) {
+        formData.append("media", editForm.media); // Append new media file if provided
+      }
+      formData.append("notes", editForm.notes);
+      formData.append("lease_start_date", editForm.lease_start_date);
+      formData.append("_method", "PUT");
+
+      await dispatch(
+        editUser({ userId: selectedUser.id, userData: formData })
+      ).unwrap();
+
+      message.success("User updated successfully");
+      dispatch(fetchUsers());
+      setIsEditModalOpen(false);
+      dispatch(fetchUsers());
+    } catch (err) {
+      message.error("Failed to update user");
+      dispatch(fetchUsers());
+    }
   };
 
   const paginatedUsers = users?.slice(
@@ -87,20 +144,23 @@ const UserList = () => {
     <div className="w-full bg-slate-200 p-6 pb-20 rounded-lg shadow-md">
       <div className="bg-white rounded-lg p-4">
         <div className="mb-4 flex justify-between">
-          <h1 className="text-xl font-semibold mb-4">List Of Residence</h1>
+          <h1 className="text-xl font-semibold mb-4">User List</h1>
           <Link to="/dashboard/adduser">
             <Button
               type="default"
               className="bg-green-800 text-white hover:bg-green-600"
               icon={<PlusOutlined />}
             >
-              Add New Residence
+              Add User
             </Button>
           </Link>
         </div>
+
         <div className="bg-gray-200 p-5 rounded-lg">
           {loading ? (
             <div className="p-12">
+              <Skeleton active />
+              <Skeleton active />
               <Skeleton active />
             </div>
           ) : (
@@ -112,48 +172,52 @@ const UserList = () => {
                       Name
                     </th>
                     <th className="py-2 px-4 border-r border-b border-gray-300">
-                      Number
+                      Phone Number
+                    </th>
+                    <th className="py-2 px-4 border-r border-b border-gray-300">
+                      Image
                     </th>
                     <th className="py-2 px-4 border-b border-gray-300">
-                      Action
+                      Actions
                     </th>
                   </tr>
                 </thead>
                 <tbody>
                   {paginatedUsers?.map((user) => (
-                    <tr key={user.id} className="hover:bg-gray-50 border-b">
+                    <tr key={user.id} className=" hover:bg-gray-50 border-b">
                       <td className="py-2 px-4 border-r border-gray-300">
-                        {user.apartment_number}-{user.block} / {user.name}
+                        {user.name}
                       </td>
                       <td className="py-2 px-4 border-r border-gray-300">
                         {user.phone_number}
                       </td>
+                      <td className="py-2 px-4 border-r border-gray-300">
+                        <img
+                          src={
+                            user?.documents.length > 0
+                              ? user?.documents[0]
+                              : "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png"
+                          }
+                          alt="user"
+                          className="cursor-pointer h-10 w-10 object-cover"
+                        />
+                      </td>
                       <td className="py-2 px-4 flex gap-2">
                         <Button
-                          type="default"
-                          className="bg-blue-800 text-white hover:bg-blue-600"
-                          onClick={() => handleEdit(user)}
                           icon={<EditOutlined />}
-                        ></Button>
+                          onClick={() => handleEdit(user)}
+                          className="bg-blue-600 text-white"
+                        />
                         <Button
-                          danger
-                          onClick={() => handleDelete(user.id)}
-                          className="hover:bg-red-800"
                           icon={<DeleteOutlined />}
-                        ></Button>
+                          onClick={() => handleDelete(user?.id)}
+                          danger
+                        />
                         <Button
-                          onClick={() => setViewUser(user)}
-                          type="default"
-                          className="hover:bg-gray-300"
                           icon={<EyeOutlined />}
-                        ></Button>
-                        <Button
-                          type="default"
-                          className="bg-yellow-500 text-white hover:bg-yellow-400"
-                          onClick={() => handleSendPrivateNotice(user)} // Add the new button
-                        >
-                          Send Private Notice
-                        </Button>
+                          onClick={() => handleShowUser(user)}
+                          className="bg-[#403F93] text-white"
+                        />
                       </td>
                     </tr>
                   ))}
@@ -170,46 +234,89 @@ const UserList = () => {
           />
         </div>
 
-        {viewUser && (
+        {/* View User Modal */}
+        {isUserOpen && selectedUser && (
           <Modal
-            title={viewUser.name}
-            open={true}
-            onCancel={() => setViewUser(null)}
+            visible={isUserOpen}
+            onCancel={() => setIsUserOpen(false)}
             footer={null}
+            width={800}
           >
-            <h3>Email:</h3>
-            <p>{viewUser.email}</p>
+            <div className="p-8">
+              <h2 className="text-xl font-bold text-center mb-2">
+                {selectedUser.name}
+              </h2>
+              <p className="text-center">{selectedUser.phone_number}</p>
+              <div className="mt-8 text-sm font-mono border-gray-400 pb-2 mb-4">
+                <img
+                  src={
+                    selectedUser.documents.length > 0
+                      ? selectedUser.documents[0]
+                      : "/path/to/default-image.jpg"
+                  }
+                  alt="user"
+                  className="cursor-pointer object-cover h-80 w-80 mx-auto"
+                />
+                <p className="mt-4">
+                  <strong>Email:</strong> {selectedUser.email}
+                </p>
+                <p className="mt-4">
+                  <strong>Emergency Contact:</strong>{" "}
+                  {selectedUser.emergency_contact}
+                </p>
+              </div>
+            </div>
           </Modal>
         )}
 
-        {isEditModalVisible && (
+        {/* Edit User Modal */}
+        {isEditModalOpen && (
           <Modal
+            visible={isEditModalOpen}
+            onCancel={() => setIsEditModalOpen(false)}
+            onOk={handleUpdateUser}
             title="Edit User"
-            visible={isEditModalVisible}
-            onCancel={() => setIsEditModalVisible(false)}
-            footer={null}
           >
-            <Form form={form} onFinish={handleSubmitEdit}>
-              <Form.Item
-                name="name"
-                label="Name"
-                rules={[{ required: true, message: "Please enter the name" }]}
-              >
-                <Input />
+            <Form layout="vertical">
+              <Form.Item label="Name">
+                <Input
+                  placeholder="Name"
+                  value={editForm.name}
+                  onChange={(e) => handleEditFormChange("name", e.target.value)}
+                />
               </Form.Item>
-              <Form.Item
-                name="email"
-                label="Email"
-                rules={[
-                  { required: true, message: "Please enter the email" },
-                  { type: "email", message: "Please enter a valid email" },
-                ]}
-              >
-                <Input />
+              <Form.Item label="Email">
+                <Input
+                  placeholder="Email"
+                  value={editForm.email}
+                  onChange={(e) =>
+                    handleEditFormChange("email", e.target.value)
+                  }
+                />
               </Form.Item>
-              <Button type="primary" htmlType="submit" className="w-full">
-                Save Changes
-              </Button>
+              <Form.Item label="Phone Number">
+                <Input
+                  placeholder="Phone Number"
+                  value={editForm.phone_number}
+                  onChange={(e) =>
+                    handleEditFormChange("phone_number", e.target.value)
+                  }
+                />
+              </Form.Item>
+              <Form.Item label="User Image">
+                {previewImage && (
+                  <img
+                    src={previewImage}
+                    alt="preview"
+                    className="mb-4 w-full h-40 object-cover rounded"
+                  />
+                )}
+                <Input
+                  type="file"
+                  accept="image/*"
+                  onChange={handleImageChange}
+                />
+              </Form.Item>
             </Form>
           </Modal>
         )}

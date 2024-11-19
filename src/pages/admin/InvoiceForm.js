@@ -200,7 +200,9 @@ const InvoiceForm = () => {
         .catch((err) => {
           notification.error({
             message: "Error",
-            description: `An error occurred while adding the invoice: ${err?.errors}`,
+            description: `An error occurred while adding the invoice: ${JSON.stringify(
+              err?.errors
+            )}`,
           });
         });
     }

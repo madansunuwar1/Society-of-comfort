@@ -16,6 +16,7 @@ export const fetchResidences = createAsyncThunk(
     return response.data;
   }
 );
+
 // Async thunk to fetch users
 export const fetchUsers = createAsyncThunk("user/fetchUsers", async () => {
   const response = await api.get("/users"); // Assuming API endpoint for fetching users
@@ -27,7 +28,11 @@ export const addUser = createAsyncThunk(
   "user/addUser",
   async (userData, { rejectWithValue }) => {
     try {
-      const response = await api.post("/users", userData); // Assuming API endpoint for adding users
+      const response = await api.post("/users", userData, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      });
       return response.data;
     } catch (error) {
       return rejectWithValue(error.response?.data || "Failed to add user");
@@ -40,7 +45,11 @@ export const editUser = createAsyncThunk(
   "user/editUser",
   async ({ userId, userData }, { rejectWithValue }) => {
     try {
-      const response = await api.put(`/users/${userId}`, userData); // Assuming API endpoint for editing user
+      const response = await api.post(`/users/${userId}`, userData, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      });
       return response.data;
     } catch (error) {
       return rejectWithValue(error.response?.data || "Failed to edit user");

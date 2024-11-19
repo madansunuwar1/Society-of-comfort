@@ -17,7 +17,7 @@ const Signin = () => {
       navigate("/dashboard");
     } else if (loggedInUser && loggedInUser.role === "Guard") {
       navigate("/guard");
-    } else if (loggedInUser && loggedInUser.role === "Apartment User") {
+    } else if (loggedInUser && loggedInUser.role === "panel_user") {
       navigate("/userdash");
     } else if (loggedInUser && loggedInUser.role === "Worker") {
       navigate("/proadmin");
@@ -33,7 +33,7 @@ const Signin = () => {
           navigate("/dashboard");
         } else if (data.role === "Guard") {
           navigate("/guard");
-        } else if (data.role === "Apartment User") {
+        } else if (data.role === "panel_user") {
           navigate("/userdash");
         } else if (data.role === "Worker") {
           navigate("/proadmin");
@@ -81,8 +81,8 @@ const Signin = () => {
             <div className="pt-6">
               <input
                 className="bg-[#F4F5F7] rounded-xl w-full py-4 px-3 border border-slate-300"
-                type="email"
-                placeholder="Email"
+                type="text"
+                placeholder="Login_id"
                 onChange={(e) => setMail(e.target.value)}
                 value={mail}
               />

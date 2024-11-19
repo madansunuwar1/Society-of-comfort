@@ -1,13 +1,15 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { addUser } from "../../redux/userSlice";
-import { notification, Form, Input } from "antd";
+import { getHouseSettings } from "../../redux/houseSettingsSlice";
+import { notification, Form, Input, Select } from "antd";
 
 const AddUser = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const { loading, error } = useSelector((state) => state.user);
+  const { houseSettings } = useSelector((state) => state.houseSettings);
 
   const [houseNumber, setHouseNumber] = useState("");
   const [name, setName] = useState("");
@@ -17,37 +19,31 @@ const AddUser = () => {
   const [media, setMedia] = useState(null);
   const [leaseStartDate, setLeaseStartDate] = useState("");
   const [notes, setNotes] = useState("");
-  const [fieldErrors, setFieldErrors] = useState({});
 
-  const validateFields = () => {
-    const errors = {};
-    if (!houseNumber.trim()) errors.houseNumber = "House number is required";
-    if (!name.trim()) errors.name = "Name is required";
-    if (!phoneNumber.trim()) errors.phoneNumber = "Phone number is required";
-
-    setFieldErrors(errors);
-    return Object.keys(errors).length === 0;
-  };
+  useEffect(() => {
+    dispatch(getHouseSettings()); // Fetch house settings
+  }, [dispatch]);
 
   const handleFileChange = (e) => {
-    setMedia(e.target.files[0]);
+    if (e.target.files && e.target.files[0]) {
+      setMedia(e.target.files[0]);
+    }
   };
 
   const handleSubmit = (e) => {
     e.preventDefault();
 
-    if (!validateFields()) {
-      return; // Stop if validation fails
-    }
-
     const formData = new FormData();
-    formData.append("house_number", houseNumber);
+    formData.append("house_id", houseNumber);
     formData.append("name", name);
     formData.append("phone_number", phoneNumber);
     if (email) formData.append("email", email);
     if (emergencyContact)
       formData.append("emergency_contact", emergencyContact);
-    if (media) formData.append("media", media);
+    if (media) {
+      console.log("Media file selected:", media); // Debugging
+      formData.append("media", media);
+    }
     if (leaseStartDate) formData.append("lease_start_date", leaseStartDate);
     if (notes) formData.append("notes", notes);
 
@@ -58,13 +54,15 @@ const AddUser = () => {
           message: "Success",
           description: "User added successfully",
         });
-        navigate("/dashboard/userlist"); // Redirect on success
+        console.log("formdata", [...formData]);
+        // Redirect on success
+        navigate("/dashboard/userlist");
       })
       .catch((err) => {
         console.error("Failed to add user:", err);
         notification.error({
           message: "Error",
-          description: err?.errors,
+          description: String(err?.message),
         });
       });
   };
@@ -75,19 +73,20 @@ const AddUser = () => {
       <div className="bg-gray-300 rounded-lg p-4">
         <div className="py-6 bg-white rounded-lg m-3 p-4">
           <form onSubmit={handleSubmit} className="flex flex-col gap-2">
+            <label className="font-bold text-md">House Number</label>
             <div>
-              <label className="font-bold text-md">House Number</label>
-              <input
-                className="rounded-md py-3 px-4 w-full border-[2px] border-gray-400 mt-2"
-                type="text"
-                placeholder="House Number"
+              <Select
+                placeholder="Select House Number"
                 value={houseNumber}
-                onChange={(e) => setHouseNumber(e.target.value)}
-                required
-              />
-              {fieldErrors.houseNumber && (
-                <p className="text-red-500">{fieldErrors.houseNumber}</p>
-              )}
+                onChange={(value) => setHouseNumber(value)}
+                className="w-full"
+              >
+                {houseSettings?.map((house) => (
+                  <Select.Option key={house.id} value={house.id}>
+                    {house.house_number}
+                  </Select.Option>
+                ))}
+              </Select>
             </div>
             <div>
               <label className="font-bold text-md">Name</label>
@@ -99,9 +98,6 @@ const AddUser = () => {
                 onChange={(e) => setName(e.target.value)}
                 required
               />
-              {fieldErrors.name && (
-                <p className="text-red-500">{fieldErrors.name}</p>
-              )}
             </div>
             <div>
               <label className="font-bold text-md">Phone Number</label>
@@ -113,9 +109,6 @@ const AddUser = () => {
                 onChange={(e) => setPhoneNumber(e.target.value)}
                 required
               />
-              {fieldErrors.phoneNumber && (
-                <p className="text-red-500">{fieldErrors.phoneNumber}</p>
-              )}
             </div>
             <div>
               <label className="font-bold text-md">Email (Optional)</label>
@@ -169,22 +162,6 @@ const AddUser = () => {
                 rows="4"
               />
             </div>
-            <label className="font-bold text-md">Enter new password</label>
-            <Form.Item
-              name="password"
-              rules={[{ required: true, message: "New password is required" }]}
-            >
-              <Input.Password placeholder="Enter new password" />
-            </Form.Item>
-            <label className="font-bold text-md">Re-enter password</label>
-            <Form.Item
-              name="password"
-              rules={[{ required: true, message: "New password is required" }]}
-            >
-              <Input.Password placeholder="Enter new password" />
-            </Form.Item>
-
-            {error && <p className="text-red-500">{error}</p>}
             <div>
               <button
                 type="submit"

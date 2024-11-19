@@ -13,7 +13,7 @@ const Userdash = () => {
       .then((response) => {
         const fetchedHouses = response.data.data;
         const userHouse = fetchedHouses.find(
-          (house) => Number(house.house_number) === user.user.house_id
+          (house) => Number(house.id) === user.user.house_id
         );
         if (userHouse) {
           setDueAmount(userHouse.dues); // Assuming `due_amount` is the property holding the due amount
