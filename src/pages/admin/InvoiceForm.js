@@ -34,10 +34,7 @@ const InvoiceForm = () => {
   const [isEditing, setIsEditing] = useState(false);
   const [invoiceId, setInvoiceId] = useState(null);
   const [water, setWater] = useState(0);
-  useEffect(() => {
-    const today = new Date();
-    setDate(today);
-  });
+
   const handleDateChange = (date) => {
     setDate(date);
   };
