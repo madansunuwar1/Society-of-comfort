@@ -22,7 +22,6 @@ const Booking = () => {
   const [endTime, setEndTime] = useState(""); // Default end time
   const [submitError, setSubmitError] = useState(null); // Local state for submission errors
   const [cancelError, setCancelError] = useState(null); // Local state for cancellation errors
-  const [errors, setErrors] = useState({}); // Validation errors
 
   const options = [
     { value: "Hall A", label: "Hall A", available: true },
@@ -33,12 +32,6 @@ const Booking = () => {
   useEffect(() => {
     dispatch(myBookings());
   }, [dispatch]);
-
-  useEffect(() => {
-    if (error) {
-      setSubmitError(error); // Set local error state if there's an error
-    }
-  }, [error]);
 
   const validateForm = () => {
     const newErrors = {};
@@ -67,7 +60,6 @@ const Booking = () => {
       newErrors.endTime = "End time must be after start time.";
     }
 
-    setErrors(newErrors);
     return Object.keys(newErrors).length === 0; // Return true if no errors
   };
 
@@ -89,7 +81,7 @@ const Booking = () => {
 
     // Reset any previous error before submitting
     setSubmitError(null);
-    setErrors({}); // Clear previous errors
+    // Clear previous errors
 
     // Dispatch the addBooking action
     dispatch(addBooking(bookingData))
@@ -151,10 +143,6 @@ const Booking = () => {
         </h3>
       </div>
       <div className="bg-slate-200 px-6 py-6">
-        {submitError && <p className="text-red-500">{submitError}</p>}{" "}
-        {/* Display submission error */}
-        {cancelError && <p className="text-red-500">{cancelError}</p>}{" "}
-        {/* Display cancellation error */}
         <form onSubmit={handleSubmit} className="flex flex-col gap-2">
           <div>
             <label htmlFor="hall_name">Choose Your Hall</label>
@@ -170,9 +158,6 @@ const Booking = () => {
               formatOptionLabel={formatOptionLabel}
               className="mt-2"
             />
-            {errors.hallName && (
-              <p className="text-red-500">{errors.hallName}</p>
-            )}
           </div>
           <div className="">
             <label htmlFor="booking_date" className="font-bold text-md">
@@ -186,9 +171,6 @@ const Booking = () => {
               value={bookingDate}
               onChange={(e) => setBookingDate(e.target.value)}
             />
-            {errors.bookingDate && (
-              <p className="text-red-500">{errors.bookingDate}</p>
-            )}
           </div>
           <div className="">
             <label htmlFor="remarks" className="font-bold text-md">
@@ -213,9 +195,6 @@ const Booking = () => {
               value={startTime}
               onChange={(e) => setStartTime(e.target.value)}
             />
-            {errors.startTime && (
-              <p className="text-red-500">{errors.startTime}</p>
-            )}
           </div>
           <h1 className="font-bold text-md">End Time</h1>
           <div className="">
@@ -227,7 +206,6 @@ const Booking = () => {
               value={endTime}
               onChange={(e) => setEndTime(e.target.value)}
             />
-            {errors.endTime && <p className="text-red-500">{errors.endTime}</p>}
           </div>
           <button
             type="submit"

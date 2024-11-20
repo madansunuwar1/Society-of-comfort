@@ -21,8 +21,8 @@ const Payment = () => {
           (house) => Number(house.house_number) === user.user.house_id
         );
         if (userHouse) {
-          setDueAmount(userHouse.dues); // Assuming `due_amount` is the property holding the due amount
-        } // Update houses state with API data
+          setDueAmount(userHouse.dues);
+        }
       })
       .catch((error) => {
         console.error("Error fetching houses:", error);

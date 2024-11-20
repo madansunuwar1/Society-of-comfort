@@ -2,10 +2,13 @@ import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 
 import api from "../utils/api";
+import { Button } from "antd";
+import { PlusCircleOutlined } from "@ant-design/icons";
 
 const Userdash = () => {
   const user = JSON.parse(localStorage.getItem("user"));
   const [dueAmount, setDueAmount] = useState(null);
+  const [housenumber, setHousenumber] = useState(null);
 
   useEffect(() => {
     api
@@ -16,7 +19,8 @@ const Userdash = () => {
           (house) => Number(house.id) === user.user.house_id
         );
         if (userHouse) {
-          setDueAmount(userHouse.dues); // Assuming `due_amount` is the property holding the due amount
+          setDueAmount(userHouse.dues);
+          setHousenumber(userHouse.house_number); // Assuming `due_amount` is the property holding the due amount
         } // Update houses state with API data
       })
       .catch((error) => {
@@ -27,6 +31,43 @@ const Userdash = () => {
   return (
     <div className="flex justify-center">
       <div className="px-5 pb-20 bg-white">
+        <h1 className="mt-2 text-[20px] font-sans">
+          Welocme{" "}
+          <span className="font-serif text-[16px] font-bold">
+            {" "}
+            {user.user.name}
+          </span>
+        </h1>
+        <div className="bg-[url('https://static.vecteezy.com/system/resources/previews/003/127/954/non_2x/abstract-template-blue-background-white-squares-free-vector.jpg')] rounded-lg mt-4 p-4 bg-cover flex justify-between">
+          <div>
+            <p className="font-bold text-white">TCH II Thaiba</p>
+            <div>
+              <p className="text-[16px] font-roboto text-white">
+                House no : {housenumber}
+              </p>
+            </div>
+
+            <div className="mt-6">
+              <p className="text-[16px] font-roboto text-white">Due amount</p>
+              <p className="text-white text-[16px] font-semibold">
+                {" "}
+                {dueAmount ? `NPR. ${dueAmount}` : "NPR. xxxx.xx"}
+              </p>
+            </div>
+          </div>
+          <div className=" flex justify-between flex-col">
+            <div className="mx-auto">
+              <img
+                src="../assets/images/image.jpeg"
+                alt="tch2 logo"
+                className="rounded-full h-20 w-20"
+              />
+            </div>
+            <Link to="/adduserpayment">
+              <Button icon={<PlusCircleOutlined />}>Add Payment</Button>
+            </Link>
+          </div>
+        </div>
         <div className="flex justify-between gap-4 mt-4">
           <Link to="/payment">
             <div className="w-[165px] h-[100px] rounded-lg bg-[#5ac9f5] bg-opacity-20 p-2 shadow-lg shadow-slate-400">

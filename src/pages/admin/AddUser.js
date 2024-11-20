@@ -54,17 +54,14 @@ const AddUser = () => {
           message: "Success",
           description: "User added successfully",
         });
-        console.log("formdata", [...formData]);
-        // Redirect on success
-        navigate("/dashboard/userlist");
       })
       .catch((err) => {
-        console.error("Failed to add user:", err);
         notification.error({
           message: "Error",
           description: String(err?.message),
         });
       });
+    navigate("/dashboard/userlist");
   };
 
   return (

@@ -14,10 +14,10 @@ const DisplayEvent = () => {
     const fetchEvents = async () => {
       try {
         const response = await api.get("/events"); // Replace '/events' with your actual endpoint
-        setEvents(response.data); // Set the event data to state
+        setEvents(response.data.data); // Set the event data to state
       } catch (err) {
         console.error("Error fetching events:", err);
-        setError("Failed to load events. Please try again later.");
+        setError("No events");
       } finally {
         setLoading(false); // Stop loading after the request is completed
       }
@@ -54,7 +54,7 @@ const DisplayEvent = () => {
 
       {
         <ul className="space-y-4">
-          {events.data.map((event) => (
+          {events.map((event) => (
             <div
               key={event.id}
               className=" bg-white shadow-sm flex flex-col md:px-14"

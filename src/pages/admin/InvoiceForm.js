@@ -16,7 +16,7 @@ const InvoiceForm = () => {
   const settings = useSelector((state) => state.settings.settings);
   const { invoices, loading, error } = useSelector((state) => state.invoices);
 
-  const [date, setDate] = useState(null);
+  const [date, setDate] = useState("");
   const [houseId, setHouseId] = useState("");
   const [houses, setHouses] = useState([]);
   const [totalAmount, setTotalAmount] = useState("");
@@ -34,7 +34,10 @@ const InvoiceForm = () => {
   const [isEditing, setIsEditing] = useState(false);
   const [invoiceId, setInvoiceId] = useState(null);
   const [water, setWater] = useState(0);
-
+  useEffect(() => {
+    const today = new Date();
+    setDate(today);
+  });
   const handleDateChange = (date) => {
     setDate(date);
   };
@@ -253,15 +256,10 @@ const InvoiceForm = () => {
         navigate("/dashboard/paymentlist");
       })
       .catch((err) => {
-        console.error("Error:", err?.errors);
-        const errorMessages = Array.isArray(err?.errors)
-          ? err.errors.join(", ")
-          : err?.errors || "An error occurred while adding the invoice.";
-
         // Display the error notification
         notification.error({
           message: "Error",
-          description: JSON.stringify(errorMessages),
+          description: JSON.stringify(err.error),
         });
       });
 

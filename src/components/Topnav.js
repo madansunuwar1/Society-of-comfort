@@ -14,7 +14,6 @@ const Topnav = () => {
         <Link to="/account">
           <img src={pic} alt="" className="h-10 w-10 rounded-full" />
         </Link>
-        <p className="my-auto text-white">Welcome! user</p>
       </div>
       <div className="flex">
         <IoMdNotificationsOutline className="h-8 w-8 text-white" />

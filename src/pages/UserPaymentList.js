@@ -137,7 +137,6 @@ const UserPaymentList = () => {
   };
 
   if (loading) return <div>Loading...</div>;
-  if (error) return <div>Error: {error}</div>;
 
   return (
     <div className="payment-list md:p-4 bg-slate-200">

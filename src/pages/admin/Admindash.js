@@ -130,7 +130,7 @@ const Admindash = () => {
         {
           key: "editprofile",
           icon: <ProfileOutlined style={{ color: "" }} />,
-          label: "Edit Profile",
+          label: "Your Profile",
           link: "editprofile",
         },
       ],
