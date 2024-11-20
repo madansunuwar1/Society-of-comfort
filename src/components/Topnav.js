@@ -14,6 +14,13 @@ const Topnav = () => {
         <Link to="/account">
           <img src={pic} alt="" className="h-10 w-10 rounded-full" />
         </Link>
+        <h1 className="mt-2 text-[20px] font-sans text-white">
+          Welocme{" "}
+          <span className="font-serif text-[16px] font-bold text-white">
+            {" "}
+            {userData.user.name}
+          </span>
+        </h1>
       </div>
       <div className="flex">
         <IoMdNotificationsOutline className="h-8 w-8 text-white" />

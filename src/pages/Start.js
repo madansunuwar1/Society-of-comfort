@@ -14,7 +14,7 @@ const Start = () => {
             />
           </div>
         </div>
-        <p className="text-white font-bold text-2xl text-center mt-4">
+        <p className="text-white font-bold text-2xl text-center mt-4 mx-5">
           Society of The Comfort Housing Phase II Thaiba
         </p>
         <h2 className="text-center text-white font-roboto mt-12 text-lg px-96">

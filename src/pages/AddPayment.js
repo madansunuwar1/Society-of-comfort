@@ -5,9 +5,11 @@ import { Link } from "react-router-dom";
 import { SlArrowLeft } from "react-icons/sl";
 import { NepaliDatePicker } from "nepali-datepicker-reactjs";
 import "nepali-datepicker-reactjs/dist/index.css";
+import api from "../utils/api";
 
 const AddPayment = () => {
   const dispatch = useDispatch();
+  const user = JSON.parse(localStorage.getItem("user"));
   const { payments, loading, error } = useSelector((state) => state.payments);
   const [updating, setUpdating] = useState(false);
   const [successMessage, setSuccessMessage] = useState("");
@@ -16,16 +18,38 @@ const AddPayment = () => {
   const [residentId, setResidentId] = useState(
     JSON.parse(localStorage.getItem("user"))?.user.id || ""
   );
+
   const [amount, setAmount] = useState("");
   const [date, setDate] = useState("");
   const [slip, setSlip] = useState(null);
   const [status, setStatus] = useState("Pending");
   const [remarks, setRemarks] = useState(""); // Default status
   const [errors, setErrors] = useState({}); // To store validation errors
+  const [dueAmount, setDueAmount] = useState(null);
 
   const handleDateChange = (date) => {
     setDate(date);
   };
+
+  useEffect(() => {
+    api
+      .get("/houses")
+      .then((response) => {
+        const fetchedHouses = response.data.data;
+        const userHouse = fetchedHouses.find(
+          (house) => Number(house.id) === user.user.house_id
+        );
+        if (userHouse) {
+          setDueAmount(userHouse.dues);
+          if (!amount) {
+            setAmount(userHouse.dues);
+          }
+        }
+      })
+      .catch((error) => {
+        console.error("Error fetching houses:", error);
+      });
+  }, [user.user.house_id]);
 
   const handleFileChange = (e) => {
     if (e.target.files && e.target.files.length > 0) {
@@ -54,10 +78,6 @@ const AddPayment = () => {
       newErrors.slip = "Please upload a slip file.";
     } else if (!["image/png", "image/jpeg"].includes(slip.type)) {
       newErrors.slip = "File type must be PNG or JPEG.";
-    }
-
-    if (!remarks) {
-      newErrors.remarks = "please eneter your remark for payment";
     }
 
     setErrors(newErrors);
@@ -112,7 +132,7 @@ const AddPayment = () => {
     <div className="payment-list p-4 bg-slate-200">
       <div className="flex px-6 py-4">
         <div className="items-center my-auto">
-          <Link to="/payment">
+          <Link to="/userdash">
             <SlArrowLeft />
           </Link>
         </div>
@@ -132,7 +152,6 @@ const AddPayment = () => {
         onSubmit={handlePaymentSubmit}
         className="bg-white p-6 rounded-lg shadow-lg mb-6 flex flex-col gap-2"
       >
-        <h3 className="text-xl font-bold mb-4">Add Payment</h3>
         <div>
           <label className="font-bold text-md">Amount</label>
           <input

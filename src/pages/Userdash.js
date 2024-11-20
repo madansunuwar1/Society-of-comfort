@@ -31,46 +31,37 @@ const Userdash = () => {
   return (
     <div className="flex justify-center">
       <div className="px-5 pb-20 bg-white">
-        <h1 className="mt-2 text-[20px] font-sans">
-          Welocme{" "}
-          <span className="font-serif text-[16px] font-bold">
-            {" "}
-            {user.user.name}
-          </span>
-        </h1>
         <div className="bg-[url('https://static.vecteezy.com/system/resources/previews/003/127/954/non_2x/abstract-template-blue-background-white-squares-free-vector.jpg')] rounded-lg mt-4 p-4 bg-cover flex justify-between">
           <div>
-            <p className="font-bold text-white">TCH II Thaiba</p>
-            <div>
-              <p className="text-[16px] font-roboto text-white">
-                House no : {housenumber}
-              </p>
+            <div className="mx-4">
+              <img
+                src="../assets/images/image.jpeg"
+                alt="tch2 logo"
+                className="rounded-full h-16 w-16"
+              />
             </div>
-
-            <div className="mt-6">
+            <div className="mt-2">
+              <p className="font-bold text-white">TCH II Thaiba</p>
+            </div>
+          </div>
+          <div className=" flex justify-between flex-col">
+            <div className="">
               <p className="text-[16px] font-roboto text-white">Due amount</p>
               <p className="text-white text-[16px] font-semibold">
                 {" "}
                 {dueAmount ? `NPR. ${dueAmount}` : "NPR. xxxx.xx"}
               </p>
             </div>
-          </div>
-          <div className=" flex justify-between flex-col">
-            <div className="mx-auto">
-              <img
-                src="../assets/images/image.jpeg"
-                alt="tch2 logo"
-                className="rounded-full h-20 w-20"
-              />
+            <div className="">
+              <Link to="/adduserpayment">
+                <Button icon={<PlusCircleOutlined />}>Add Payment</Button>
+              </Link>
             </div>
-            <Link to="/adduserpayment">
-              <Button icon={<PlusCircleOutlined />}>Add Payment</Button>
-            </Link>
           </div>
         </div>
         <div className="flex justify-between gap-4 mt-4">
           <Link to="/payment">
-            <div className="w-[165px] h-[100px] rounded-lg bg-[#5ac9f5] bg-opacity-20 p-2 shadow-lg shadow-slate-400">
+            <div className="w-[165px] h-[100px] rounded-lg bg-[#5ac9f5] bg-opacity-20 p-2 ">
               <p className="py-1 text-[#5ac9f5]">
                 {dueAmount ? `NPR. ${dueAmount}` : "NPR. xxxx.xx"}
               </p>
@@ -83,7 +74,7 @@ const Userdash = () => {
             </div>
           </Link>
           <Link to="/userpayment">
-            <div className="w-[165px] h-[100px] rounded-lg bg-[#6e3148] bg-opacity-20 p-2 shadow-lg shadow-slate-400">
+            <div className="w-[165px] h-[100px] rounded-lg bg-[#6e3148] bg-opacity-20 p-2 ">
               <svg
                 width="33"
                 height="33"
@@ -120,7 +111,7 @@ const Userdash = () => {
 
         <div className="flex justify-between gap-4 mt-4">
           <Link to="/display-event">
-            <div className="w-[165px] h-[100px] rounded-lg bg-[#F55A70] bg-opacity-20 p-2 shadow-lg shadow-slate-400">
+            <div className="w-[165px] h-[100px] rounded-lg bg-[#F55A70] bg-opacity-20 p-2 ">
               <svg
                 width="33"
                 height="33"
@@ -150,7 +141,7 @@ const Userdash = () => {
             </div>
           </Link>
           <Link to="/booking">
-            <div className="w-[165px] h-[100px] rounded-lg bg-[#4a6e31] bg-opacity-20 p-2 shadow-lg shadow-slate-400">
+            <div className="w-[165px] h-[100px] rounded-lg bg-[#4a6e31] bg-opacity-20 p-2 ">
               <svg
                 width="33"
                 height="33"
@@ -187,7 +178,7 @@ const Userdash = () => {
 
         {/* <div className="flex justify-between gap-4 mt-4">
           <Link to="/userpayment">
-            <div className="w-[165px] h-[100px] rounded-lg bg-[#752FFF] bg-opacity-20 p-2 shadow-lg shadow-slate-400">
+            <div className="w-[165px] h-[100px] rounded-lg bg-[#752FFF] bg-opacity-20 p-2 ">
               <svg
                 width="33"
                 height="33"
@@ -211,8 +202,10 @@ const Userdash = () => {
           </Link>
         </div> */}
         <div className="mt-4 pb-20">
+          <p className="text-sm text-gray-400">Under Development</p>
           <h1 className="text-xl font-bold">What Community Has For Sale</h1>
-          <div className="flex border-[2px] border-gray-300 rounded-lg mt-4 shadow-lg shadow-gray-400">
+
+          <div className="flex border-[2px] border-gray-300 rounded-lg mt-4">
             <img
               src="https://m.xcite.com/media/catalog/product//i/p/iphone_14_5g_-_red_1_3.jpg"
               className="w-24 h-24 rounded-l-lg object-cover"
@@ -234,7 +227,7 @@ const Userdash = () => {
               </p>
             </div>
           </div>
-          <div className="flex border-[2px] border-gray-300 rounded-lg mt-4 shadow-lg shadow-gray-400">
+          <div className="flex border-[2px] border-gray-300 rounded-lg mt-4">
             <img
               src="https://tse4.mm.bing.net/th?id=OIP.e8vVcUe-dNIsUmxm76aSNgHaHV&pid=Api&P=0&h=220"
               className="w-24 h-24 rounded-l-lg object-cover"
