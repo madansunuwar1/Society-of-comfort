@@ -27,6 +27,8 @@ import Tododetail from "./pages/professional/Tododetail";
 import History from "./pages/History";
 import Booking from "./pages/Booking";
 import Profileedit from "./pages/Profileedit";
+import InvoiceDetail from "./pages/InvoiceDetail";
+import PaymentDetail from "./pages/PaymentDetail";
 
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
@@ -80,6 +82,14 @@ function App() {
               <Botnav />
             </>
           }
+        />
+        <Route
+          path="/invoice-detail/:id"
+          element={<InvoiceDetail />} // Invoice detail component
+        />
+        <Route
+          path="/payment-detail/:id"
+          element={<PaymentDetail />} // Payment detail component
         />
 
         <Route

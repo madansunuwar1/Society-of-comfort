@@ -28,13 +28,13 @@ const Account = () => {
   return (
     <div className="flex justify-center bg-slate-800 w-[100%] h-[100vh]">
       <div className="w-[390px] bg-white font-roboto pb-20">
-        <div className="flex px-6 py-4">
+        <div className="flex justify-between bg-[#3F3F95] px-4 py-2 w-full rounded-b-lg">
           <div className="items-center my-auto">
             <button onClick={handleNavigation}>
-              <SlArrowLeft />
+              <SlArrowLeft className="text-white" />
             </button>
           </div>
-          <h3 className="font-bold flex justify-center mx-auto text-[22px]">
+          <h3 className="font-bold flex justify-center mx-auto text-[22px] text-white">
             Settings
           </h3>
         </div>

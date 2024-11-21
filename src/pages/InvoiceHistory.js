@@ -1,7 +1,7 @@
 import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { invoiceActions } from "../redux/invoiceSlice";
-import { Skeleton } from "antd";
+import { Skeleton, Divider } from "antd";
 import { Link } from "react-router-dom";
 import { SlArrowLeft } from "react-icons/sl";
 
@@ -35,21 +35,23 @@ const InvoiceHistory = () => {
         {invoices?.map((invoice) => (
           <div
             key={invoice.id}
-            className="flex flex-col border border-gray-300 bg-white p-4 rounded-lg shadow-md transition-transform hover:scale-105"
+            className="flex flex-col border border-gray-300 bg-white p-4 rounded-lg shadow-md transition-transform hover:scale-105 text-[12px] font-bold"
           >
-            <div className="mb-4">
+            <div className="">
               <p className="">
                 Date {new Date(invoice.created_at).toLocaleDateString()}
               </p>
               <p className="">Invoice for month: {invoice.month}</p>
             </div>
+            <div className="h-[1px] w-full bg-gray-600" />
             {invoice.invoice_items.map((item) => (
               <div className="flex justify-between">
                 <p>{item.particular}</p>
                 <p>Rs. {item.total}</p>
               </div>
             ))}
-            <div className="flex justify-between mt-2">
+            <div className="h-[1px] w-full bg-gray-600" />
+            <div className="flex justify-between">
               <p className="">Total</p>
               <p className="">{invoice.total_amount}</p>
             </div>

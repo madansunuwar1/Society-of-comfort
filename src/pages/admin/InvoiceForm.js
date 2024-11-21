@@ -262,7 +262,6 @@ const InvoiceForm = () => {
             ? "Duplicated invoice added successfully!"
             : "Invoice added successfully!",
         });
-        navigate("/dashboard/paymentlist");
       })
       .catch((err) => {
         // Display the error notification
@@ -271,8 +270,6 @@ const InvoiceForm = () => {
           description: JSON.stringify(err.error),
         });
       });
-
-    // Optionally, fetch the updated invoices list
     dispatch(invoiceActions.getInvoices());
   };
 
@@ -432,9 +429,7 @@ const InvoiceForm = () => {
                 <option value="">Select House Id</option>
                 {houses?.data?.map((house) => (
                   <option key={house.house_number} value={house.id}>
-                    {house.user_names?.length > 0
-                      ? house.user_names
-                      : house.house_number}
+                    {house.house_number}
                   </option>
                 ))}
               </select>
