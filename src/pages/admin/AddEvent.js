@@ -1,10 +1,11 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux"; // Import useDispatch
 import { notification } from "antd";
 import { NepaliDatePicker } from "nepali-datepicker-reactjs";
 import "nepali-datepicker-reactjs/dist/index.css";
 import { addEvent } from "../../redux/eventSlice";
+import { ADToBS } from "bikram-sambat-js";
 
 const AddEvent = () => {
   const navigate = useNavigate();
@@ -26,6 +27,17 @@ const AddEvent = () => {
     setEventAttachment(file);
     console.log(file);
   };
+
+  useEffect(() => {
+    try {
+      const today = new Date();
+      console.log(today);
+      const nepaliDate = ADToBS(today);
+      setEventDate(nepaliDate);
+    } catch (error) {
+      console.error("Error converting AD to BS:", error);
+    }
+  }, []);
 
   const handleSubmit = async (e) => {
     e.preventDefault();

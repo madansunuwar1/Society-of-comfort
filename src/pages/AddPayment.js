@@ -6,6 +6,7 @@ import { SlArrowLeft } from "react-icons/sl";
 import { NepaliDatePicker } from "nepali-datepicker-reactjs";
 import "nepali-datepicker-reactjs/dist/index.css";
 import api from "../utils/api";
+import { ADToBS } from "bikram-sambat-js";
 
 const AddPayment = () => {
   const dispatch = useDispatch();
@@ -30,6 +31,17 @@ const AddPayment = () => {
   const handleDateChange = (date) => {
     setDate(date);
   };
+
+  useEffect(() => {
+    try {
+      const today = new Date();
+      console.log(today);
+      const nepaliDate = ADToBS(today);
+      setDate(nepaliDate);
+    } catch (error) {
+      console.error("Error converting AD to BS:", error);
+    }
+  }, []);
 
   useEffect(() => {
     api

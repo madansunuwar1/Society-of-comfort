@@ -8,6 +8,7 @@ import { NepaliDatePicker } from "nepali-datepicker-reactjs";
 import "nepali-datepicker-reactjs/dist/index.css";
 import { EditOutlined, DeleteOutlined, EyeOutlined } from "@ant-design/icons";
 import { useNavigate, useLocation } from "react-router-dom";
+import { ADToBS } from "bikram-sambat-js";
 
 const InvoiceForm = () => {
   const navigate = useNavigate();
@@ -38,6 +39,17 @@ const InvoiceForm = () => {
   const handleDateChange = (date) => {
     setDate(date);
   };
+
+  useEffect(() => {
+    try {
+      const today = new Date();
+      console.log(today);
+      const nepaliDate = ADToBS(today);
+      setDate(nepaliDate);
+    } catch (error) {
+      console.error("Error converting AD to BS:", error);
+    }
+  }, []);
 
   useEffect(() => {
     if (location.state) {

@@ -1,40 +1,40 @@
 import React, { useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import { SlArrowLeft } from "react-icons/sl";
+import { FiEdit } from "react-icons/fi";
 import { useNavigate } from "react-router-dom";
-import image from "../svg/bg.jpg";
-import axios from "axios";
+import imagePlaceholder from "../svg/bg.jpg";
+import { editProfile } from "../redux/authSlice";
 
 const Profileedit = () => {
   const navigate = useNavigate();
+  const dispatch = useDispatch();
   const user = JSON.parse(localStorage.getItem("user"));
-  const [data, setData] = useState([]);
+  const id = user.user.id;
+
+  const { loading, error } = useSelector((state) => state.user);
+
   const [formData, setFormData] = useState({
     name: "",
     phone_number: "",
     email: "",
   });
-  const id = user.user.id;
-  console.log(id);
-  const fetchdata = async () => {
-    const url = `https://dev.waveplusit.com/api/profile/${id}`;
-    try {
-      const response = await axios.get(url);
-      console.log("response:", response);
-      if (response.status === 200) {
-        setData(response.data.user);
-        setFormData({
-          name: response.data.user.name,
-          phone_number: response.data.user.phone_number,
-          email: response.data.user.email,
-        });
-      } else {
-        throw new Error("network not ok");
-      }
-    } catch (error) {
-      console.log("Error:", error);
-      alert("Network request failed");
+  const [previewImage, setPreviewImage] = useState(
+    user.profile_picture_url || imagePlaceholder
+  );
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [selectedImage, setSelectedImage] = useState(null);
+
+  useEffect(() => {
+    if (user.user) {
+      setFormData({
+        name: user.user.name,
+        phone_number: user.user.phone_number,
+        email: user.user.email,
+      });
+      setPreviewImage(user.profile_picture_url || imagePlaceholder);
     }
-  };
+  }, []);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -44,11 +44,13 @@ const Profileedit = () => {
     }));
   };
 
-  useEffect(() => {
-    fetchdata();
-  }, [id]);
-
-  console.log(data);
+  const handleFileChange = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      setSelectedImage(file); // Set the selected image
+      setPreviewImage(URL.createObjectURL(file)); // Preview the image
+    }
+  };
 
   const handleNavigation = () => {
     navigate(-1);
@@ -56,27 +58,57 @@ const Profileedit = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const url = `https://dev.waveplusit.com/api/profile/${id}`;
-    try {
-      const response = await axios.put(url, formData);
-      if (response.status === 200) {
-        alert("Profile updated successfully");
-        const updatedUser = { ...user, user: { ...user.user, ...formData } };
-        localStorage.setItem("user", JSON.stringify(updatedUser));
-        fetchdata();
-      } else {
-        throw new Error("Network not ok");
-      }
-    } catch (error) {
-      console.log("Error:", error);
-      alert("Profile update failed");
+
+    const formDataToSend = new FormData();
+    formDataToSend.append("name", formData.name);
+    formDataToSend.append("phone_number", formData.phone_number);
+    formDataToSend.append("email", formData.email);
+    formDataToSend.append("_method", "PUT");
+
+    const result = await dispatch(
+      editProfile({ userId: id, userData: formDataToSend })
+    );
+
+    if (editProfile.fulfilled.match(result)) {
+      alert("Profile updated successfully");
+      const updatedUser = { ...user, user: { ...user.user, ...formData } };
+      localStorage.setItem("user", JSON.stringify(updatedUser));
+      navigate(-1);
+    } else {
+      alert(result.payload || "Profile update failed");
+    }
+  };
+
+  const handlePictureSubmit = async () => {
+    if (!selectedImage) {
+      alert("Please select a picture to upload.");
+      return;
+    }
+
+    const formDataToSend = new FormData();
+    formDataToSend.append("name", user.user.name);
+    formDataToSend.append("phone_number", user.user.phone_number);
+    formDataToSend.append("email", user.user.email);
+    formDataToSend.append("image", selectedImage);
+    formDataToSend.append("_method", "PUT");
+
+    const result = await dispatch(
+      editProfile({ userId: id, userData: formDataToSend })
+    );
+
+    if (editProfile.fulfilled.match(result)) {
+      alert("Profile picture updated successfully");
+      setIsModalOpen(false); // Close the modal on success
+      navigate(0); // Reload the page to reflect changes
+    } else {
+      alert(result.payload || "Profile picture update failed");
     }
   };
 
   return (
     <div className="flex justify-center bg-slate-800 w-[100%] h-[100vh]">
       <div className="w-[390px] bg-slate-200 pb-20">
-        <div className="flex  font-roboto  px-6 py-4 bg-white">
+        <div className="flex font-roboto px-6 py-4 bg-white">
           <div className="items-center my-auto">
             <button onClick={handleNavigation}>
               <SlArrowLeft />
@@ -87,12 +119,21 @@ const Profileedit = () => {
           </h3>
         </div>
         <div className="px-6">
-          <div className="flex justify-center py-5">
-            <img src={image} alt="" className="h-32 w-32 rounded-full" />
+          <div className="relative flex justify-center py-5">
+            <img
+              src={previewImage}
+              alt="Profile"
+              className="h-32 w-32 rounded-full object-cover"
+            />
+            <button
+              className="absolute bottom-0 right-0 bg-blue-500 p-2 rounded-full cursor-pointer"
+              onClick={() => setIsModalOpen(true)}
+            >
+              <FiEdit className="text-white" />
+            </button>
           </div>
-          <h1></h1>
           <form onSubmit={handleSubmit}>
-            <div className="flex flex-col gap-6">
+            <div className="flex flex-col gap-6 mt-6">
               <div className="flex justify-between">
                 <label className="my-auto">Name:</label>
                 <input
@@ -124,14 +165,51 @@ const Profileedit = () => {
                 <button
                   type="submit"
                   className="bg-blue-500 text-white rounded-xl py-2 px-4"
+                  disabled={loading}
                 >
-                  Save Changes
+                  {loading ? "Saving..." : "Save Changes"}
                 </button>
               </div>
+              {error && (
+                <div className="text-red-500 text-center pt-2">{error}</div>
+              )}
             </div>
           </form>
         </div>
       </div>
+
+      {/* Modal for updating profile picture */}
+      {isModalOpen && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">
+          <div className="bg-white p-6 rounded-lg w-[300px]">
+            <h2 className="text-center text-lg font-semibold mb-4">
+              Update Profile Picture
+            </h2>
+            <div className="flex justify-center mb-4">
+              <img
+                src={previewImage}
+                alt="Preview"
+                className="h-32 w-32 rounded-full object-cover"
+              />
+            </div>
+            <input type="file" accept="image/*" onChange={handleFileChange} />
+            <div className="flex justify-between mt-4">
+              <button
+                className="bg-green-500 text-white rounded-lg py-2 px-4"
+                onClick={handlePictureSubmit}
+              >
+                {loading ? "Uploading..." : "Update"}
+              </button>
+              <button
+                className="bg-red-500 text-white rounded-lg py-2 px-4"
+                onClick={() => setIsModalOpen(false)}
+              >
+                Cancel
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

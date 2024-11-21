@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-
+import { MdOutlinePayment } from "react-icons/md";
 import api from "../utils/api";
 import { Button } from "antd";
 import { PlusCircleOutlined } from "@ant-design/icons";
@@ -62,14 +62,12 @@ const Userdash = () => {
         <div className="flex justify-between gap-4 mt-4">
           <Link to="/payment">
             <div className="w-[165px] h-[100px] rounded-lg bg-[#5ac9f5] bg-opacity-20 p-2 ">
-              <p className="py-1 text-[#5ac9f5]">
-                {dueAmount ? `NPR. ${dueAmount}` : "NPR. xxxx.xx"}
-              </p>
+              <MdOutlinePayment className="w-10 h-10 text-[#5ac9f5]" />
               <h1 className="text-[14px] font-bold font-roboto text-[#5ac9f5]">
-                Due Amount
+                Invoice info
               </h1>
               <p className="text-[10px] font-roboto text-[#5ac9f5]">
-                Your due amount for this month
+                Your Invoice for this month
               </p>
             </div>
           </Link>

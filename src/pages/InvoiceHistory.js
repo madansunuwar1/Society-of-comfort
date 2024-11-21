@@ -32,7 +32,7 @@ const InvoiceHistory = () => {
         </h3>
       </div>
       <div className="grid grid-cols-1 gap-4">
-        {invoices?.data?.map((invoice) => (
+        {invoices?.map((invoice) => (
           <div
             key={invoice.id}
             className="flex flex-col border border-gray-300 bg-white p-4 rounded-lg shadow-md transition-transform hover:scale-105"

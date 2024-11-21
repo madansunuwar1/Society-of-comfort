@@ -24,8 +24,8 @@ const Profile = () => {
           </h3>
         </div>
         <div className="mt-4 shadow-md mx-4">
-          <div className="bg-[#3F3F95] py-3 px-4">
-            <h1 className="font-bold text-white text-xl">Name</h1>
+          <div className="bg-[#3F3F95] py-2 px-4">
+            <h1 className="font-bold text-white text-md">Name</h1>
           </div>
           <div className="flex gap-8 bg-white p-4">
             <div className="rounded-full w-20 h-20 overflow-hidden">
@@ -38,30 +38,29 @@ const Profile = () => {
               <p>{user.role}</p>
             </div>
           </div>
-          <div className="bg-[#3F3F95] py-3 px-4">
-            <h1 className="font-bold text-white text-xl">apartment</h1>
+          <div className="bg-white p-4 py-8">
+            <div className=" grid grid-cols-2 gap-4">
+              <div>
+                <p className="text-gray-500">Name</p>
+                <p className="font-semibold mt-2">{user.user.name}</p>
+              </div>
+              <div>
+                <p className="text-gray-500">Email</p>
+                <p className="font-semibold mt-2">{user.user.email}</p>
+              </div>
+              <div>
+                <p className="text-gray-500">Phone Number</p>
+                <p className="font-semibold mt-2">{user.user.phone_number}</p>
+              </div>
+            </div>
+          </div>
+          <div className="bg-[#3F3F95] py-2 px-4">
+            <h1 className="font-bold text-white text-md">Notes</h1>
           </div>
           <div className="flex gap-8 bg-white p-4">
             <div>
-              <h1 className="font-bold">{user.user.address}</h1>
-              <p>
-                {user.user.apartment_number} <span>{user.user.block}</span>
-              </p>
+              <p>{user.user.notes}</p>
             </div>
-          </div>
-          <div className="bg-[#3F3F95] py-3 px-4">
-            <h1 className="font-bold text-white text-xl">Documents</h1>
-          </div>
-          <div className="flex gap-8 bg-white p-4 ">
-            {user.user.citizenship && (
-              <img
-                className="border-2 border-slate-300 overflow-hidden"
-                src={user.user.citizenship.original_url}
-                alt="Citizenship"
-                height="100"
-                width="100"
-              />
-            )}
           </div>
         </div>
       </div>

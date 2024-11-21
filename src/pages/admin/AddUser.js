@@ -4,6 +4,9 @@ import { useNavigate } from "react-router-dom";
 import { addUser } from "../../redux/userSlice";
 import { getHouseSettings } from "../../redux/houseSettingsSlice";
 import { notification, Form, Input, Select } from "antd";
+import { NepaliDatePicker } from "nepali-datepicker-reactjs";
+import "nepali-datepicker-reactjs/dist/index.css";
+import { ADToBS } from "bikram-sambat-js";
 
 const AddUser = () => {
   const dispatch = useDispatch();
@@ -19,6 +22,17 @@ const AddUser = () => {
   const [media, setMedia] = useState(null);
   const [leaseStartDate, setLeaseStartDate] = useState("");
   const [notes, setNotes] = useState("");
+
+  useEffect(() => {
+    try {
+      const today = new Date();
+      console.log(today);
+      const nepaliDate = ADToBS(today);
+      setLeaseStartDate(nepaliDate);
+    } catch (error) {
+      console.error("Error converting AD to BS:", error);
+    }
+  }, []);
 
   useEffect(() => {
     dispatch(getHouseSettings()); // Fetch house settings
@@ -142,11 +156,13 @@ const AddUser = () => {
               <label className="font-bold text-md">
                 Lease Start Date (Optional)
               </label>
-              <input
+              <NepaliDatePicker
                 type="date"
-                className="rounded-md py-3 px-4 w-full border-[2px] border-gray-400 mt-2"
+                className="custom-date-picker"
                 value={leaseStartDate}
-                onChange={(e) => setLeaseStartDate(e.target.value)}
+                options={{ calenderLocale: "en", valueLocale: "en" }}
+                onChange={setLeaseStartDate}
+                required
               />
             </div>
             <div>

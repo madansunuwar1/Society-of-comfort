@@ -60,10 +60,10 @@ const DisplayEvent = () => {
               className=" bg-white shadow-sm flex flex-col md:px-14"
             >
               <div className="my-2">
-                <h4 className="text-lg font-semibold px-4">
+                <h4 className="text-md font-semibold px-4">
                   {event.event.name}
                 </h4>
-                <p className="text-gray-500 text-md px-4">
+                <p className="text-gray-500 text-sm px-4">
                   {event.event.description}
                 </p>
               </div>

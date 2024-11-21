@@ -3,7 +3,8 @@ import { Link } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { invoiceActions } from "../redux/invoiceSlice";
 import api from "../utils/api";
-import { Skeleton } from "antd";
+import { Button, Skeleton } from "antd";
+import { PlusCircleOutlined } from "@ant-design/icons";
 
 const Payment = () => {
   const user = JSON.parse(localStorage.getItem("user"));
@@ -18,7 +19,7 @@ const Payment = () => {
       .then((response) => {
         const fetchedHouses = response.data.data;
         const userHouse = fetchedHouses.find(
-          (house) => Number(house.house_number) === user.user.house_id
+          (house) => Number(house.id) === user.user.house_id
         );
         if (userHouse) {
           setDueAmount(userHouse.dues);
@@ -47,37 +48,29 @@ const Payment = () => {
   const firstInvoice = invoices && invoices?.length > 0 ? invoices[0] : null;
 
   return (
-    <div className=" bg-slate-200 p-1 md:p-6 pb-20 pt-2 rounded-lg shadow-md">
+    <div className=" bg-white p-4 md:p-8 pb-20 pt-2 rounded-lg shadow-md">
       <div className="flex justify-between">
-        <div className="bg-white rounded-lg px-8 py-2 shadow-lg shadow-slate-400">
-          <h1 className="text-center text-md font-bold text-black mt-4">
+        <div className="bg-[#5ac9f5] bg-opacity-20 rounded-lg px-7 py-2">
+          <h1 className="text-center text-md font-bold text-[#5ac9f5] mt-4">
             {dueAmount ? `NPR. ${dueAmount}` : "NPR. xxxx.xx"}
           </h1>
-          <p className="text-center text-md text-black">Due Amount</p>
+          <p className="text-center text-md text-[#5ac9f5]">Due Amount</p>
         </div>
         <Link to="/invoicehistory">
-          <div className="w-[165px] h-[100px] rounded-lg bg-white p-2 shadow-lg shadow-slate-400">
+          <div className="w-[165px] h-[100px] rounded-lg bg-[#4a6e31] bg-opacity-20 p-2 ">
             <img src="./assets/images/invoice.png" alt="" className="h-8 w-8" />
-            <h1 className="text-[14px] font-bold font-roboto text-black">
+            <h1 className="text-[14px] font-bold font-roboto text-[#4a6e31]">
               Invoice History
             </h1>
-            <p className="text-[10px] font-roboto text-black">
+            <p className="text-[10px] font-roboto text-[#4a6e31]">
               you can find your Invoice history here
             </p>
           </div>
         </Link>
       </div>
-      <div>
-        <Link
-          to="/adduserpayment"
-          className="bg-[#403F93] text-white flex w-full py-3 rounded-md mt-3"
-        >
-          <span className="mx-auto">Add Payment</span>
-        </Link>
-      </div>
 
       {/* Check if firstInvoice exists before rendering it */}
-      <div className="flex justify-center bg-gray-200 w-full py-5">
+      <div className="flex justify-center w-full py-5">
         <div className="w-full bg-white p-4 border border-gray-300 rounded-lg shadow-lg">
           <h2 className="text-2xl font-bold text-center mb-6">
             This Month Invoice
@@ -167,6 +160,13 @@ const Payment = () => {
             <p>Payment slip attached for verification.</p>
           </div>
         </div>
+      </div>
+      <div className="">
+        <Link to="/adduserpayment">
+          <Button className="w-full bg-[#5ac9f5]" icon={<PlusCircleOutlined />}>
+            Add Payment
+          </Button>
+        </Link>
       </div>
     </div>
   );

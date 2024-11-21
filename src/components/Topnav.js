@@ -12,7 +12,11 @@ const Topnav = () => {
     <div className="flex justify-between bg-[#3F3F95] px-4 py-2 w-full rounded-b-xl">
       <div className="flex gap-2">
         <Link to="/account">
-          <img src={pic} alt="" className="h-10 w-10 rounded-full" />
+          <img
+            src={pic}
+            alt=""
+            className="h-10 w-10 rounded-full object-cover"
+          />
         </Link>
         <h1 className="mt-2 text-[20px] font-sans text-white">
           Welocme{" "}

@@ -17,7 +17,7 @@ const Start = () => {
         <p className="text-white font-bold text-2xl text-center mt-4 mx-5">
           Society of The Comfort Housing Phase II Thaiba
         </p>
-        <h2 className="text-center text-white font-roboto mt-12 text-lg px-96">
+        <h2 className="text-center text-white font-roboto mt-12 text-lg px-8 md:px-96">
           Welcome to the Residency app this is a test app built as a progressive
           web app for testing purposes this does not resemble the final product
         </h2>
