@@ -314,6 +314,7 @@ const AddPayment = () => {
             {isInvoice &&
               invoices.map((invoice) => (
                 <Link
+                  to={`/invoice-detail/${invoice.id}`}
                   key={invoice.id}
                   className="flex flex-col border border-gray-300 bg-white p-4 rounded-lg shadow-md transition-transform hover:scale-105 text-[12px] font-semibold"
                 >
@@ -341,6 +342,7 @@ const AddPayment = () => {
             {!isInvoice &&
               payments.map((payment) => (
                 <Link
+                  to={`/payment-detail/${payment.payment.id}`}
                   key={payment.id}
                   className="flex flex-col border border-gray-300 bg-white p-4 rounded-lg shadow-md transition-transform hover:scale-105 text-[12px] font-semibold"
                 >

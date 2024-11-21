@@ -83,14 +83,8 @@ function App() {
             </>
           }
         />
-        {/* <Route
-          path="/invoice-detail/:id"
-          element={<InvoiceDetail />} // Invoice detail component
-        />
-        <Route
-          path="/payment-detail/:id"
-          element={<PaymentDetail />} // Payment detail component
-        /> */}
+        <Route path="/invoice-detail/:id" element={<InvoiceDetail />} />
+        <Route path="/payment-detail/:id" element={<PaymentDetail />} />
 
         <Route
           path="/generatepass"

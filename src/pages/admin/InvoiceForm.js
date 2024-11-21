@@ -127,14 +127,6 @@ const InvoiceForm = () => {
 
   const validateForm = () => {
     const errors = {};
-    if (!houseId) {
-      errors.houseId = "Please select a house first";
-      notification.error({
-        message: "Error",
-        description: "Please select a house first",
-      });
-      return false;
-    }
     if (!selectedMonth) errors.selectedMonth = "Month is required.";
     if (items.length === 0) errors.items = "At least one item is required.";
 
@@ -283,7 +275,6 @@ const InvoiceForm = () => {
     );
     setDueAmount(selectedHouse ? selectedHouse.dues : 0); // Update due amount
     setDueUnit(selectedHouse ? selectedHouse.water_unit : 0);
-    console.log(selectedHouseId);
   };
 
   const handleItemChange = (index, field, value) => {
@@ -342,6 +333,7 @@ const InvoiceForm = () => {
         return optionValue.includes(input.toLowerCase());
       }}
       allowClear
+      disabled={!houseId}
       onSearch={(value) => {
         // When user types, temporarily add it as an option
         if (
@@ -433,19 +425,25 @@ const InvoiceForm = () => {
                   </option>
                 ))}
               </select>
+              {!houseId && (
+                <div className="text-gray-500 ml-2">
+                  Select house id first to add invoice
+                </div>
+              )}
               {formErrors.houseId && (
                 <span className="text-red-600 text-sm">
                   {formErrors.houseId}
                 </span>
               )}
             </div>
+
             <div className="flex flex-col gap-2 w-full">
               <label>Select Date</label>
               <NepaliDatePicker
                 options={{ calenderLocale: "en", valueLocale: "en" }}
                 value={date || ""}
                 onChange={handleDateChange}
-                disabled={isEditing}
+                disabled={isEditing && !houseId}
                 className="custom-date-picker"
               />
             </div>
@@ -454,6 +452,7 @@ const InvoiceForm = () => {
               <select
                 className="rounded-md py-1 px-4 border-[2px] border-gray-400"
                 value={selectedMonth}
+                disabled={!houseId}
                 onChange={(e) => setSelectedMonth(e.target.value)}
               >
                 <option value="" disabled>
@@ -533,6 +532,7 @@ const InvoiceForm = () => {
                               parseInt(e.target.value, 10)
                             )
                           }
+                          disabled={!houseId}
                           placeholder="New Water Unit"
                           className="w-full border px-2 py-1"
                           min="0"
@@ -550,6 +550,7 @@ const InvoiceForm = () => {
                             parseInt(e.target.value, 10)
                           )
                         }
+                        disabled={!houseId}
                         className="w-full border px-2 py-1"
                         min="1"
                         required
@@ -571,6 +572,7 @@ const InvoiceForm = () => {
                             parseFloat(e.target.value)
                           )
                         }
+                        disabled={!houseId}
                         className="w-full border px-2 py-1"
                         min="1"
                         required

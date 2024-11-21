@@ -13,7 +13,6 @@ import { notification } from "antd";
 import { NepaliDatePicker } from "nepali-datepicker-reactjs";
 import "nepali-datepicker-reactjs/dist/index.css";
 import { ADToBS } from "bikram-sambat-js";
-import { TimePicker } from "antd";
 
 const Booking = () => {
   const navigate = useNavigate();
@@ -202,27 +201,27 @@ const Booking = () => {
             />
           </div>
           <h1 className="font-bold text-md">Start Time</h1>
-          <div>
-            <TimePicker
+          <div className="">
+            <input
+              className="rounded-md w-full py-2 px-4 border-[2px] border-gray-400 mt-2"
+              type="time"
               id="start_time"
+              name="start_time"
               value={startTime}
-              onChange={setStartTime}
-              format="HH:mm"
-              className="mt-2 w-full"
-              use12Hours
+              onChange={(e) => setStartTime(e.target.value)}
             />
           </div>
           <h1 className="font-bold text-md">End Time</h1>
-
-          <TimePicker
-            id="end_time"
-            value={endTime}
-            onChange={setEndTime}
-            format="HH:mm"
-            className="mt-2 w-full"
-            use12Hours
-          />
-
+          <div className="">
+            <input
+              className="rounded-md w-full py-2 px-4 border-[2px] border-gray-400 mt-2"
+              type="time"
+              id="end_time"
+              name="end_time"
+              value={endTime}
+              onChange={(e) => setEndTime(e.target.value)}
+            />
+          </div>
           <button
             type="submit"
             className="bg-[#403F93] text-white flex px-16 py-3 rounded-lg mt-6"

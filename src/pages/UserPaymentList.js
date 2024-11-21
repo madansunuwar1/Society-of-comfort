@@ -3,7 +3,8 @@ import { useDispatch, useSelector } from "react-redux";
 import { paymentActions } from "../redux/paymentSlice";
 import { Link } from "react-router-dom";
 import { SlArrowLeft } from "react-icons/sl";
-import { Skeleton, Button, Modal, Select, Pagination, message } from "antd";
+import { Skeleton, Button, Modal, Pagination, message, Card } from "antd";
+import { Row, Col } from "antd";
 
 const UserPaymentList = () => {
   const dispatch = useDispatch();
@@ -76,7 +77,7 @@ const UserPaymentList = () => {
     }
 
     if (!remarks) {
-      newErrors.remarks = "please eneter your remark for payment";
+      newErrors.remarks = "Please enter your remark for payment";
     }
 
     setErrors(newErrors);
@@ -140,64 +141,57 @@ const UserPaymentList = () => {
 
   return (
     <div className="payment-list md:p-4 bg-slate-200">
-      <div className="flex px-6 py-4">
+      <div className="flex  font-roboto  px-4 py-2 bg-[#3F3F95] rounded-b-lg">
         <div className="items-center my-auto">
           <Link to="/userdash">
-            <SlArrowLeft />
+            <SlArrowLeft className="text-white" />
           </Link>
         </div>
-        <h3 className="font-bold flex justify-center mx-auto text-[22px]">
-          Payment List
+        <h3 className="font-bold flex justify-center mx-auto text-[22px] text-white">
+          Payments
         </h3>
       </div>
 
-      {/* Payment List */}
-      <div className="w-full bg-slate-200 p-0 md:p-6 pb-20 rounded-lg shadow-md">
-        <div className="overflow-x-auto">
-          <table className="min-w-full bg-white border border-gray-300">
-            <thead>
-              <tr className="bg-gray-100">
-                <th className="py-2 px-4 border border-gray-300">ID</th>
-                <th className="py-2 px-4 border border-gray-300">Date</th>
-                <th className="py-2 px-4 border border-gray-300">Amount</th>
-                <th className="py-2 px-4 border border-gray-300">Status</th>
-                <th className="py-2 px-4 border border-gray-300">Slip</th>
-              </tr>
-            </thead>
-            <tbody>
-              {paginatedPayments?.map((payment) => (
-                <tr key={payment.payment.id} className="hover:bg-gray-50">
-                  <td className="py-2 px-4 border border-gray-300">
-                    {payment.payment.id}
-                  </td>
-                  <td className="py-2 px-4 border border-gray-300">
-                    {payment.payment.date}
-                  </td>
-                  <td className="py-2 px-4 border border-gray-300">
-                    Rs.{payment.payment.amount}
-                  </td>
-                  <td className="py-2 px-4 border border-gray-300">
-                    <span
-                      className={`text-white px-2 py-1 rounded ${getStatusColor(
-                        payment.payment.status
-                      )}`}
-                    >
-                      {payment.payment.status}
-                    </span>
-                  </td>
-                  <td className="py-2 px-4 border border-gray-300">
-                    <img
-                      src={payment.slip_url}
-                      alt="Slip"
-                      onClick={() => handleImageClick(payment.slip_url)}
-                      className="cursor-pointer h-10 w-10 object-cover"
-                    />
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
+      {/* Payment List in Cards */}
+      <div className=" bg-slate-200 p-4 md:p-6 pb-20 rounded-lg shadow-md">
+        <Row gutter={16}>
+          {paginatedPayments?.map((payment) => (
+            <Col
+              key={payment.payment.id}
+              xs={24} // Full width on mobile
+              sm={12} // Half width on small screens (tablet)
+              md={8} // Third width on medium screens (desktop)
+              lg={6} // Quarter width on large screens (desktop)
+              className="mb-4"
+            >
+              <Card
+                title={`Payment ID: ${payment.payment.id}`}
+                bordered={false}
+                className="shadow-md"
+                extra={
+                  <span
+                    className={`text-white px-2 py-1 rounded ${getStatusColor(
+                      payment.payment.status
+                    )}`}
+                  >
+                    {payment.payment.status}
+                  </span>
+                }
+              >
+                <p>Date: {payment.payment.date}</p>
+                <p>Amount: Rs.{payment.payment.amount}</p>
+                <div className="flex justify-center">
+                  <img
+                    src={payment.slip_url}
+                    alt="Slip"
+                    onClick={() => handleImageClick(payment.slip_url)}
+                    className="cursor-pointer h-20 w-20 object-cover"
+                  />
+                </div>
+              </Card>
+            </Col>
+          ))}
+        </Row>
 
         {/* Pagination Component */}
         <Pagination
