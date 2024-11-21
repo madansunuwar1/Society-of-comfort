@@ -262,7 +262,7 @@ const InvoiceForm = () => {
           description: JSON.stringify(err.error),
         });
       });
-    dispatch(invoiceActions.getInvoices());
+    navigate("/dashboard/paymentlist");
   };
 
   const handleHouseChange = (e) => {
