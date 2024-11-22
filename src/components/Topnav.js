@@ -18,9 +18,9 @@ const Topnav = () => {
             className="h-10 w-10 rounded-full object-cover"
           />
         </Link>
-        <h1 className="mt-2 text-[20px] font-sans text-white">
-          Welocme{" "}
-          <span className="font-serif text-[16px] font-bold text-white">
+        <h1 className="mt-2 text-[16px]  text-white">
+          Welcome{" "}
+          <span className=" text-[16px] font-bold text-white">
             {" "}
             {userData.user.name}
           </span>
