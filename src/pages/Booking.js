@@ -19,12 +19,12 @@ const Booking = () => {
   const dispatch = useDispatch();
   const { bookings, loading, error } = useSelector((state) => state.bookings);
   const [hallName, setHallName] = useState(null);
-  const [bookingDate, setBookingDate] = useState(""); // Default date for testing
-  const [remarks, setRemarks] = useState(""); // Default remarks for testing
-  const [startTime, setStartTime] = useState(""); // Default start time
-  const [endTime, setEndTime] = useState(""); // Default end time
-  const [submitError, setSubmitError] = useState(null); // Local state for submission errors
-  const [cancelError, setCancelError] = useState(null); // Local state for cancellation errors
+  const [bookingDate, setBookingDate] = useState("");
+  const [remarks, setRemarks] = useState("");
+  const [startTime, setStartTime] = useState("");
+  const [endTime, setEndTime] = useState("");
+  const [errors, setErrors] = useState({});
+  const [bookLoading, setBookLoading] = useState(false);
 
   const options = [
     { value: "Hall A", label: "Hall A", available: true },
@@ -35,7 +35,6 @@ const Booking = () => {
   useEffect(() => {
     try {
       const today = new Date();
-      console.log(today);
       const nepaliDate = ADToBS(today);
       setBookingDate(nepaliDate);
     } catch (error) {
@@ -48,42 +47,40 @@ const Booking = () => {
   }, [dispatch]);
 
   const validateForm = () => {
-    const newErrors = {};
+    const validationErrors = {};
 
-    // Validate hall selection
     if (!hallName) {
-      newErrors.hallName = "Please select a hall.";
+      validationErrors.hallName = "Please select a hall.";
     }
 
-    // Validate booking date
     if (!bookingDate) {
-      newErrors.bookingDate = "Booking date is required.";
-    } else if (new Date(bookingDate) < new Date()) {
-      newErrors.bookingDate = "Booking date cannot be in the past.";
+      validationErrors.bookingDate = "Booking date is required.";
     }
 
-    // Validate start and end time
     if (!startTime) {
-      newErrors.startTime = "Start time is required.";
+      validationErrors.startTime = "Start time is required.";
     }
+
     if (!endTime) {
-      newErrors.endTime = "End time is required.";
+      validationErrors.endTime = "End time is required.";
     } else if (
       new Date(`1970-01-01T${endTime}`) <= new Date(`1970-01-01T${startTime}`)
     ) {
-      newErrors.endTime = "End time must be after start time.";
+      validationErrors.endTime = "End time must be after start time.";
     }
 
-    return Object.keys(newErrors).length === 0; // Return true if no errors
+    setErrors(validationErrors);
+    return Object.keys(validationErrors).length === 0;
   };
 
   const handleSubmit = async (e) => {
-    e.preventDefault(); // Prevent default form submission
+    e.preventDefault();
 
-    // Validate form fields before submitting
     if (!validateForm()) {
-      return; // If validation fails, exit early
+      return;
     }
+
+    setBookLoading(true);
 
     const bookingData = {
       hall_name: hallName.value,
@@ -93,11 +90,6 @@ const Booking = () => {
       end_time: endTime,
     };
 
-    // Reset any previous error before submitting
-    setSubmitError(null);
-    // Clear previous errors
-
-    // Dispatch the addBooking action
     dispatch(addBooking(bookingData))
       .unwrap()
       .then(() => {
@@ -105,32 +97,35 @@ const Booking = () => {
           message: "Success",
           description: "Booking added successfully",
         });
+        setHallName(null);
+        setRemarks("");
+        setStartTime("");
+        setEndTime("");
+        setErrors({});
+        setBookLoading(false);
       })
       .catch((err) => {
         notification.error({
           message: "Error",
-          description: err?.error || "Failed to add setting",
+          description: err?.error || "Failed to add booking",
         });
+        setBookLoading(false);
       });
   };
 
   const handleCancel = async (bookingId) => {
-    setCancelError(null); // Reset any previous cancellation error
-
-    // Dispatch the cancelMyBooking action with bookingId
     dispatch(cancelMyBooking(bookingId))
       .unwrap()
       .then(() => {
         notification.success({
           message: "Success",
-          description: "Booking cancled successfully",
+          description: "Booking canceled successfully",
         });
       })
       .catch((err) => {
-        console.log(err);
         notification.error({
           message: "Error",
-          description: err?.error || "Failed to add setting",
+          description: err?.error || "Failed to cancel booking",
         });
       });
   };
@@ -172,100 +167,73 @@ const Booking = () => {
               formatOptionLabel={formatOptionLabel}
               className="mt-2"
             />
+            {errors.hallName && (
+              <p className="text-red-500 text-sm">{errors.hallName}</p>
+            )}
           </div>
-          <div className="">
-            <label htmlFor="booking_date" className="font-bold text-md">
-              Booking Date
-            </label>
+          <div>
+            <label htmlFor="booking_date">Booking Date</label>
             <NepaliDatePicker
-              className="w-full custom-date-picker"
-              options={{ calenderLocale: "en", valueLocale: "en" }}
               id="booking_date"
               name="booking_date"
+              className="w-full custom-date-picker"
+              options={{ calenderLocale: "en", valueLocale: "en" }}
               value={bookingDate}
               onChange={setBookingDate}
               required
             />
+            {errors.bookingDate && (
+              <p className="text-red-500 text-sm">{errors.bookingDate}</p>
+            )}
           </div>
-          <div className="">
-            <label htmlFor="remarks" className="font-bold text-md">
-              Remarks
-            </label>
+          <div>
+            <label htmlFor="start_time">Start Time</label>
             <input
-              className="rounded-md w-full py-2 px-4 border-[2px] border-gray-400 mt-2"
-              type="text"
-              id="remarks"
-              name="remarks"
-              value={remarks}
-              onChange={(e) => setRemarks(e.target.value)}
-            />
-          </div>
-          <h1 className="font-bold text-md">Start Time</h1>
-          <div className="">
-            <input
-              className="rounded-md w-full py-2 px-4 border-[2px] border-gray-400 mt-2"
               type="time"
               id="start_time"
               name="start_time"
               value={startTime}
               onChange={(e) => setStartTime(e.target.value)}
-            />
-          </div>
-          <h1 className="font-bold text-md">End Time</h1>
-          <div className="">
-            <input
               className="rounded-md w-full py-2 px-4 border-[2px] border-gray-400 mt-2"
+            />
+            {errors.startTime && (
+              <p className="text-red-500 text-sm">{errors.startTime}</p>
+            )}
+          </div>
+          <div>
+            <label htmlFor="end_time">End Time</label>
+            <input
               type="time"
               id="end_time"
               name="end_time"
               value={endTime}
               onChange={(e) => setEndTime(e.target.value)}
+              className="rounded-md w-full py-2 px-4 border-[2px] border-gray-400 mt-2"
+            />
+            {errors.endTime && (
+              <p className="text-red-500 text-sm">{errors.endTime}</p>
+            )}
+          </div>
+          <div>
+            <label htmlFor="remarks">Remarks</label>
+            <input
+              type="text"
+              id="remarks"
+              name="remarks"
+              value={remarks}
+              onChange={(e) => setRemarks(e.target.value)}
+              className="rounded-md w-full py-2 px-4 border-[2px] border-gray-400 mt-2"
             />
           </div>
           <button
             type="submit"
             className="bg-[#403F93] text-white flex px-16 py-3 rounded-lg mt-6"
           >
-            <span className="mx-auto">Book</span>
+            <span className="mx-auto">
+              {bookLoading ? "Loading..." : "Book"}
+            </span>
           </button>
         </form>
-        <div>
-          <h1 className="text-xl font-bold mb-4 mt-8">Booking List</h1>
-          <div className="flex gap-4 md:flex-wrap flex-col">
-            {bookings?.map((book) => (
-              <div
-                key={book.id}
-                className="bg-white flex gap-4 shadow-md rounded-lg p-4 border border-gray-200"
-              >
-                <div>
-                  <h3 className="text-md font-bold">
-                    Hall Name: {book.hall_name}
-                  </h3>
-                  <p>
-                    <strong>Remarks:</strong> {book.remarks}
-                  </p>
-                  <p>
-                    <strong>Date:</strong>{" "}
-                    {new Date(book.created_at).toLocaleDateString()}
-                  </p>
-                  <p>
-                    <strong>Status:</strong> {book.status}
-                  </p>
-                  {book.status == "canceled" ? (
-                    <></>
-                  ) : (
-                    <button
-                      onClick={() => handleCancel(book.id)}
-                      className="bg-red-500 text-white px-4 py-2 rounded-lg mt-2"
-                    >
-                      Cancel Booking
-                    </button>
-                  )}
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
       </div>
     </div>
   );
