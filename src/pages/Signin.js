@@ -3,6 +3,7 @@ import { SlArrowLeft } from "react-icons/sl";
 import { Link, useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { login } from "../redux/authSlice";
+import { notification } from "antd";
 
 const Signin = () => {
   const [mail, setMail] = useState("");
@@ -17,7 +18,7 @@ const Signin = () => {
       navigate("/dashboard");
     } else if (loggedInUser && loggedInUser.role === "Guard") {
       navigate("/guard");
-    } else if (loggedInUser && loggedInUser.role === "panel_user") {
+    } else if (loggedInUser && loggedInUser.role === "Apartment User") {
       navigate("/userdash");
     } else if (loggedInUser && loggedInUser.role === "Worker") {
       navigate("/proadmin");
@@ -33,11 +34,15 @@ const Signin = () => {
           navigate("/dashboard");
         } else if (data.role === "Guard") {
           navigate("/guard");
-        } else if (data.role === "panel_user") {
+        } else if (data.role === "Apartment User") {
           navigate("/userdash");
         } else if (data.role === "Worker") {
           navigate("/proadmin");
         }
+        notification.success({
+          message: "Success",
+          description: "Login sucessfull",
+        });
       })
       .catch((err) => {
         alert(err);

@@ -4,6 +4,7 @@ import { MdOutlinePayment } from "react-icons/md";
 import api from "../utils/api";
 import { Button } from "antd";
 import { PlusCircleOutlined } from "@ant-design/icons";
+import InstallPrompt from "../InstallPrompt";
 
 const Userdash = () => {
   const user = JSON.parse(localStorage.getItem("user"));
@@ -29,37 +30,43 @@ const Userdash = () => {
   }, [user.house_id]);
 
   return (
-    <div className="flex justify-center">
-      <div className="px-5 pb-20 bg-white">
-        <div className="bg-[url('https://static.vecteezy.com/system/resources/previews/003/127/954/non_2x/abstract-template-blue-background-white-squares-free-vector.jpg')] rounded-lg mt-4 p-4 bg-cover flex justify-between">
-          <div>
-            <div className="mx-4">
-              <img
-                src="../assets/images/image.jpeg"
-                alt="tch2 logo"
-                className="rounded-full h-16 w-16"
-              />
+    <>
+      {/* <div className="App">
+        <h1>Welcome to My React PWA</h1>
+        <p>This is a demo of a Progressive Web App with an install prompt.</p>
+        <InstallPrompt />
+      </div> */}
+      <div className="flex justify-center">
+        <div className="px-5 pb-20 bg-white">
+          <div className="bg-[url('https://static.vecteezy.com/system/resources/previews/003/127/954/non_2x/abstract-template-blue-background-white-squares-free-vector.jpg')] rounded-lg mt-4 p-4 bg-cover flex justify-between">
+            <div>
+              <div className="mx-4">
+                <img
+                  src="../assets/images/image.jpeg"
+                  alt="tch2 logo"
+                  className="rounded-full h-16 w-16"
+                />
+              </div>
+              <div className="mt-2">
+                <p className="font-bold text-white">TCH II Thaiba</p>
+              </div>
             </div>
-            <div className="mt-2">
-              <p className="font-bold text-white">TCH II Thaiba</p>
+            <div className=" flex justify-between flex-col">
+              <div className="">
+                <p className="text-[16px] font-roboto text-white">Due amount</p>
+                <p className="text-white text-[16px] font-semibold">
+                  {" "}
+                  {dueAmount ? `NPR. ${dueAmount}` : "NPR. xxxx.xx"}
+                </p>
+              </div>
+              <div className="">
+                <Link to="/adduserpayment">
+                  <Button icon={<PlusCircleOutlined />}>Add Payment</Button>
+                </Link>
+              </div>
             </div>
           </div>
-          <div className=" flex justify-between flex-col">
-            <div className="">
-              <p className="text-[16px] font-roboto text-white">Due amount</p>
-              <p className="text-white text-[16px] font-semibold">
-                {" "}
-                {dueAmount ? `NPR. ${dueAmount}` : "NPR. xxxx.xx"}
-              </p>
-            </div>
-            <div className="">
-              <Link to="/adduserpayment">
-                <Button icon={<PlusCircleOutlined />}>Add Payment</Button>
-              </Link>
-            </div>
-          </div>
-        </div>
-        <div className="flex justify-between gap-4 mt-4">
+          {/* <div className="flex justify-between gap-4 mt-4">
           <Link to="/payment">
             <div className="w-[165px] h-[100px] rounded-lg bg-[#5ac9f5] bg-opacity-20 p-2 ">
               <MdOutlinePayment className="w-10 h-10 text-[#5ac9f5]" />
@@ -105,76 +112,76 @@ const Userdash = () => {
               </p>
             </div>
           </Link>
-        </div>
+        </div> */}
 
-        <div className="flex justify-between gap-4 mt-4">
-          <Link to="/display-event">
-            <div className="w-[165px] h-[100px] rounded-lg bg-[#F55A70] bg-opacity-20 p-2 ">
-              <svg
-                width="33"
-                height="33"
-                viewBox="0 0 33 33"
-                fill="none"
-                xmlns="http://www.w3.org/2000/svg"
-              >
-                <path
-                  d="M28.2136 8.58553C28.2136 8.41923 28.1809 8.25455 28.1172 8.10091C28.0536 7.94726 27.9603 7.80766 27.8427 7.69007C27.7251 7.57247 27.5855 7.47919 27.4319 7.41555C27.2782 7.35191 27.1136 7.31915 26.9473 7.31915H6.05275C5.88645 7.31915 5.72178 7.35191 5.56813 7.41555C5.41449 7.47919 5.27488 7.57247 5.15729 7.69007C5.0397 7.80766 4.94642 7.94726 4.88277 8.10091C4.81913 8.25455 4.78638 8.41923 4.78638 8.58553V24.4145C4.78638 24.7504 4.9198 25.0725 5.15729 25.31C5.39478 25.5475 5.71689 25.6809 6.05275 25.6809H26.9473C27.2831 25.6809 27.6052 25.5475 27.8427 25.31C28.0802 25.0725 28.2136 24.7504 28.2136 24.4145V8.58553Z"
-                  stroke="#F55A70"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                />
-                <path
-                  d="M26.1663 7.31913L25.7661 5.82313C25.6791 5.49877 25.4669 5.22225 25.176 5.05439C24.8851 4.88652 24.5395 4.84106 24.2151 4.92801L15.2914 7.31913M28.2136 22.8663L28.9671 22.6641C29.1278 22.6211 29.2784 22.5469 29.4104 22.4457C29.5424 22.3444 29.6531 22.2182 29.7363 22.0742C29.8195 21.9302 29.8735 21.7712 29.8952 21.6063C29.9169 21.4414 29.906 21.2738 29.8629 21.1131L28.2129 14.9579M6.83375 25.6809L7.23388 27.1769C7.32088 27.5012 7.53315 27.7778 7.82401 27.9456C8.11487 28.1135 8.4605 28.1589 8.78488 28.072L17.7086 25.6809M4.78638 10.1338L4.03288 10.3359C3.87221 10.3789 3.72158 10.4531 3.58961 10.5543C3.45763 10.6556 3.34689 10.7818 3.2637 10.9258C3.18051 11.0699 3.12651 11.2289 3.10479 11.3938C3.08306 11.5587 3.09403 11.7262 3.13706 11.8869L4.79669 18.0799M8.90175 11.1183H24.0976M8.90175 14.7063H24.0976M8.90175 18.2937H24.0976M8.90175 21.8818H16.5"
-                  stroke="#F55A70"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                />
-              </svg>
-              <h1 className="text-[14px] font-bold font-roboto text-[#F55A70]">
-                Events
-              </h1>
-              <p className="text-[10px] font-roboto text-[#C19595]">
-                events happening on your surrounding
-              </p>
-            </div>
-          </Link>
-          <Link to="/booking">
-            <div className="w-[165px] h-[100px] rounded-lg bg-[#4a6e31] bg-opacity-20 p-2 ">
-              <svg
-                width="33"
-                height="33"
-                viewBox="0 0 33 33"
-                fill="none"
-                xmlns="http://www.w3.org/2000/svg"
-              >
-                <path
-                  fillRule="evenodd"
-                  clipRule="evenodd"
-                  d="M16.5 12.7188C15.1325 12.7188 13.821 13.262 12.854 14.229C11.887 15.196 11.3438 16.5075 11.3438 17.875C11.3438 19.2425 11.887 20.554 12.854 21.521C13.821 22.488 15.1325 23.0312 16.5 23.0312C17.8675 23.0312 19.179 22.488 20.146 21.521C21.113 20.554 21.6562 19.2425 21.6562 17.875C21.6562 16.5075 21.113 15.196 20.146 14.229C19.179 13.262 17.8675 12.7188 16.5 12.7188ZM13.4062 17.875C13.4062 17.0545 13.7322 16.2676 14.3124 15.6874C14.8926 15.1072 15.6795 14.7812 16.5 14.7812C17.3205 14.7812 18.1074 15.1072 18.6876 15.6874C19.2678 16.2676 19.5938 17.0545 19.5938 17.875C19.5938 18.6955 19.2678 19.4824 18.6876 20.0626C18.1074 20.6428 17.3205 20.9688 16.5 20.9688C15.6795 20.9688 14.8926 20.6428 14.3124 20.0626C13.7322 19.4824 13.4062 18.6955 13.4062 17.875Z"
-                  fill="#4a6e31"
-                />
-                <path
-                  d="M13.75 25.0938C13.4765 25.0938 13.2142 25.2024 13.0208 25.3958C12.8274 25.5892 12.7188 25.8515 12.7188 26.125C12.7188 26.3985 12.8274 26.6608 13.0208 26.8542C13.2142 27.0476 13.4765 27.1562 13.75 27.1562H19.25C19.5235 27.1562 19.7858 27.0476 19.9792 26.8542C20.1726 26.6608 20.2812 26.3985 20.2812 26.125C20.2812 25.8515 20.1726 25.5892 19.9792 25.3958C19.7858 25.2024 19.5235 25.0938 19.25 25.0938H13.75Z"
-                  fill="#4a6e31"
-                />
-                <path
-                  fillRule="evenodd"
-                  clipRule="evenodd"
-                  d="M21.4651 2.17798C22.0014 2.10135 22.5479 2.14084 23.0676 2.29378C23.5872 2.44672 24.068 2.70954 24.4773 3.06445C24.8865 3.41935 25.2148 3.85805 25.4397 4.35084C25.6647 4.84363 25.7812 5.37901 25.7812 5.92073V7.8141C26.6113 8.25207 27.3061 8.90829 27.7907 9.712C28.2753 10.5157 28.5313 11.4365 28.5312 12.375V26.125C28.5312 27.4925 27.988 28.804 27.021 29.771C26.054 30.738 24.7425 31.2812 23.375 31.2812H9.625C8.25748 31.2812 6.94597 30.738 5.97898 29.771C5.012 28.804 4.46875 27.4925 4.46875 26.125V6.87498V6.77735C4.46875 5.5316 5.3845 4.47423 6.61925 4.29823L21.4651 2.17798ZM6.97263 9.28123H6.53125V26.125C6.53125 26.9455 6.8572 27.7324 7.43739 28.3126C8.01758 28.8928 8.80449 29.2187 9.625 29.2187H23.375C24.1955 29.2187 24.9824 28.8928 25.5626 28.3126C26.1428 27.7324 26.4688 26.9455 26.4688 26.125V12.375C26.4688 11.5568 26.1447 10.772 25.5675 10.1922C24.9903 9.61241 24.2069 9.28486 23.3888 9.28123H6.97263ZM23.7188 7.21873H6.96712C6.8556 7.21779 6.74857 7.17466 6.66754 7.09803C6.58652 7.02139 6.53751 6.91692 6.53037 6.80563C6.52323 6.69433 6.55849 6.58446 6.62905 6.49809C6.69962 6.41173 6.80026 6.35528 6.91075 6.3401L21.7566 4.22123C22.0004 4.18636 22.2488 4.20427 22.485 4.27375C22.7212 4.34323 22.9397 4.46265 23.1258 4.62394C23.3119 4.78522 23.4611 4.98459 23.5634 5.20856C23.6657 5.43254 23.7187 5.67587 23.7188 5.9221V7.21873Z"
-                  fill="#4a6e31"
-                />
-              </svg>
-              <h1 className="text-[14px] font-bold font-roboto text-[#4a6e31]">
-                Booking
-              </h1>
-              <p className="text-[10px] font-roboto text-[#4a6e31]">
-                Book your service directly from here without any complications
-              </p>
-            </div>
-          </Link>
-        </div>
+          <div className="flex justify-between gap-4 mt-4">
+            <Link to="/display-event">
+              <div className="w-[165px] h-[100px] rounded-lg bg-[#F55A70] bg-opacity-20 p-2 ">
+                <svg
+                  width="33"
+                  height="33"
+                  viewBox="0 0 33 33"
+                  fill="none"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    d="M28.2136 8.58553C28.2136 8.41923 28.1809 8.25455 28.1172 8.10091C28.0536 7.94726 27.9603 7.80766 27.8427 7.69007C27.7251 7.57247 27.5855 7.47919 27.4319 7.41555C27.2782 7.35191 27.1136 7.31915 26.9473 7.31915H6.05275C5.88645 7.31915 5.72178 7.35191 5.56813 7.41555C5.41449 7.47919 5.27488 7.57247 5.15729 7.69007C5.0397 7.80766 4.94642 7.94726 4.88277 8.10091C4.81913 8.25455 4.78638 8.41923 4.78638 8.58553V24.4145C4.78638 24.7504 4.9198 25.0725 5.15729 25.31C5.39478 25.5475 5.71689 25.6809 6.05275 25.6809H26.9473C27.2831 25.6809 27.6052 25.5475 27.8427 25.31C28.0802 25.0725 28.2136 24.7504 28.2136 24.4145V8.58553Z"
+                    stroke="#F55A70"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                  />
+                  <path
+                    d="M26.1663 7.31913L25.7661 5.82313C25.6791 5.49877 25.4669 5.22225 25.176 5.05439C24.8851 4.88652 24.5395 4.84106 24.2151 4.92801L15.2914 7.31913M28.2136 22.8663L28.9671 22.6641C29.1278 22.6211 29.2784 22.5469 29.4104 22.4457C29.5424 22.3444 29.6531 22.2182 29.7363 22.0742C29.8195 21.9302 29.8735 21.7712 29.8952 21.6063C29.9169 21.4414 29.906 21.2738 29.8629 21.1131L28.2129 14.9579M6.83375 25.6809L7.23388 27.1769C7.32088 27.5012 7.53315 27.7778 7.82401 27.9456C8.11487 28.1135 8.4605 28.1589 8.78488 28.072L17.7086 25.6809M4.78638 10.1338L4.03288 10.3359C3.87221 10.3789 3.72158 10.4531 3.58961 10.5543C3.45763 10.6556 3.34689 10.7818 3.2637 10.9258C3.18051 11.0699 3.12651 11.2289 3.10479 11.3938C3.08306 11.5587 3.09403 11.7262 3.13706 11.8869L4.79669 18.0799M8.90175 11.1183H24.0976M8.90175 14.7063H24.0976M8.90175 18.2937H24.0976M8.90175 21.8818H16.5"
+                    stroke="#F55A70"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                  />
+                </svg>
+                <h1 className="text-[14px] font-bold font-roboto text-[#F55A70]">
+                  Events
+                </h1>
+                <p className="text-[10px] font-roboto text-[#C19595]">
+                  events happening on your surrounding
+                </p>
+              </div>
+            </Link>
+            <Link to="/booking">
+              <div className="w-[165px] h-[100px] rounded-lg bg-[#4a6e31] bg-opacity-20 p-2 ">
+                <svg
+                  width="33"
+                  height="33"
+                  viewBox="0 0 33 33"
+                  fill="none"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    fillRule="evenodd"
+                    clipRule="evenodd"
+                    d="M16.5 12.7188C15.1325 12.7188 13.821 13.262 12.854 14.229C11.887 15.196 11.3438 16.5075 11.3438 17.875C11.3438 19.2425 11.887 20.554 12.854 21.521C13.821 22.488 15.1325 23.0312 16.5 23.0312C17.8675 23.0312 19.179 22.488 20.146 21.521C21.113 20.554 21.6562 19.2425 21.6562 17.875C21.6562 16.5075 21.113 15.196 20.146 14.229C19.179 13.262 17.8675 12.7188 16.5 12.7188ZM13.4062 17.875C13.4062 17.0545 13.7322 16.2676 14.3124 15.6874C14.8926 15.1072 15.6795 14.7812 16.5 14.7812C17.3205 14.7812 18.1074 15.1072 18.6876 15.6874C19.2678 16.2676 19.5938 17.0545 19.5938 17.875C19.5938 18.6955 19.2678 19.4824 18.6876 20.0626C18.1074 20.6428 17.3205 20.9688 16.5 20.9688C15.6795 20.9688 14.8926 20.6428 14.3124 20.0626C13.7322 19.4824 13.4062 18.6955 13.4062 17.875Z"
+                    fill="#4a6e31"
+                  />
+                  <path
+                    d="M13.75 25.0938C13.4765 25.0938 13.2142 25.2024 13.0208 25.3958C12.8274 25.5892 12.7188 25.8515 12.7188 26.125C12.7188 26.3985 12.8274 26.6608 13.0208 26.8542C13.2142 27.0476 13.4765 27.1562 13.75 27.1562H19.25C19.5235 27.1562 19.7858 27.0476 19.9792 26.8542C20.1726 26.6608 20.2812 26.3985 20.2812 26.125C20.2812 25.8515 20.1726 25.5892 19.9792 25.3958C19.7858 25.2024 19.5235 25.0938 19.25 25.0938H13.75Z"
+                    fill="#4a6e31"
+                  />
+                  <path
+                    fillRule="evenodd"
+                    clipRule="evenodd"
+                    d="M21.4651 2.17798C22.0014 2.10135 22.5479 2.14084 23.0676 2.29378C23.5872 2.44672 24.068 2.70954 24.4773 3.06445C24.8865 3.41935 25.2148 3.85805 25.4397 4.35084C25.6647 4.84363 25.7812 5.37901 25.7812 5.92073V7.8141C26.6113 8.25207 27.3061 8.90829 27.7907 9.712C28.2753 10.5157 28.5313 11.4365 28.5312 12.375V26.125C28.5312 27.4925 27.988 28.804 27.021 29.771C26.054 30.738 24.7425 31.2812 23.375 31.2812H9.625C8.25748 31.2812 6.94597 30.738 5.97898 29.771C5.012 28.804 4.46875 27.4925 4.46875 26.125V6.87498V6.77735C4.46875 5.5316 5.3845 4.47423 6.61925 4.29823L21.4651 2.17798ZM6.97263 9.28123H6.53125V26.125C6.53125 26.9455 6.8572 27.7324 7.43739 28.3126C8.01758 28.8928 8.80449 29.2187 9.625 29.2187H23.375C24.1955 29.2187 24.9824 28.8928 25.5626 28.3126C26.1428 27.7324 26.4688 26.9455 26.4688 26.125V12.375C26.4688 11.5568 26.1447 10.772 25.5675 10.1922C24.9903 9.61241 24.2069 9.28486 23.3888 9.28123H6.97263ZM23.7188 7.21873H6.96712C6.8556 7.21779 6.74857 7.17466 6.66754 7.09803C6.58652 7.02139 6.53751 6.91692 6.53037 6.80563C6.52323 6.69433 6.55849 6.58446 6.62905 6.49809C6.69962 6.41173 6.80026 6.35528 6.91075 6.3401L21.7566 4.22123C22.0004 4.18636 22.2488 4.20427 22.485 4.27375C22.7212 4.34323 22.9397 4.46265 23.1258 4.62394C23.3119 4.78522 23.4611 4.98459 23.5634 5.20856C23.6657 5.43254 23.7187 5.67587 23.7188 5.9221V7.21873Z"
+                    fill="#4a6e31"
+                  />
+                </svg>
+                <h1 className="text-[14px] font-bold font-roboto text-[#4a6e31]">
+                  Booking
+                </h1>
+                <p className="text-[10px] font-roboto text-[#4a6e31]">
+                  Book your service directly from here without any complications
+                </p>
+              </div>
+            </Link>
+          </div>
 
-        {/* <div className="flex justify-between gap-4 mt-4">
+          {/* <div className="flex justify-between gap-4 mt-4">
           <Link to="/userpayment">
             <div className="w-[165px] h-[100px] rounded-lg bg-[#752FFF] bg-opacity-20 p-2 ">
               <svg
@@ -199,57 +206,58 @@ const Userdash = () => {
             </div>
           </Link>
         </div> */}
-        <div className="mt-4 pb-20">
-          <p className="text-sm text-gray-400">Under Development</p>
-          <h1 className="text-xl font-bold">What Community Has For Sale</h1>
+          <div className="mt-4 pb-20">
+            <p className="text-sm text-gray-400">Under Development</p>
+            <h1 className="text-xl font-bold">What Community Has For Sale</h1>
 
-          <div className="flex border-[2px] border-gray-300 rounded-lg mt-4">
-            <img
-              src="https://m.xcite.com/media/catalog/product//i/p/iphone_14_5g_-_red_1_3.jpg"
-              className="w-24 h-24 rounded-l-lg object-cover"
-            ></img>
-            <div className="ml-4 my-auto">
-              <p className="text-sm font-bold font-mono">Iphone 14 pro</p>
-              <p className="text-sm font-mono mb-2">Condition like new</p>
-              <p className="text-xs font-mono font-bold">
-                Colony:
-                <span className="border px-4 border-gray-400 font-normal">
-                  B wing
-                </span>
-              </p>
-              <p className="text-xs font-mono font-bold">
-                Price:{" "}
-                <span className="border px-4 border-gray-400 font-normal">
-                  NPR.2000
-                </span>
-              </p>
+            <div className="flex border-[2px] border-gray-300 rounded-lg mt-4">
+              <img
+                src="https://m.xcite.com/media/catalog/product//i/p/iphone_14_5g_-_red_1_3.jpg"
+                className="w-24 h-24 rounded-l-lg object-cover"
+              ></img>
+              <div className="ml-4 my-auto">
+                <p className="text-sm font-bold font-mono">Iphone 14 pro</p>
+                <p className="text-sm font-mono mb-2">Condition like new</p>
+                <p className="text-xs font-mono font-bold">
+                  Colony:
+                  <span className="border px-4 border-gray-400 font-normal">
+                    B wing
+                  </span>
+                </p>
+                <p className="text-xs font-mono font-bold">
+                  Price:{" "}
+                  <span className="border px-4 border-gray-400 font-normal">
+                    NPR.2000
+                  </span>
+                </p>
+              </div>
             </div>
-          </div>
-          <div className="flex border-[2px] border-gray-300 rounded-lg mt-4">
-            <img
-              src="https://tse4.mm.bing.net/th?id=OIP.e8vVcUe-dNIsUmxm76aSNgHaHV&pid=Api&P=0&h=220"
-              className="w-24 h-24 rounded-l-lg object-cover"
-            ></img>
-            <div className="ml-4 my-auto">
-              <p className="text-sm font-bold font-mono">Ipad mini</p>
-              <p className="text-sm font-mono mb-2">urgently sale</p>
-              <p className="text-xs font-mono font-bold">
-                Colony:
-                <span className="border px-4 border-gray-400 font-normal">
-                  F wing,23
-                </span>
-              </p>
-              <p className="text-xs font-mono font-bold">
-                Price:{" "}
-                <span className="border px-4 border-gray-400 font-normal">
-                  NPR.45,000
-                </span>
-              </p>
+            <div className="flex border-[2px] border-gray-300 rounded-lg mt-4">
+              <img
+                src="https://tse4.mm.bing.net/th?id=OIP.e8vVcUe-dNIsUmxm76aSNgHaHV&pid=Api&P=0&h=220"
+                className="w-24 h-24 rounded-l-lg object-cover"
+              ></img>
+              <div className="ml-4 my-auto">
+                <p className="text-sm font-bold font-mono">Ipad mini</p>
+                <p className="text-sm font-mono mb-2">urgently sale</p>
+                <p className="text-xs font-mono font-bold">
+                  Colony:
+                  <span className="border px-4 border-gray-400 font-normal">
+                    F wing,23
+                  </span>
+                </p>
+                <p className="text-xs font-mono font-bold">
+                  Price:{" "}
+                  <span className="border px-4 border-gray-400 font-normal">
+                    NPR.45,000
+                  </span>
+                </p>
+              </div>
             </div>
           </div>
         </div>
       </div>
-    </div>
+    </>
   );
 };
 

@@ -4,7 +4,7 @@ import { paymentActions } from "../redux/paymentSlice";
 import { Link } from "react-router-dom";
 import { SlArrowLeft } from "react-icons/sl";
 import { Skeleton, Button, Modal, Pagination, message, Card } from "antd";
-import { Row, Col } from "antd";
+import { Row, Col, notification } from "antd";
 
 const UserPaymentList = () => {
   const dispatch = useDispatch();
@@ -108,14 +108,17 @@ const UserPaymentList = () => {
 
     // Check for errors explicitly from the response
     if (paymentActions.addPayment.fulfilled.match(response)) {
-      alert("Payment submitted successfully");
+      notification.success({
+        message: "Success",
+        description: "Payment submmited successfully",
+      });
       setSuccessMessage("Payment added successfully!");
       resetPaymentForm();
     } else {
-      alert(
-        "There was an error",
-        response.payload || "Unexpected error. Please try again."
-      );
+      notification.error({
+        message: "Error",
+        description: "failed to submmit payment",
+      });
     }
   };
 

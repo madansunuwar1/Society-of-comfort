@@ -33,25 +33,25 @@ const Notice = () => {
 
   return (
     <div className="bg-gray-200 font-roboto pb-20">
-      <div className="flex px-6 py-4 bg-white mb-4">
+      <div className="flex px-6 py-4 bg-[#3F3F95] mb-4">
         <div className="items-center my-auto">
           <Link to="/userdash">
-            <SlArrowLeft />
+            <SlArrowLeft className="text-white" />
           </Link>
         </div>
         <button
-          className="font-bold flex justify-center flex-col mx-auto text-[22px] text-[#403F93]"
+          className="font-bold flex justify-center flex-col mx-auto text-[22px] text-white"
           onClick={handlePublicNoticeClick}
         >
           Public notice
-          {!isPrivate && <span className="bg-[#403F93] h-1 w-32"></span>}
+          {!isPrivate && <span className="bg-white h-1 w-32"></span>}
         </button>
         <button
-          className="font-bold flex justify-center flex-col mx-auto text-[22px] text-[#403F93]"
+          className="font-bold flex justify-center flex-col mx-auto text-[22px] text-white"
           onClick={handlePrivateNoticeClick}
         >
           Private notice
-          {isPrivate && <span className="bg-[#403F93] h-1 w-32"></span>}
+          {isPrivate && <span className="bg-white h-1 w-32"></span>}
         </button>
       </div>
 
@@ -71,22 +71,42 @@ const Notice = () => {
             publicNotices &&
             publicNotices?.map((item) => (
               <div className="px-6 py-1" key={item.id}>
-                <div className="bg-white p-3 overflow-hidden rounded-md shadow-lg border-[1px] border-gray-400">
-                  <div className="">
-                    <div className="flex gap-2">
-                      <MdOutlineSpeakerNotes className="h-6 w-6 my-auto" />
-                      <h1 className="font-bold overflow-hidden text-md my-auto">
-                        {item.title}
-                      </h1>
+                <div className="bg-white p-3 overflow-hidden rounded-md shadow-lg flex justify-between">
+                  <div className="w-4/6">
+                    <div className="">
+                      <div className="flex gap-2">
+                        <h1
+                          className="font-bold overflow-hidden text-md my-auto text-ellipsis"
+                          style={{
+                            display: "-webkit-box",
+                            WebkitBoxOrient: "vertical",
+                            WebkitLineClamp: 1,
+                          }}
+                        >
+                          {item.title}
+                        </h1>
+                      </div>
+                      {/* <p className="text-md my-auto overflow-hidden text-sm">
+                        {item.created_at.split("T")[0]}
+                      </p> */}
                     </div>
-                    <p className="text-md my-auto overflow-hidden text-sm">
-                      {item.created_at.split("T")[0]}
+                    <p
+                      className="mt-2 text-gray-600 text-sm overflow-hidden text-ellipsis"
+                      style={{
+                        display: "-webkit-box",
+                        WebkitBoxOrient: "vertical",
+                        WebkitLineClamp: 2,
+                      }}
+                    >
+                      {item.notice_body}
                     </p>
                   </div>
-
-                  <p className="mt-4 text-gray-600 text-sm">
-                    {item.notice_body}
-                  </p>
+                  <div className="">
+                    <img
+                      src="https://www.pushengage.com/wp-content/uploads/2024/01/App-Push-Notification-Icon.jpg"
+                      className="h-20 w-20 object-cover rounded-md"
+                    />
+                  </div>
                 </div>
               </div>
             ))}
@@ -94,20 +114,42 @@ const Notice = () => {
           {isPrivate &&
             privateNotices.map((item) => (
               <div className="px-6 py-1" key={item.id}>
-                <div className="bg-white p-3 overflow-hidden rounded-md shadow-lg border-[1px] border-gray-400">
-                  <div className="">
-                    <div className="flex gap-2">
-                      <MdOutlineSpeakerNotes className="h-6 w-6 my-auto" />
-                      <h1 className="font-bold overflow-hidden text-md my-auto">
-                        {item.title}
-                      </h1>
+                <div className="bg-white p-3 overflow-hidden rounded-md shadow-lg flex justify-between">
+                  <div className="w-4/6">
+                    <div className="">
+                      <div className="flex gap-2">
+                        <h1
+                          className="font-bold overflow-hidden text-md my-auto text-ellipsis"
+                          style={{
+                            display: "-webkit-box",
+                            WebkitBoxOrient: "vertical",
+                            WebkitLineClamp: 1,
+                          }}
+                        >
+                          {item.title}
+                        </h1>
+                      </div>
+                      {/* <p className="text-md my-auto overflow-hidden text-sm">
+                        {item.created_at.split("T")[0]}
+                      </p> */}
                     </div>
-                    <p className="text-md my-auto overflow-hidden text-sm">
-                      {item.sent_at.split("T")[0]}
+                    <p
+                      className="mt-2 text-gray-600 text-sm overflow-hidden text-ellipsis"
+                      style={{
+                        display: "-webkit-box",
+                        WebkitBoxOrient: "vertical",
+                        WebkitLineClamp: 2,
+                      }}
+                    >
+                      {item.notice}
                     </p>
                   </div>
-
-                  <p className="mt-4 text-gray-600 text-sm">{item.notice}</p>
+                  <div className="">
+                    <img
+                      src="https://www.pushengage.com/wp-content/uploads/2024/01/App-Push-Notification-Icon.jpg"
+                      className="h-20 w-20 object-cover rounded-md"
+                    />
+                  </div>
                 </div>
               </div>
             ))}

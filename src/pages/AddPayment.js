@@ -8,7 +8,7 @@ import { NepaliDatePicker } from "nepali-datepicker-reactjs";
 import "nepali-datepicker-reactjs/dist/index.css";
 import api from "../utils/api";
 import { ADToBS } from "bikram-sambat-js";
-import { Button } from "antd";
+import { Button, notification } from "antd";
 import { FileImageOutlined } from "@ant-design/icons";
 import SyncLoader from "react-spinners/SyncLoader";
 import { MdOutlineSpeakerNotes } from "react-icons/md";
@@ -33,6 +33,7 @@ const AddPayment = () => {
   const [dueAmount, setDueAmount] = useState(null);
   const fileInputRef = useRef(null);
   const [isInvoice, setIsInvoice] = useState(true);
+  const [slipPreview, setSlipPreview] = useState(null);
   const {
     invoices,
     loading: invoiceLoading,
@@ -99,8 +100,11 @@ const AddPayment = () => {
 
   const handleFileChange = (e) => {
     if (e.target.files && e.target.files.length > 0) {
-      setSlip(e.target.files[0]); // Ensure the file is properly captured
+      const file = e.target.files[0];
+      setSlip(file);
+      setSlipPreview(URL.createObjectURL(file)); // Ensure the file is properly captured
     }
+    console.log("slip", slip);
   };
 
   const validateForm = () => {
@@ -154,14 +158,17 @@ const AddPayment = () => {
 
     // Check for errors explicitly from the response
     if (paymentActions.addPayment.fulfilled.match(response)) {
-      alert("Payment submitted successfully");
+      notification.success({
+        message: "Success",
+        description: "Payment submitted successfully",
+      });
       setSuccessMessage("Payment added successfully!");
       resetPaymentForm();
     } else {
-      alert(
-        "There was an error",
-        response.payload || "Unexpected error. Please try again."
-      );
+      notification.error({
+        message: "Error",
+        description: "payment not added",
+      });
     }
   };
 
@@ -169,6 +176,7 @@ const AddPayment = () => {
     setAmount("");
     setDate("");
     setSlip(null);
+    setRemarks("");
     setRemarks("");
   };
 
@@ -219,7 +227,7 @@ const AddPayment = () => {
           </p>
           <div>
             <input
-              className="rounded-md px-4 py-1 w-full border-[2px] border-gray-400 mt-2"
+              className="rounded-md px-4 py-1 w-full border-[1px] border-gray-400 mt-2"
               type="text"
               placeholder="Amount"
               value={amount}
@@ -240,8 +248,12 @@ const AddPayment = () => {
           </div>
           <div>
             <div>
-              <div className="rounded-md px-4 py-1 w-full border-[2px] border-gray-400 mt-2 flex justify-between">
-                <p className="my-auto text-gray-400">Payment screenshot</p>
+              <div className="rounded-md pl-4 pr-1 py-1 w-full border-[1px] border-gray-400 mt-2 flex justify-between">
+                {!slip ? (
+                  <p className="my-auto text-gray-400">Payment screenshot</p>
+                ) : (
+                  <p className="my-auto text-gray-400">{slip?.name}</p>
+                )}
                 <Button
                   onClick={triggerFileInput}
                   className="bg-blue-500 text-white px-4 py-2 rounded-md"
@@ -252,19 +264,28 @@ const AddPayment = () => {
               </div>
               <input
                 ref={fileInputRef}
-                className="rounded-md w-full border-[2px] border-gray-400 mt-2 cursor-pointer"
+                className="rounded-md w-full border-[1px] border-gray-400 mt-2 cursor-pointer"
                 type="file"
                 onChange={handleFileChange}
                 accept="image/png, image/jpeg"
                 required
                 style={{ display: "none" }} // Hide the file input
               />
+              {slipPreview && (
+                <div className="mt-4 rounded-md">
+                  <img
+                    src={slipPreview}
+                    alt="Preview"
+                    className="w-full h-auto rounded-md border border-gray-300 mx-auto"
+                  />
+                </div>
+              )}
             </div>
             {errors.slip && <p className="text-red-500">{errors.slip}</p>}
           </div>
           <div>
             <textarea
-              className="rounded-md py-2 px-4 w-full border-[2px] border-gray-400 mt-2"
+              className="rounded-md py-2 px-4 w-full border-[1px] border-gray-400 mt-2"
               type="text"
               placeholder="Remarks"
               value={remarks}

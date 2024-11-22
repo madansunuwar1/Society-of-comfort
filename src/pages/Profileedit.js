@@ -5,6 +5,7 @@ import { FiEdit } from "react-icons/fi";
 import { useNavigate } from "react-router-dom";
 import imagePlaceholder from "../svg/bg.jpg";
 import { editProfile } from "../redux/authSlice";
+import { notification } from "antd";
 
 const Profileedit = () => {
   const navigate = useNavigate();
@@ -70,18 +71,27 @@ const Profileedit = () => {
     );
 
     if (editProfile.fulfilled.match(result)) {
-      alert("Profile updated successfully");
+      notification.success({
+        message: "Success",
+        description: "Profile edited successfully",
+      });
       const updatedUser = { ...user, user: { ...user.user, ...formData } };
       localStorage.setItem("user", JSON.stringify(updatedUser));
       navigate(-1);
     } else {
-      alert(result.payload || "Profile update failed");
+      notification.error({
+        message: "Error",
+        description: "profile edit error",
+      });
     }
   };
 
   const handlePictureSubmit = async () => {
     if (!selectedImage) {
-      alert("Please select a picture to upload.");
+      notification.success({
+        message: "please select",
+        description: "Please select an image",
+      });
       return;
     }
 
@@ -97,11 +107,17 @@ const Profileedit = () => {
     );
 
     if (editProfile.fulfilled.match(result)) {
-      alert("Profile picture updated successfully");
+      notification.success({
+        message: "Success",
+        description: "Profile picure updated sucessfully",
+      });
       setIsModalOpen(false); // Close the modal on success
       navigate(0); // Reload the page to reflect changes
     } else {
-      alert(result.payload || "Profile picture update failed");
+      notification.error({
+        message: "Error",
+        description: "update failed",
+      });
     }
   };
 
