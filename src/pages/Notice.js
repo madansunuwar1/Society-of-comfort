@@ -101,10 +101,10 @@ const Notice = () => {
                       {item.notice_body}
                     </p>
                   </div>
-                  <div className="">
+                  <div className="my-auto">
                     <img
-                      src="https://www.pushengage.com/wp-content/uploads/2024/01/App-Push-Notification-Icon.jpg"
-                      className="h-20 w-20 object-cover rounded-md"
+                      src="https://internalsafety.tractel.com/safetygate/wp-content/uploads/2020/03/notice-icon-b.png"
+                      className="h-12 w-12 object-cover rounded-md"
                     />
                   </div>
                 </div>
@@ -144,10 +144,10 @@ const Notice = () => {
                       {item.notice}
                     </p>
                   </div>
-                  <div className="">
+                  <div className="my-auto">
                     <img
-                      src="https://www.pushengage.com/wp-content/uploads/2024/01/App-Push-Notification-Icon.jpg"
-                      className="h-20 w-20 object-cover rounded-md"
+                      src="https://internalsafety.tractel.com/safetygate/wp-content/uploads/2020/03/notice-icon-b.png"
+                      className="h-12 w-12 object-cover rounded-md"
                     />
                   </div>
                 </div>
