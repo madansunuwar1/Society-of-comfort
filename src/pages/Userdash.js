@@ -2,14 +2,24 @@ import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { MdOutlinePayment } from "react-icons/md";
 import api from "../utils/api";
-import { Button } from "antd";
+import { Button, Skeleton } from "antd";
 import { PlusCircleOutlined } from "@ant-design/icons";
+import { useDispatch, useSelector } from "react-redux";
 import InstallPrompt from "../InstallPrompt";
+import { eventActions } from "../redux/eventSlice";
+import { noticeActions } from "../redux/noticeSlice";
 
 const Userdash = () => {
+  const dispatch = useDispatch();
+  const { allNotices, loading: noticesLoading } = useSelector(
+    (state) => state.notices
+  );
   const user = JSON.parse(localStorage.getItem("user"));
   const [dueAmount, setDueAmount] = useState(null);
   const [housenumber, setHousenumber] = useState(null);
+  const { events, loading: eventsLoading } = useSelector(
+    (state) => state.events
+  );
 
   useEffect(() => {
     api
@@ -27,7 +37,26 @@ const Userdash = () => {
       .catch((error) => {
         console.error("Error fetching houses:", error);
       });
+    dispatch(noticeActions.getAllNotices());
+    dispatch(eventActions.getEvents());
   }, [user.house_id]);
+
+  const recentEvents = [...events]
+    .sort((a, b) => new Date(b.event.created_at) - new Date(a.event.created_at))
+    .slice(0, 3);
+
+  const recentNotices = [...allNotices]
+    .sort((a, b) => new Date(b.created_at) - new Date(a.created_at))
+    .slice(0, 3);
+
+  const getNoticeColor = (status) => {
+    switch (status) {
+      case "private":
+        return "bg-[#2563EB] rounded-3xl";
+      default:
+        return "bg-[#1E3A8A] rounded-3xl";
+    }
+  };
 
   return (
     <>
@@ -207,52 +236,118 @@ const Userdash = () => {
           </Link>
         </div> */}
           <div className="mt-4 pb-20">
-            <p className="text-sm text-gray-400">Under Development</p>
-            <h1 className="text-xl font-bold">What Community Has For Sale</h1>
-
-            <div className="flex border-[2px] border-gray-300 rounded-lg mt-4">
-              <img
-                src="https://m.xcite.com/media/catalog/product//i/p/iphone_14_5g_-_red_1_3.jpg"
-                className="w-24 h-24 rounded-l-lg object-cover"
-              ></img>
-              <div className="ml-4 my-auto">
-                <p className="text-sm font-bold font-mono">Iphone 14 pro</p>
-                <p className="text-sm font-mono mb-2">Condition like new</p>
-                <p className="text-xs font-mono font-bold">
-                  Colony:
-                  <span className="border px-4 border-gray-400 font-normal">
-                    B wing
-                  </span>
-                </p>
-                <p className="text-xs font-mono font-bold">
-                  Price:{" "}
-                  <span className="border px-4 border-gray-400 font-normal">
-                    NPR.2000
-                  </span>
-                </p>
-              </div>
+            <div className="p-4 rounded-lg w-full bg-sky-100 shadow-sm shadow-gray-400">
+              <h2 className="text-md font-semibold border-b border-black pb-2 mb-2">
+                Upcoming events
+              </h2>
+              {eventsLoading ? (
+                <Skeleton active paragraph={{ rows: 2 }} />
+              ) : (
+                <ul>
+                  {recentEvents.map((item) => (
+                    <li
+                      key={item.event.id}
+                      className="border-b py-2 flex items-center justify-between border-gray-400"
+                    >
+                      <div className="flex items-center gap-2">
+                        <img
+                          src={item.file_url}
+                          alt="Payment slip"
+                          className="h-12 w-12 rounded-lg object-cover"
+                        />
+                        <div>
+                          <p
+                            className="text-sm text-ellipsis overflow-hidden"
+                            style={{
+                              display: "-webkit-box",
+                              WebkitBoxOrient: "vertical",
+                              WebkitLineClamp: 1,
+                            }}
+                          >
+                            {item.event.name}
+                          </p>
+                        </div>
+                      </div>
+                      <p className="text-sm text-gray-500">
+                        {new Date(item.event.date).toLocaleDateString()}
+                      </p>
+                    </li>
+                  ))}
+                  <li className="flex items-end justify-end">
+                    <Link to="/display-event">
+                      <Button className="bg-yellow-600 text-sm mt-2 text-white">
+                        See More
+                      </Button>
+                    </Link>
+                  </li>
+                </ul>
+              )}
             </div>
-            <div className="flex border-[2px] border-gray-300 rounded-lg mt-4">
-              <img
-                src="https://tse4.mm.bing.net/th?id=OIP.e8vVcUe-dNIsUmxm76aSNgHaHV&pid=Api&P=0&h=220"
-                className="w-24 h-24 rounded-l-lg object-cover"
-              ></img>
-              <div className="ml-4 my-auto">
-                <p className="text-sm font-bold font-mono">Ipad mini</p>
-                <p className="text-sm font-mono mb-2">urgently sale</p>
-                <p className="text-xs font-mono font-bold">
-                  Colony:
-                  <span className="border px-4 border-gray-400 font-normal">
-                    F wing,23
-                  </span>
-                </p>
-                <p className="text-xs font-mono font-bold">
-                  Price:{" "}
-                  <span className="border px-4 border-gray-400 font-normal">
-                    NPR.45,000
-                  </span>
-                </p>
-              </div>
+            <div className="p-4 rounded-lg w-full mt-4 bg-sky-100 shadow-sm shadow-gray-400">
+              <h2 className="text-md font-semibold border-b border-black pb-2 mb-2">
+                Notices
+              </h2>
+              {noticesLoading ? (
+                <Skeleton active paragraph={{ rows: 2 }} />
+              ) : (
+                <ul>
+                  {recentNotices.map((item) => (
+                    <li className="border-b py-4 border-gray-400">
+                      <div className="flex justify-between">
+                        <img
+                          src="https://cdn-icons-png.flaticon.com/256/7803/7803013.png"
+                          alt="Payment slip"
+                          className="h-10 w-10 rounded-lg object-cover my-auto"
+                        />
+                        <div className="w-3/6">
+                          <p
+                            className="text-sm text-ellipsis overflow-hidden"
+                            style={{
+                              display: "-webkit-box",
+                              WebkitBoxOrient: "vertical",
+                              WebkitLineClamp: 1,
+                            }}
+                          >
+                            {item.title}
+                          </p>
+                          <p
+                            className="text-sm text-gray-600 text-ellipsis overflow-hidden"
+                            style={{
+                              display: "-webkit-box",
+                              WebkitBoxOrient: "vertical",
+                              WebkitLineClamp: 2,
+                            }}
+                          >
+                            {item.notice_body}
+                          </p>
+                        </div>
+                        <div className="my-auto">
+                          <p className="text-sm text-gray-500">
+                            {" "}
+                            {new Date(item.created_at).toLocaleDateString()}
+                          </p>
+                          <p>
+                            <span
+                              className={`${getNoticeColor(
+                                item.notice_type
+                              )} text-[12px] px-4 py-1 text-white`}
+                            >
+                              {item.notice_type}
+                            </span>
+                          </p>
+                        </div>
+                      </div>
+                    </li>
+                  ))}
+                  <li className="flex items-end justify-end">
+                    <Link to="/notice">
+                      <Button className="bg-yellow-600 text-sm mt-2 text-white">
+                        See More
+                      </Button>
+                    </Link>
+                  </li>
+                </ul>
+              )}
             </div>
           </div>
         </div>

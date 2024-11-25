@@ -15,7 +15,7 @@ const Account = () => {
   const handleNavigation = () => {
     if (user.role === "super_admin") {
       navigate("/dashboard");
-    } else if (user.role === "panel_user") {
+    } else if (user.role === "Apartment User") {
       navigate("/userdash");
     } else if (user.role === "Worker") {
       navigate("/proadmin");

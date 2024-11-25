@@ -41,15 +41,15 @@ const DisplayEvent = () => {
 
   return (
     <div className=" bg-slate-200 rounded-xl md:px-24">
-      <div className="flex px-6 py-4">
+      <div className="flex justify-between bg-[#3F3F95] px-4 py-2 w-full rounded-b-lg">
         <div className="items-center my-auto">
           <Link to="/userdash">
-            <SlArrowLeft />
+            <SlArrowLeft className="text-white" />
           </Link>
         </div>
-        <h3 className="font-bold flex justify-center mx-auto text-[22px]">
+        <button className="font-bold flex justify-center flex-col mx-auto text-[22px] text-white">
           Events
-        </h3>
+        </button>
       </div>
 
       {
