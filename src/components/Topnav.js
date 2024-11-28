@@ -20,7 +20,7 @@ const Topnav = () => {
         </Link>
         <h1 className="mt-2 text-[16px]  text-white">
           Welcome{" "}
-          <span className=" text-[16px] font-bold text-white">
+          <span className=" text-[16px] font-bold text-white capitalize">
             {" "}
             {userData.user.name}
           </span>

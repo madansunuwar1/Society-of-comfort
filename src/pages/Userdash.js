@@ -253,7 +253,7 @@ const Userdash = () => {
                         <img
                           src={item.file_url}
                           alt="Payment slip"
-                          className="h-12 w-12 rounded-lg object-cover"
+                          className="h-8 w-8 rounded-lg object-cover"
                         />
                         <div>
                           <p
@@ -297,7 +297,7 @@ const Userdash = () => {
                         <img
                           src="https://cdn-icons-png.flaticon.com/256/7803/7803013.png"
                           alt="Payment slip"
-                          className="h-10 w-10 rounded-lg object-cover my-auto"
+                          className="h-8 w-8 rounded-lg object-cover my-auto"
                         />
                         <div className="w-3/6">
                           <p
