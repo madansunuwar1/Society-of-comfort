@@ -1,18 +1,17 @@
 import React, { useEffect } from "react";
 import { SlArrowLeft } from "react-icons/sl";
 import { Link, useParams } from "react-router-dom";
-import { getEventById } from "../redux/eventSlice";
 import { useDispatch, useSelector } from "react-redux";
-import { getNoticeByID } from "../redux/noticeSlice";
+import { getNoticeById } from "../redux/noticeSlice";
 
 const NoticeDetail = () => {
   const { id } = useParams();
   const dispatch = useDispatch();
-  const { currentNotice, loading } = useSelector((state) => state.events);
+  const { currentNotice, loading } = useSelector((state) => state.notices);
 
   useEffect(() => {
     if (id) {
-      dispatch(getEventById(id));
+      dispatch(getNoticeById(id));
     }
   }, [id, dispatch]);
 
@@ -38,12 +37,23 @@ const NoticeDetail = () => {
         </button>
       </div>
       <div className="bg-white rounded-md p-4 m-4">
-        <p className="text-xl  capitalize font-bold">Notice title</p>
-        <p className="text-lg text-gray-500">Date</p>
-        <p className="pt-2 text-lg">
-          <span>notice type</span>
+        <p className="text-xl  capitalize font-bold">{currentNotice?.title}</p>
+        <p className="text-md text-gray-500">
+          {" "}
+          {new Date(currentNotice?.created_at).toLocaleDateString()}
         </p>
-        <p className="text-lg text-gray-600  pt-2">description</p>
+        <p className="pt-4">
+          <span
+            className={`${getNoticeColor(
+              currentNotice?.notice_type
+            )} text-md px-8 py-2 text-white`}
+          >
+            {currentNotice?.notice_type}
+          </span>
+        </p>
+        <p className="text-lg text-gray-600  pt-4">
+          {currentNotice?.notice_body}
+        </p>
       </div>
     </div>
   );

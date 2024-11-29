@@ -17,18 +17,24 @@ const EditPayment = () => {
   const { payment, loading, error } = useSelector((state) => state.payments);
 
   useEffect(() => {
-    dispatch(fetchPaymentById(id)).then(() => {
-      if (payment) {
-        form.setFieldsValue({
-          amount: payment.data.amount || "",
-          date: payment.data.date || "",
-          remarks: payment.data.remarks || "",
-        });
-        setPreview(payment.data.slip.original_url || null);
-      }
-    });
-  }, [dispatch]);
+    if (id) {
+      dispatch(fetchPaymentById(id));
+    }
+  }, [id, dispatch]);
 
+  console.log("my payment", payment);
+  useEffect(() => {
+    if (payment) {
+      form.setFieldsValue({
+        amount: payment.data.amount,
+        date: payment.data.date,
+        remarks: payment.data.remarks,
+      });
+      setPreview(payment.data.slip.original_url);
+    }
+  }, [payment]);
+
+  // Handle file upload preview
   const handleFileChange = (info) => {
     if (info.file.status === "done" || info.file.originFileObj) {
       const uploadedFile = info.file.originFileObj || info.file;
@@ -42,6 +48,7 @@ const EditPayment = () => {
     }
   };
 
+  // Handle form submission
   const handleSubmit = async (values) => {
     const { amount, date, remarks } = values;
 
@@ -64,67 +71,99 @@ const EditPayment = () => {
       });
   };
 
-  if (loading || !payment) {
-    return <div>Loading...</div>;
-  }
-
-  if (error) {
-    return <div>Error: {error || "Failed to fetch payment data"}</div>;
-  }
+  // Initialize form values
 
   return (
-    <Form
-      form={form}
-      layout="vertical"
-      onFinish={handleSubmit}
-      className="bg-white p-6 rounded-lg shadow-lg"
-    >
-      <Form.Item
-        label="Amount"
-        name="amount"
-        rules={[{ required: true, message: "Please enter the amount" }]}
-      >
-        <Input type="text" placeholder="Amount" />
-      </Form.Item>
-
-      <Form.Item
-        label="Date"
-        name="date"
-        rules={[{ required: true, message: "Please select a date" }]}
-      >
-        <NepaliDatePicker className="w-full" />
-      </Form.Item>
-
-      <Form.Item label="Payment Screenshot">
-        <Upload
-          beforeUpload={() => false}
-          onChange={handleFileChange}
-          accept="image/png, image/jpeg"
-          maxCount={1}
-        >
-          <Button icon={<FileImageOutlined />}>Upload</Button>
-        </Upload>
-        {preview && (
-          <div className="mt-4">
-            <img
-              src={preview}
-              alt="Preview"
-              className="w-full h-auto rounded-md border border-gray-300 mx-auto"
-            />
-          </div>
-        )}
-      </Form.Item>
-
-      <Form.Item label="Remarks" name="remarks" rules={[{ required: false }]}>
-        <Input.TextArea rows={3} placeholder="Remarks" />
-      </Form.Item>
-
-      <Form.Item>
-        <Button type="primary" htmlType="submit" className="w-full">
+    <div className="payment-list bg-[#F5F5F5]">
+      <div className="flex justify-between bg-[#3F3F95] px-4 py-2 w-full rounded-b-lg">
+        <div className="items-center my-auto">
+          <Link to="/userdash">
+            <SlArrowLeft className="text-white" />
+          </Link>
+        </div>
+        <h3 className="font-bold flex justify-center mx-auto text-[22px] text-white">
           Edit Payment
-        </Button>
-      </Form.Item>
-    </Form>
+        </h3>
+      </div>
+      <Form
+        form={form}
+        layout="vertical"
+        onFinish={handleSubmit}
+        className="bg-white p-6 rounded-lg shadow-lg"
+      >
+        {/* Amount Field */}
+        <Form.Item
+          label="Amount"
+          name="amount"
+          rules={[{ required: true, message: "Please enter the amount" }]}
+        >
+          <Input
+            type="text"
+            className="rounded-md px-4 py-1 w-full border-[1px] border-gray-400 mt-2"
+            placeholder="Amount"
+          />
+        </Form.Item>
+
+        {/* Date Picker */}
+        <Form.Item
+          label="Date"
+          name="date"
+          rules={[{ required: true, message: "Please select a date" }]}
+        >
+          <NepaliDatePicker
+            options={{ calenderLocale: "en", valueLocale: "en" }}
+            className="w-full custom-date-picker"
+            required
+          />
+        </Form.Item>
+
+        {/* Upload Field */}
+        <Form.Item label="Payment Screenshot">
+          <Upload
+            beforeUpload={() => false} // Prevent automatic upload
+            onChange={handleFileChange}
+            accept="image/png, image/jpeg"
+            maxCount={1}
+          >
+            <Button
+              className="bg-[#FEA733] text-white px-4 py-2 rounded-md"
+              icon={<FileImageOutlined />}
+            >
+              Upload
+            </Button>
+          </Upload>
+          {preview && (
+            <div className="mt-4">
+              <img
+                src={preview}
+                alt="Preview"
+                className="w-full h-auto rounded-md border border-gray-300 mx-auto"
+              />
+            </div>
+          )}
+        </Form.Item>
+
+        {/* Remarks Field */}
+        <Form.Item label="Remarks" name="remarks" rules={[{ required: false }]}>
+          <Input.TextArea
+            rows={3}
+            placeholder="Remarks"
+            className="rounded-md py-2 px-4 w-full border-[1px] border-gray-400 mt-2"
+          />
+        </Form.Item>
+
+        {/* Submit Button */}
+        <Form.Item>
+          <Button
+            type="primary"
+            htmlType="submit"
+            className="bg-[#3F3F95] text-white flex justify-center w-full rounded-lg mt-2"
+          >
+            Send Payment
+          </Button>
+        </Form.Item>
+      </Form>
+    </div>
   );
 };
 

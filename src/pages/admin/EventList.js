@@ -55,11 +55,11 @@ const EventList = () => {
   const handleEdit = (event) => {
     setSelectedEvent(event);
     setEditForm({
-      name: event.event.name,
-      description: event.event.description || "",
-      date: event.event.date,
-      time: event.event.time || "",
-      venue: event.event.venue || "",
+      name: event.name,
+      description: event.description || "",
+      date: event.date,
+      time: event.time || "",
+      venue: event.venue || "",
       file: null,
     });
     setPreviewImage(event.file_url);
@@ -183,15 +183,15 @@ const EventList = () => {
                   {paginatedEvents?.map((event) => (
                     <tr key={event.id} className=" hover:bg-gray-50 border-b">
                       <td className="py-2 px-4 border-r border-gray-300">
-                        {event?.event?.date || "No date available"}
+                        {event?.date || "No date available"}
                         {/* You can leave this as is if you're not converting to Nepali */}
                       </td>
                       <td className="py-2 px-4 border-r border-gray-300">
-                        {event?.event?.name}
+                        {event?.name}
                       </td>
                       <td className="py-2 px-4 border-r border-gray-300">
                         <img
-                          src={event?.file_url}
+                          src={event?.file.original_url}
                           alt="event"
                           className="cursor-pointer h-10 w-10 object-cover"
                         />
@@ -206,7 +206,7 @@ const EventList = () => {
                         {/* Delete Button */}
                         <Button
                           icon={<DeleteOutlined />}
-                          onClick={() => handleDelete(event?.event?.id)}
+                          onClick={() => handleDelete(event?.id)}
                           danger
                         />
                         {/* Show Event Button */}
@@ -240,21 +240,20 @@ const EventList = () => {
           >
             <div className="p-8">
               <h2 className="text-xl font-bold text-center mb-2">
-                {selectedEvent.event.name}
+                {selectedEvent.name}
               </h2>
               <p className="text-center">
-                Date: {new Date(selectedEvent.event.date).toLocaleDateString()}
+                Date: {new Date(selectedEvent.date).toLocaleDateString()}
               </p>
               <div className="mt-8 text-sm font-mono border-gray-400 pb-2 mb-4">
                 <img
-                  src={selectedEvent.file_url}
+                  src={selectedEvent.file.original_url}
                   alt="event"
                   className="cursor-pointer object-cover h-80 w-80 mx-auto"
                 />
                 <p className="mt-4">
                   <strong>Description:</strong>{" "}
-                  {selectedEvent.event.description ||
-                    "No description available"}
+                  {selectedEvent.description || "No description available"}
                 </p>
               </div>
             </div>
@@ -296,6 +295,7 @@ const EventList = () => {
               </Form.Item>
               <Form.Item label="Time">
                 <Input
+                  type="time"
                   placeholder="Time"
                   value={editForm.time}
                   onChange={(e) => handleEditFormChange("time", e.target.value)}
