@@ -66,7 +66,7 @@ const Userdash = () => {
         <InstallPrompt />
       </div> */}
       <div className="flex justify-center">
-        <div className="px-5 pb-20 bg-white">
+        <div className="px-4 pb-20 bg-[#F5F5F5]">
           <div className="bg-[url('https://static.vecteezy.com/system/resources/previews/003/127/954/non_2x/abstract-template-blue-background-white-squares-free-vector.jpg')] rounded-lg mt-4 p-4 bg-cover flex justify-between">
             <div>
               <div className="mx-4">
@@ -88,11 +88,14 @@ const Userdash = () => {
                   {dueAmount ? `NPR. ${dueAmount}` : "NPR. xxxx.xx"}
                 </p>
               </div>
-              <div className="">
-                <Link to="/adduserpayment">
-                  <Button icon={<PlusCircleOutlined />}>Add Payment</Button>
-                </Link>
-              </div>
+              <Link to="/adduserpayment">
+                <Button
+                  icon={<PlusCircleOutlined />}
+                  className="bg-[#19891A] text-white"
+                >
+                  Add Payment
+                </Button>
+              </Link>
             </div>
           </div>
           {/* <div className="flex justify-between gap-4 mt-4">
@@ -145,7 +148,7 @@ const Userdash = () => {
 
           <div className="flex justify-between gap-4 mt-4">
             <Link to="/display-event">
-              <div className="w-[165px] h-[100px] rounded-lg bg-[#F55A70] bg-opacity-20 p-2 ">
+              <div className="w-[165px] h-[100px] rounded-lg bg-[#FDDEE2] p-2 ">
                 <svg
                   width="33"
                   height="33"
@@ -166,16 +169,16 @@ const Userdash = () => {
                     strokeLinejoin="round"
                   />
                 </svg>
-                <h1 className="text-[14px] font-bold font-roboto text-[#F55A70]">
+                <h1 className="text-[14px] font-bold font-roboto text-[#F55A89]">
                   Events
                 </h1>
-                <p className="text-[10px] font-roboto text-[#C19595]">
+                <p className="text-[10px] font-roboto text-[#F55A89]">
                   events happening on your surrounding
                 </p>
               </div>
             </Link>
             <Link to="/booking">
-              <div className="w-[165px] h-[100px] rounded-lg bg-[#4a6e31] bg-opacity-20 p-2 ">
+              <div className="w-[165px] h-[100px] rounded-lg bg-[#FF7900] bg-opacity-20 p-2 ">
                 <svg
                   width="33"
                   height="33"
@@ -187,23 +190,23 @@ const Userdash = () => {
                     fillRule="evenodd"
                     clipRule="evenodd"
                     d="M16.5 12.7188C15.1325 12.7188 13.821 13.262 12.854 14.229C11.887 15.196 11.3438 16.5075 11.3438 17.875C11.3438 19.2425 11.887 20.554 12.854 21.521C13.821 22.488 15.1325 23.0312 16.5 23.0312C17.8675 23.0312 19.179 22.488 20.146 21.521C21.113 20.554 21.6562 19.2425 21.6562 17.875C21.6562 16.5075 21.113 15.196 20.146 14.229C19.179 13.262 17.8675 12.7188 16.5 12.7188ZM13.4062 17.875C13.4062 17.0545 13.7322 16.2676 14.3124 15.6874C14.8926 15.1072 15.6795 14.7812 16.5 14.7812C17.3205 14.7812 18.1074 15.1072 18.6876 15.6874C19.2678 16.2676 19.5938 17.0545 19.5938 17.875C19.5938 18.6955 19.2678 19.4824 18.6876 20.0626C18.1074 20.6428 17.3205 20.9688 16.5 20.9688C15.6795 20.9688 14.8926 20.6428 14.3124 20.0626C13.7322 19.4824 13.4062 18.6955 13.4062 17.875Z"
-                    fill="#4a6e31"
+                    fill="#ff7700a9"
                   />
                   <path
                     d="M13.75 25.0938C13.4765 25.0938 13.2142 25.2024 13.0208 25.3958C12.8274 25.5892 12.7188 25.8515 12.7188 26.125C12.7188 26.3985 12.8274 26.6608 13.0208 26.8542C13.2142 27.0476 13.4765 27.1562 13.75 27.1562H19.25C19.5235 27.1562 19.7858 27.0476 19.9792 26.8542C20.1726 26.6608 20.2812 26.3985 20.2812 26.125C20.2812 25.8515 20.1726 25.5892 19.9792 25.3958C19.7858 25.2024 19.5235 25.0938 19.25 25.0938H13.75Z"
-                    fill="#4a6e31"
+                    fill="#ff7700a9"
                   />
                   <path
                     fillRule="evenodd"
                     clipRule="evenodd"
                     d="M21.4651 2.17798C22.0014 2.10135 22.5479 2.14084 23.0676 2.29378C23.5872 2.44672 24.068 2.70954 24.4773 3.06445C24.8865 3.41935 25.2148 3.85805 25.4397 4.35084C25.6647 4.84363 25.7812 5.37901 25.7812 5.92073V7.8141C26.6113 8.25207 27.3061 8.90829 27.7907 9.712C28.2753 10.5157 28.5313 11.4365 28.5312 12.375V26.125C28.5312 27.4925 27.988 28.804 27.021 29.771C26.054 30.738 24.7425 31.2812 23.375 31.2812H9.625C8.25748 31.2812 6.94597 30.738 5.97898 29.771C5.012 28.804 4.46875 27.4925 4.46875 26.125V6.87498V6.77735C4.46875 5.5316 5.3845 4.47423 6.61925 4.29823L21.4651 2.17798ZM6.97263 9.28123H6.53125V26.125C6.53125 26.9455 6.8572 27.7324 7.43739 28.3126C8.01758 28.8928 8.80449 29.2187 9.625 29.2187H23.375C24.1955 29.2187 24.9824 28.8928 25.5626 28.3126C26.1428 27.7324 26.4688 26.9455 26.4688 26.125V12.375C26.4688 11.5568 26.1447 10.772 25.5675 10.1922C24.9903 9.61241 24.2069 9.28486 23.3888 9.28123H6.97263ZM23.7188 7.21873H6.96712C6.8556 7.21779 6.74857 7.17466 6.66754 7.09803C6.58652 7.02139 6.53751 6.91692 6.53037 6.80563C6.52323 6.69433 6.55849 6.58446 6.62905 6.49809C6.69962 6.41173 6.80026 6.35528 6.91075 6.3401L21.7566 4.22123C22.0004 4.18636 22.2488 4.20427 22.485 4.27375C22.7212 4.34323 22.9397 4.46265 23.1258 4.62394C23.3119 4.78522 23.4611 4.98459 23.5634 5.20856C23.6657 5.43254 23.7187 5.67587 23.7188 5.9221V7.21873Z"
-                    fill="#4a6e31"
+                    fill="#ff7700a9"
                   />
                 </svg>
-                <h1 className="text-[14px] font-bold font-roboto text-[#4a6e31]">
+                <h1 className="text-[14px] font-bold font-roboto text-[#ff7700a9]">
                   Booking
                 </h1>
-                <p className="text-[10px] font-roboto text-[#4a6e31]">
+                <p className="text-[10px] font-roboto text-[#ff7700a9]">
                   Book your service directly from here without any complications
                 </p>
               </div>
@@ -235,118 +238,129 @@ const Userdash = () => {
             </div>
           </Link>
         </div> */}
-          <div className="mt-4 pb-20">
-            <div className="p-4 rounded-lg w-full bg-sky-100 shadow-sm shadow-gray-400">
-              <h2 className="text-md font-semibold border-b border-black pb-2 mb-2">
-                Upcoming events
-              </h2>
+          <div className="mt-8 pb-20">
+            <div className="w-full">
+              <h2 className="text-2xl font-bold pb-2 mb-2">Upcoming events</h2>
               {eventsLoading ? (
                 <Skeleton active paragraph={{ rows: 2 }} />
               ) : (
-                <ul>
+                <div>
                   {recentEvents.map((item) => (
-                    <li
+                    <Link
+                      to={`/display-event/event-detail/${item.event.id}`}
                       key={item.event.id}
-                      className="border-b py-2 flex items-center justify-between border-gray-400"
+                      className="flex items-center justify-between bg-white shadow-sm shadow-gray-400 rounded-lg p-4"
                     >
-                      <div className="flex items-center gap-2">
-                        <img
-                          src={item.file_url}
-                          alt="Payment slip"
-                          className="h-8 w-8 rounded-lg object-cover"
-                        />
-                        <div>
-                          <p
-                            className="text-sm text-ellipsis overflow-hidden"
-                            style={{
-                              display: "-webkit-box",
-                              WebkitBoxOrient: "vertical",
-                              WebkitLineClamp: 1,
-                            }}
-                          >
-                            {item.event.name}
-                          </p>
-                        </div>
+                      <div className="">
+                        <p
+                          className="text-md text-ellipsis overflow-hidden capitalize font-semibold"
+                          style={{
+                            display: "-webkit-box",
+                            WebkitBoxOrient: "vertical",
+                            WebkitLineClamp: 1,
+                          }}
+                        >
+                          {item.event.name}
+                        </p>
+                        <p className="text-md text-gray-500">
+                          {new Date(item.event.date).toLocaleDateString()}
+                        </p>
+                        <p
+                          className="text-md text-gray-600 text-ellipsis overflow-hidden pt-2 w-2/3"
+                          style={{
+                            display: "-webkit-box",
+                            WebkitBoxOrient: "vertical",
+                            WebkitLineClamp: 2,
+                          }}
+                        >
+                          {item.event.description}
+                        </p>
                       </div>
-                      <p className="text-sm text-gray-500">
-                        {new Date(item.event.date).toLocaleDateString()}
-                      </p>
-                    </li>
+
+                      <img
+                        src={item.file_url}
+                        alt="Payment slip"
+                        className="h-16 w-16 rounded-lg object-cover"
+                      />
+                    </Link>
                   ))}
-                  <li className="flex items-end justify-end">
+                  <div className="mt-4">
                     <Link to="/display-event">
-                      <Button className="bg-yellow-600 text-sm mt-2 text-white">
-                        See More
+                      <Button
+                        className="bg-[#19891A] text-md text-white w-full text-center"
+                        style={{
+                          padding: "20px 0px",
+                        }}
+                      >
+                        View more events
                       </Button>
                     </Link>
-                  </li>
-                </ul>
+                  </div>
+                </div>
               )}
             </div>
-            <div className="p-4 rounded-lg w-full mt-4 bg-sky-100 shadow-sm shadow-gray-400">
-              <h2 className="text-md font-semibold border-b border-black pb-2 mb-2">
-                Notices
-              </h2>
+            <div className="w-full mt-8">
+              <h2 className="text-2xl font-bold pb-2 mb-2">Latest Notices</h2>
               {noticesLoading ? (
                 <Skeleton active paragraph={{ rows: 2 }} />
               ) : (
-                <ul>
+                <div className="flex flex-col gap-2">
                   {recentNotices.map((item) => (
-                    <li className="border-b py-4 border-gray-400">
-                      <div className="flex justify-between">
-                        <img
-                          src="https://cdn-icons-png.flaticon.com/256/7803/7803013.png"
-                          alt="Payment slip"
-                          className="h-8 w-8 rounded-lg object-cover my-auto"
-                        />
-                        <div className="w-3/6">
-                          <p
-                            className="text-sm text-ellipsis overflow-hidden"
-                            style={{
-                              display: "-webkit-box",
-                              WebkitBoxOrient: "vertical",
-                              WebkitLineClamp: 1,
-                            }}
+                    <Link
+                      to={`/notice/notice-detail/${item.id}`}
+                      className="flex items-center justify-between bg-white shadow-sm shadow-gray-400 rounded-lg p-4 "
+                      key={item.id}
+                    >
+                      <div className="">
+                        <p
+                          className="text-md text-ellipsis overflow-hidden capitalize font-semibold"
+                          style={{
+                            display: "-webkit-box",
+                            WebkitBoxOrient: "vertical",
+                            WebkitLineClamp: 1,
+                          }}
+                        >
+                          {item.title}
+                        </p>
+                        <p className="text-md text-gray-500">
+                          {" "}
+                          {new Date(item.created_at).toLocaleDateString()}
+                        </p>
+                        <p className="pt-2">
+                          <span
+                            className={`${getNoticeColor(
+                              item.notice_type
+                            )} text-[12px] px-4 py-1 text-white`}
                           >
-                            {item.title}
-                          </p>
-                          <p
-                            className="text-sm text-gray-600 text-ellipsis overflow-hidden"
-                            style={{
-                              display: "-webkit-box",
-                              WebkitBoxOrient: "vertical",
-                              WebkitLineClamp: 2,
-                            }}
-                          >
-                            {item.notice_body}
-                          </p>
-                        </div>
-                        <div className="my-auto">
-                          <p className="text-sm text-gray-500">
-                            {" "}
-                            {new Date(item.created_at).toLocaleDateString()}
-                          </p>
-                          <p>
-                            <span
-                              className={`${getNoticeColor(
-                                item.notice_type
-                              )} text-[12px] px-4 py-1 text-white`}
-                            >
-                              {item.notice_type}
-                            </span>
-                          </p>
-                        </div>
+                            {item.notice_type}
+                          </span>
+                        </p>
+                        <p
+                          className="text-md text-gray-600 text-ellipsis overflow-hidden pt-2"
+                          style={{
+                            display: "-webkit-box",
+                            WebkitBoxOrient: "vertical",
+                            WebkitLineClamp: 2,
+                          }}
+                        >
+                          {item.notice_body}
+                        </p>
                       </div>
-                    </li>
+                    </Link>
                   ))}
-                  <li className="flex items-end justify-end">
+                  <div className="mt-4">
                     <Link to="/notice">
-                      <Button className="bg-yellow-600 text-sm mt-2 text-white">
-                        See More
+                      <Button
+                        className="bg-[#19891A] text-md text-white w-full text-center"
+                        style={{
+                          padding: "20px 0px",
+                        }}
+                      >
+                        View More Notices
                       </Button>
                     </Link>
-                  </li>
-                </ul>
+                  </div>
+                </div>
               )}
             </div>
           </div>

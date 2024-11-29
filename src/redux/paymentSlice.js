@@ -44,7 +44,12 @@ export const updatePayment = createAsyncThunk(
   "payments/updatePayment",
   async ({ id, paymentData }, { rejectWithValue }) => {
     try {
-      const response = await api.put(`/payments/${id}/`, paymentData); // Use PUT instead of POST
+      const config = {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      };
+      const response = await api.put(`/payments/${id}/`, paymentData, config); // Use PUT instead of POST
       return response.data;
     } catch (error) {
       return rejectWithValue(

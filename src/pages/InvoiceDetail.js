@@ -2,6 +2,8 @@ import { Link, useParams } from "react-router-dom";
 import { useEffect, useState } from "react";
 import api from "../utils/api";
 import { SlArrowLeft } from "react-icons/sl";
+import { Button, Skeleton } from "antd";
+import { DownloadOutlined } from "@ant-design/icons";
 
 const InvoiceDetail = () => {
   const { id } = useParams(); // Get the invoice id from the URL
@@ -19,10 +21,8 @@ const InvoiceDetail = () => {
       });
   }, [id]);
 
-  if (!invoice) return <p>Loading...</p>;
-
   return (
-    <div className="w-full">
+    <div className="w-full bg-[#F5F5F5] min-h-[100vh] ">
       <div className="flex  font-roboto  px-4 py-2 bg-[#3F3F95] rounded-b-lg">
         <div className="items-center my-auto">
           <Link to="/adduserpayment">
@@ -30,14 +30,13 @@ const InvoiceDetail = () => {
           </Link>
         </div>
         <h3 className="font-bold flex justify-center mx-auto text-[22px] text-white">
-          Invoices
+          Invoice Detail
         </h3>
       </div>
-      <div className="w-full bg-white p-4 border border-gray-300 rounded-lg shadow-lg">
-        <h2 className="text-2xl font-bold text-center mb-6"></h2>
 
-        {invoice ? (
-          <div className="bg-white p-4 border border-gray-300 rounded-lg shadow-lg mx-auto my-auto">
+      {invoice ? (
+        <>
+          <div className="bg-white p-4 rounded-lg shadow-sm shadow-gray-400 m-4">
             <h2 className="text-xl font-bold text-center mb-2">
               Society of Comfort SMD Awas Bayawasthapan Samiti
             </h2>
@@ -103,10 +102,23 @@ const InvoiceDetail = () => {
               <p>{invoice.remarks || "No remarks"}</p>
             </div>
           </div>
-        ) : (
-          <p>Loading invoice details...</p>
-        )}
-      </div>
+          <div className="mx-4 mt-4">
+            <Button
+              icon={<DownloadOutlined />}
+              className="bg-[#19891A] text-white w-full"
+              style={{
+                padding: "20px 0px",
+              }}
+            >
+              Download invoice
+            </Button>
+          </div>
+        </>
+      ) : (
+        <div className="p-4">
+          <Skeleton active paragraph={{ rows: 5 }} />
+        </div>
+      )}
     </div>
   );
 };

@@ -9,7 +9,7 @@ import "nepali-datepicker-reactjs/dist/index.css";
 import api from "../utils/api";
 import { ADToBS } from "bikram-sambat-js";
 import { Button, notification } from "antd";
-import { FileImageOutlined } from "@ant-design/icons";
+import { DownloadOutlined, FileImageOutlined } from "@ant-design/icons";
 import SyncLoader from "react-spinners/SyncLoader";
 import { MdOutlineSpeakerNotes } from "react-icons/md";
 
@@ -154,22 +154,20 @@ const AddPayment = () => {
     formData.append("remarks", remarks);
     formData.append("status", status);
 
-    const response = await dispatch(paymentActions.addPayment(formData));
-
-    // Check for errors explicitly from the response
-    if (paymentActions.addPayment.fulfilled.match(response)) {
-      notification.success({
-        message: "Success",
-        description: "Payment submitted successfully",
+    dispatch(paymentActions.addPayment(formData))
+      .unwrap()
+      .then(() => {
+        notification.success({
+          message: "sucess",
+          description: "Payment submitted sucessfully",
+        });
+      })
+      .catch((err) => {
+        notification.error({
+          message: "Error",
+          description: err?.error || "Failed to add payment",
+        });
       });
-      setSuccessMessage("Payment added successfully!");
-      resetPaymentForm();
-    } else {
-      notification.error({
-        message: "Error",
-        description: "payment not added",
-      });
-    }
   };
 
   const resetPaymentForm = () => {
@@ -198,7 +196,7 @@ const AddPayment = () => {
   };
 
   return (
-    <div className="payment-list bg-slate-200">
+    <div className="payment-list bg-[#F5F5F5]">
       <div className="flex justify-between bg-[#3F3F95] px-4 py-2 w-full rounded-b-lg">
         <div className="items-center my-auto">
           <Link to="/userdash">
@@ -217,7 +215,7 @@ const AddPayment = () => {
       )}
 
       {/* Add Payment Form */}
-      <div className="p-2 bg-gray-200">
+      <div className="p-2">
         <form
           onSubmit={handlePaymentSubmit}
           className="bg-white p-6 rounded-lg shadow-lg mb-6 flex flex-col gap-2"
@@ -252,11 +250,13 @@ const AddPayment = () => {
                 {!slip ? (
                   <p className="my-auto text-gray-400">Payment screenshot</p>
                 ) : (
-                  <p className="my-auto text-gray-400">{slip?.name}</p>
+                  <p className="my-auto text-gray-400 overflow-hidden">
+                    {slip?.name}
+                  </p>
                 )}
                 <Button
                   onClick={triggerFileInput}
-                  className="bg-blue-500 text-white px-4 py-2 rounded-md"
+                  className="bg-[#FEA733] text-white px-4 py-2 rounded-md"
                   icon={<FileImageOutlined />}
                 >
                   Upload
@@ -295,24 +295,24 @@ const AddPayment = () => {
           </div>
           <button
             type="submit"
-            className="bg-[#403F93] text-white flex justify-center w-full py-2 rounded-lg mt-2"
+            className="bg-[#3F3F95] text-white flex justify-center w-full py-2 rounded-lg mt-2"
             disabled={updating}
           >
             {updating ? "Sending..." : "Send Payment"}
           </button>
         </form>
       </div>
-      <div className="flex justify-between">
+      <div className="flex justify-between mb-8">
         {" "}
         <button
-          className="font-bold flex justify-center flex-col mx-auto text-[22px] text-[#403F93]"
+          className="font-bold flex justify-center flex-col mx-auto text-[22px] text-black"
           onClick={handleInvoiceClick}
         >
           Invoice List
           {isInvoice && <span className="bg-[#403F93] h-1 w-32"></span>}
         </button>
         <button
-          className="font-bold flex justify-center flex-col mx-auto text-[22px] text-[#403F93]"
+          className="font-bold flex justify-center flex-col mx-auto text-[22px] text-black"
           onClick={handlePaymentClick}
         >
           Payment List
@@ -337,25 +337,41 @@ const AddPayment = () => {
                 <Link
                   to={`/invoice-detail/${invoice.id}`}
                   key={invoice.id}
-                  className="flex flex-col border border-gray-300 bg-white p-4 rounded-lg shadow-md transition-transform hover:scale-105 text-[12px] font-semibold"
+                  className="flex flex-col border border-gray-300 bg-white p-4 rounded-lg shadow-md"
                 >
                   <div className="">
-                    <p className="">
+                    <p className="text-sm">
                       Date {new Date(invoice.created_at).toLocaleDateString()}
                     </p>
-                    <p className="">Invoice for month: {invoice.month}</p>
+                    <p className="text-sm">
+                      Invoice for month:{" "}
+                      <span className="">{invoice.month}</span>
+                    </p>
                   </div>
                   <div className="h-[1px] w-full bg-gray-600" />
-                  {invoice.invoice_items.map((item) => (
-                    <div className="flex justify-between">
-                      <p>{item.particular}</p>
-                      <p>Rs. {item.total}</p>
-                    </div>
-                  ))}
-                  <div className="h-[1px] w-full bg-gray-600" />
-                  <div className="flex justify-between">
+                  <div className="my-2">
+                    {invoice.invoice_items.map((item) => (
+                      <div className="flex justify-between text-sm my-1">
+                        <p>{item.particular}</p>
+                        <p>Rs. {item.total}</p>
+                      </div>
+                    ))}
+                  </div>
+                  <div className="h-[1px] w-full bg-gray-600 " />
+                  <div className="flex justify-between text-sm">
                     <p className="">Total</p>
                     <p className="">{invoice.total_amount}</p>
+                  </div>
+                  <div className="mt-4">
+                    <Button
+                      className="bg-[#19891A] text-md text-white w-full text-center"
+                      icon={<DownloadOutlined />}
+                      style={{
+                        padding: "10px 0px",
+                      }}
+                    >
+                      Download invoice
+                    </Button>
                   </div>
                 </Link>
               ))}
@@ -365,7 +381,7 @@ const AddPayment = () => {
                 <Link
                   to={`/payment-detail/${payment.payment.id}`}
                   key={payment.id}
-                  className="flex flex-col border border-gray-300 bg-white p-4 rounded-lg shadow-md transition-transform hover:scale-105 text-[12px] font-semibold"
+                  className="flex flex-col border border-gray-300 bg-white p-4 rounded-lg shadow-md text-sm"
                 >
                   <div className="flex justify-between">
                     <p>Id</p>
@@ -390,6 +406,20 @@ const AddPayment = () => {
                     <div className="">
                       <p className="">Rejected reason</p>
                       <p className="">{payment.payment.rejected_reason}</p>
+                    </div>
+                  )}
+                  {payment.payment.status === "Pending" && (
+                    <div className="mt-4">
+                      <Link>
+                        <Button
+                          className="bg-[#19891A] text-md text-white w-full text-center"
+                          style={{
+                            padding: "10px 0px",
+                          }}
+                        >
+                          Edit payment
+                        </Button>
+                      </Link>
                     </div>
                   )}
                 </Link>

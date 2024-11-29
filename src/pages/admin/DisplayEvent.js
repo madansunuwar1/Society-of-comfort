@@ -40,7 +40,7 @@ const DisplayEvent = () => {
   }
 
   return (
-    <div className=" bg-slate-200 rounded-xl md:px-24">
+    <div className=" bg-slate-200 rounded-xl md:px-24 min-h-[100vh]">
       <div className="flex justify-between bg-[#3F3F95] px-4 py-2 w-full rounded-b-lg">
         <div className="items-center my-auto">
           <Link to="/userdash">
@@ -51,70 +51,48 @@ const DisplayEvent = () => {
           Events
         </button>
       </div>
-
       {
-        <ul className="space-y-4">
-          {events.map((event) => (
-            <div
-              key={event.id}
-              className=" bg-white shadow-sm flex flex-col md:px-14"
+        <div className="bg-gray-100 mx-4 mt-4">
+          {events.map((item) => (
+            <Link
+              to={`/display-event/event-detail/${item.event.id}`}
+              key={item.event.id}
+              className="flex items-center justify-between bg-white shadow-sm shadow-gray-400 rounded-lg p-4"
             >
-              <div className="my-2">
-                <h4 className="text-md font-semibold px-4">
-                  {event.event.name}
-                </h4>
-                <p className="text-gray-500 text-sm px-4">
-                  {event.event.description}
+              <div className="">
+                <p
+                  className="text-md text-ellipsis overflow-hidden capitalize font-semibold"
+                  style={{
+                    display: "-webkit-box",
+                    WebkitBoxOrient: "vertical",
+                    WebkitLineClamp: 1,
+                  }}
+                >
+                  {item.event.name}
+                </p>
+                <p className="text-md text-gray-500">
+                  {new Date(item.event.date).toLocaleDateString()}
+                </p>
+                <p
+                  className="text-md text-gray-600 text-ellipsis overflow-hidden pt-2 w-2/3"
+                  style={{
+                    display: "-webkit-box",
+                    WebkitBoxOrient: "vertical",
+                    WebkitLineClamp: 2,
+                  }}
+                >
+                  {item.event.description}
                 </p>
               </div>
-              {event.file_url && (
-                <div className="border border-gray-500">
-                  {event.file_url.endsWith(".jpg") ||
-                  event.file_url.endsWith(".jpeg") ||
-                  event.file_url.endsWith(".png") ? (
-                    <img
-                      src={event.file_url} // Assuming the file_url URL is directly accessible
-                      alt="Event file_url"
-                      className="shadow-lg h-[200px] md:h-[400px] w-full object-cover"
-                    />
-                  ) : event.file_url.endsWith(".pdf") ? (
-                    <a
-                      href={event.file_url} // Link to download the PDF
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="mt-2 text-blue-600 underline p-4"
-                    >
-                      Download PDF
-                    </a>
-                  ) : (
-                    <p className="mt-2 text-gray-500">Unsupported file type</p>
-                  )}
-                </div>
-              )}
-              <div className="flex justify-between my-2 mx-4">
-                <div className="flex flex-col">
-                  <span className="font-medium text-md">Date:</span>{" "}
-                  <span className="text-sm text-gray-500">
-                    {event.event.date}
-                  </span>
-                </div>
 
-                <div className="flex flex-col">
-                  <span className="font-medium text-md">Time:</span>{" "}
-                  <span className="text-sm text-gray-500 ">
-                    {event.event.time}
-                  </span>
-                </div>
-                <div className="flex flex-col">
-                  <span className="font-medium text-md">Venue:</span>{" "}
-                  <span className="text-sm text-gray-500">
-                    {event.event.venue}
-                  </span>
-                </div>
-              </div>
-            </div>
+              <img
+                src={item.file_url}
+                alt="Payment slip"
+                className="h-16 w-16 rounded-lg object-cover"
+              />
+            </Link>
           ))}
-        </ul>
+        </div>
       }
     </div>
   );

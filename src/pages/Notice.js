@@ -24,7 +24,7 @@ const Notice = () => {
   };
 
   return (
-    <div className="bg-gray-200 font-roboto pb-20">
+    <div className="bg-gray-200 font-roboto pb-20 ">
       <div className="flex justify-between bg-[#3F3F95] px-4 py-2 w-full rounded-b-lg">
         <div className="items-center my-auto">
           <Link to="/userdash">
@@ -35,33 +35,29 @@ const Notice = () => {
           All Notices
         </button>
       </div>
-
-      {loading ? (
-        <div className="flex justify-center h-[80vh] align-middle items-center">
-          <SyncLoader
-            color="#3F3F95"
-            loading={loading}
-            size={15}
-            aria-label="Loading Spinner"
-            data-testid="loader"
-          />
-        </div>
-      ) : (
-        <>
-          {allNotices && allNotices.length > 0 ? (
-            allNotices.map((item) => (
-              <div className="px-6 py-1" key={item.id}>
-                <div className="bg-white p-3 overflow-hidden rounded-md shadow-lg flex justify-between">
-                  <div className="my-auto">
-                    <img
-                      src="https://internalsafety.tractel.com/safetygate/wp-content/uploads/2020/03/notice-icon-b.png"
-                      className="h-10 w-10 object-cover rounded-md"
-                    />
-                  </div>
-                  <div className="w-3/6">
-                    <div className="flex gap-2">
-                      <h1
-                        className="font-bold overflow-hidden text-md my-auto text-ellipsis"
+      <div className="px-4 mt-4">
+        {loading ? (
+          <div className="flex justify-center h-[80vh] align-middle items-center">
+            <SyncLoader
+              color="#3F3F95"
+              loading={loading}
+              size={15}
+              aria-label="Loading Spinner"
+              data-testid="loader"
+            />
+          </div>
+        ) : (
+          <>
+            <div className="flex flex-col gap-2">
+              {allNotices && allNotices.length > 0 ? (
+                allNotices.map((item) => (
+                  <Link
+                    to={`/notice/notice-detail/${item.id}`}
+                    className="flex items-center justify-between bg-white shadow-sm shadow-gray-400 rounded-lg p-4 "
+                  >
+                    <div className="">
+                      <p
+                        className="text-md text-ellipsis overflow-hidden capitalize font-semibold"
                         style={{
                           display: "-webkit-box",
                           WebkitBoxOrient: "vertical",
@@ -69,43 +65,42 @@ const Notice = () => {
                         }}
                       >
                         {item.title}
-                      </h1>
-                    </div>
-                    <p
-                      className="mt-2 text-gray-600 text-sm overflow-hidden text-ellipsis"
-                      style={{
-                        display: "-webkit-box",
-                        WebkitBoxOrient: "vertical",
-                        WebkitLineClamp: 2,
-                      }}
-                    >
-                      {item.notice_body || item.notice}{" "}
-                      {/* Use notice_body or notice depending on the structure */}
-                    </p>
-                  </div>
-                  <div className="my-auto">
-                    <p className="text-sm text-gray-500">
-                      {" "}
-                      {new Date(item.created_at).toLocaleDateString()}
-                    </p>
-                    <p>
-                      <span
-                        className={`${getNoticeColor(
-                          item.notice_type
-                        )} text-[12px] px-4 py-1 text-white`}
+                      </p>
+                      <p className="text-md text-gray-500">
+                        {" "}
+                        {new Date(item.created_at).toLocaleDateString()}
+                      </p>
+                      <p className="pt-2">
+                        <span
+                          className={`${getNoticeColor(
+                            item.notice_type
+                          )} text-[12px] px-4 py-1 text-white`}
+                        >
+                          {item.notice_type}
+                        </span>
+                      </p>
+                      <p
+                        className="text-md text-gray-600 text-ellipsis overflow-hidden pt-2"
+                        style={{
+                          display: "-webkit-box",
+                          WebkitBoxOrient: "vertical",
+                          WebkitLineClamp: 2,
+                        }}
                       >
-                        {item.notice_type}
-                      </span>
-                    </p>
-                  </div>
-                </div>
-              </div>
-            ))
-          ) : (
-            <p className="text-center text-gray-600">No notices available.</p>
-          )}
-        </>
-      )}
+                        {item.notice_body}
+                      </p>
+                    </div>
+                  </Link>
+                ))
+              ) : (
+                <p className="text-center text-gray-600">
+                  No notices available.
+                </p>
+              )}
+            </div>
+          </>
+        )}
+      </div>
     </div>
   );
 };

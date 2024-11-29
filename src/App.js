@@ -57,6 +57,8 @@ import ChangePassword from "./pages/admin/ChangePassword";
 import EditProfile from "./pages/admin/EditProfile";
 import AddUser from "./pages/admin/AddUser";
 import AddHouseSettingPage from "./pages/admin/AddHouseSettingPage";
+import EventDetail from "./pages/EventDetail";
+import NoticeDetail from "./pages/NoticeDetail";
 
 function App() {
   return (
@@ -85,6 +87,11 @@ function App() {
         />
         <Route path="/invoice-detail/:id" element={<InvoiceDetail />} />
         <Route path="/payment-detail/:id" element={<PaymentDetail />} />
+        <Route
+          path="/display-event/event-detail/:id"
+          element={<EventDetail />}
+        />
+        <Route path="/notice/notice-detail/:id" element={<NoticeDetail />} />
 
         <Route
           path="/generatepass"
