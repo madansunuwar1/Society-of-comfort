@@ -1,8 +1,21 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { SlArrowLeft } from "react-icons/sl";
-import { Link } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
+import { getEventById } from "../redux/eventSlice";
+import { useDispatch, useSelector } from "react-redux";
+import { getNoticeByID } from "../redux/noticeSlice";
 
 const NoticeDetail = () => {
+  const { id } = useParams();
+  const dispatch = useDispatch();
+  const { currentNotice, loading } = useSelector((state) => state.events);
+
+  useEffect(() => {
+    if (id) {
+      dispatch(getEventById(id));
+    }
+  }, [id, dispatch]);
+
   const getNoticeColor = (status) => {
     switch (status) {
       case "private":

@@ -5,7 +5,8 @@ import api from "../utils/api"; // Adjust the import path accordingly
 const initialState = {
   publicNotices: [],
   privateNotices: [],
-  allNotices: [], // New state to store all notices
+  allNotices: [],
+  currentNotice: null, // New state to store all notices
   loading: false,
   error: null,
 };
@@ -109,19 +110,6 @@ export const getNoticeById = createAsyncThunk(
     }
   }
 );
-
-// export const getNoticeById = createAsyncThunk(
-//   "notices/getNoticeById",
-//   async (id, { rejectWithValue }) => {
-//     try {
-//       const response = await api.get(`/notices/${id}`);
-//       return response.data.data; // Return the fetched notice
-//     } catch (error) {
-//       console.error("Error in getNoticeById:", error); // Log the error for more insights
-//       return rejectWithValue(error.response?.data || error.message); // Return error details
-//     }
-//   }
-// );
 
 // Create the notice slice
 const noticeSlice = createSlice({
@@ -279,8 +267,6 @@ const noticeSlice = createSlice({
         state.loading = false;
         state.error = action.payload;
       });
-
-    // Add other case handlers for public/private notices...
   },
 });
 

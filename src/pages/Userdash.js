@@ -41,14 +41,6 @@ const Userdash = () => {
     dispatch(eventActions.getEvents());
   }, [user.house_id]);
 
-  const recentEvents = [...events]
-    .sort((a, b) => new Date(b.event.created_at) - new Date(a.event.created_at))
-    .slice(0, 3);
-
-  const recentNotices = [...allNotices]
-    .sort((a, b) => new Date(b.created_at) - new Date(a.created_at))
-    .slice(0, 3);
-
   const getNoticeColor = (status) => {
     switch (status) {
       case "private":
@@ -245,10 +237,10 @@ const Userdash = () => {
                 <Skeleton active paragraph={{ rows: 2 }} />
               ) : (
                 <div className="flex flex-col gap-2">
-                  {recentEvents.map((item) => (
+                  {events.map((item) => (
                     <Link
-                      to={`/display-event/event-detail/${item.event.id}`}
-                      key={item.event.id}
+                      to={`/display-event/event-detail/${item.id}`}
+                      key={item.id}
                       className="flex items-center justify-between bg-white shadow-sm shadow-gray-400 rounded-lg p-4"
                     >
                       <div className="">
@@ -260,10 +252,10 @@ const Userdash = () => {
                             WebkitLineClamp: 1,
                           }}
                         >
-                          {item.event.name}
+                          {item.name}
                         </p>
                         <p className="text-md text-gray-500">
-                          {new Date(item.event.date).toLocaleDateString()}
+                          {new Date(item.date).toLocaleDateString()}
                         </p>
                         <p
                           className="text-md text-gray-600 text-ellipsis overflow-hidden pt-2 w-2/3"
@@ -273,12 +265,12 @@ const Userdash = () => {
                             WebkitLineClamp: 2,
                           }}
                         >
-                          {item.event.description}
+                          {item.description}
                         </p>
                       </div>
 
                       <img
-                        src={item.file_url}
+                        src={item.file.original_url}
                         alt="Payment slip"
                         className="h-16 w-16 rounded-lg object-cover"
                       />
@@ -305,7 +297,7 @@ const Userdash = () => {
                 <Skeleton active paragraph={{ rows: 2 }} />
               ) : (
                 <div className="flex flex-col gap-2">
-                  {recentNotices.map((item) => (
+                  {allNotices.map((item) => (
                     <Link
                       to={`/notice/notice-detail/${item.id}`}
                       className="flex items-center justify-between bg-white shadow-sm shadow-gray-400 rounded-lg p-4 "

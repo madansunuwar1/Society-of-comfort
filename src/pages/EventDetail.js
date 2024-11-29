@@ -49,7 +49,7 @@ const EventDetail = () => {
           {currentEvent?.description}
         </p>
         <img
-          src="https://4.imimg.com/data4/RW/PX/MY-29855425/event-management.jpg"
+          src={currentEvent?.file?.original_url}
           alt="Payment slip"
           className=" rounded-lg object-cover mt-2"
         />

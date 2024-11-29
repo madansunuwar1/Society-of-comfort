@@ -31,9 +31,9 @@ const DashboardHome = () => {
     )
     .slice(0, 3);
 
-  const recentEvents = [...events]
-    .sort((a, b) => new Date(b.event.created_at) - new Date(a.event.created_at))
-    .slice(0, 3);
+  // const recentEvents = [...events]
+  //   .sort((a, b) => new Date(b.event.created_at) - new Date(a.event.created_at))
+  //   .slice(0, 3);
 
   const getStatusColor = (status) => {
     switch (status) {
@@ -246,21 +246,21 @@ const DashboardHome = () => {
               <Skeleton active paragraph={{ rows: 4 }} />
             ) : (
               <ul>
-                {recentEvents.map((item) => (
+                {events.map((item) => (
                   <li
-                    key={item.event.id}
+                    key={item.id}
                     className="border-b py-2 flex items-center justify-between"
                   >
                     <div className="flex items-center gap-4 w-2/4">
                       <img
-                        src={item.file_url}
+                        src={item.file.original_url}
                         alt="Payment slip"
                         className="h-12 w-12 rounded-lg object-cover"
                       />
                       <div>
-                        <p className="font-semibold">{item.event.name}</p>
+                        <p className="font-semibold">{item.name}</p>
                         <p className="text-sm text-gray-500">
-                          {new Date(item.event.date).toLocaleDateString()}
+                          {new Date(item.date).toLocaleDateString()}
                         </p>
                       </div>
                     </div>
