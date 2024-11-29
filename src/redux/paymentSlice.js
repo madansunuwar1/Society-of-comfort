@@ -78,10 +78,27 @@ export const updatePaymentStatus = createAsyncThunk(
   }
 );
 
+export const fetchPaymentById = createAsyncThunk(
+  "payments/fetchPaymentById",
+  async (id, { rejectWithValue }) => {
+    try {
+      const response = await api.get(`/payments/${id}`); // Fetch payment by ID
+      return response.data; // Assuming the API returns the payment in `data`
+    } catch (error) {
+      return rejectWithValue(error.response?.data || "Failed to fetch payment");
+    }
+  }
+);
+
 // Create the payment slice
 const paymentSlice = createSlice({
   name: "payments",
-  initialState,
+  initialState: {
+    payments: [], // For listing multiple payments
+    payment: null, // For storing the fetched single payment
+    loading: false,
+    error: null,
+  },
   reducers: {},
   extraReducers: (builder) => {
     builder
@@ -150,6 +167,20 @@ const paymentSlice = createSlice({
       .addCase(updatePaymentStatus.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload; // Use action.payload for better error info
+      })
+      .addCase(fetchPaymentById.pending, (state) => {
+        state.loading = true;
+        state.payment = null; // Clear previous payment data
+        state.error = null; // Clear previous errors
+      })
+      .addCase(fetchPaymentById.fulfilled, (state, action) => {
+        state.loading = false;
+        state.payment = action.payload; // Store the fetched payment
+        state.error = null;
+      })
+      .addCase(fetchPaymentById.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload; // Store error message
       });
   },
 });
@@ -161,4 +192,5 @@ export const paymentActions = {
   addPayment,
   updatePayment,
   updatePaymentStatus,
+  fetchPaymentById,
 };

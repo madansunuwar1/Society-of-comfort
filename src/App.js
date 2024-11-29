@@ -59,6 +59,7 @@ import AddUser from "./pages/admin/AddUser";
 import AddHouseSettingPage from "./pages/admin/AddHouseSettingPage";
 import EventDetail from "./pages/EventDetail";
 import NoticeDetail from "./pages/NoticeDetail";
+import EditPayment from "./pages/EditPayment";
 
 function App() {
   return (
@@ -92,6 +93,7 @@ function App() {
           element={<EventDetail />}
         />
         <Route path="/notice/notice-detail/:id" element={<NoticeDetail />} />
+        <Route path="/editpayment/:id" element={<EditPayment />} />
 
         <Route
           path="/generatepass"

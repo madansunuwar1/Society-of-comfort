@@ -244,7 +244,7 @@ const Userdash = () => {
               {eventsLoading ? (
                 <Skeleton active paragraph={{ rows: 2 }} />
               ) : (
-                <div>
+                <div className="flex flex-col gap-2">
                   {recentEvents.map((item) => (
                     <Link
                       to={`/display-event/event-detail/${item.event.id}`}

@@ -410,7 +410,7 @@ const AddPayment = () => {
                   )}
                   {payment.payment.status === "Pending" && (
                     <div className="mt-4">
-                      <Link>
+                      <Link to={`/editpayment/${payment.payment.id}`}>
                         <Button
                           className="bg-[#19891A] text-md text-white w-full text-center"
                           style={{

@@ -97,6 +97,32 @@ export const updatePrivateNotice = createAsyncThunk(
   }
 );
 
+export const getNoticeById = createAsyncThunk(
+  "notices/getNoticeById",
+  async (id, { rejectWithValue }) => {
+    try {
+      const response = await api.get(`/notices/${id}`);
+      return response.data.data; // Return the fetched notice
+    } catch (error) {
+      console.error("Error in getNoticeById:", error); // Log the error for more insights
+      return rejectWithValue(error.response?.data || error.message); // Return error details
+    }
+  }
+);
+
+// export const getNoticeById = createAsyncThunk(
+//   "notices/getNoticeById",
+//   async (id, { rejectWithValue }) => {
+//     try {
+//       const response = await api.get(`/notices/${id}`);
+//       return response.data.data; // Return the fetched notice
+//     } catch (error) {
+//       console.error("Error in getNoticeById:", error); // Log the error for more insights
+//       return rejectWithValue(error.response?.data || error.message); // Return error details
+//     }
+//   }
+// );
+
 // Create the notice slice
 const noticeSlice = createSlice({
   name: "notices",
@@ -241,6 +267,17 @@ const noticeSlice = createSlice({
       .addCase(updatePrivateNotice.rejected, (state, action) => {
         state.loading = false;
         state.error = action.error.message;
+      })
+      .addCase(getNoticeById.pending, (state) => {
+        state.loading = true;
+      })
+      .addCase(getNoticeById.fulfilled, (state, action) => {
+        state.loading = false;
+        state.currentNotice = action.payload; // Store the fetched notice in a `currentNotice` field
+      })
+      .addCase(getNoticeById.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload;
       });
 
     // Add other case handlers for public/private notices...
@@ -259,4 +296,5 @@ export const noticeActions = {
   updatePrivateNotice,
   editNotice,
   deleteNotice,
+  getNoticeById,
 };

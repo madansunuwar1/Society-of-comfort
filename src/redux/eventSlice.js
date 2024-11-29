@@ -4,6 +4,7 @@ import api from "../utils/api";
 // Initial state for events
 const initialState = {
   events: [],
+  currentEvent: null,
   loading: false,
   error: null,
 };
@@ -18,6 +19,21 @@ export const getEvents = createAsyncThunk(
     } catch (error) {
       console.error("API Error:", error.response?.data);
       return rejectWithValue(error.response?.data || "Failed to fetch events");
+    }
+  }
+);
+
+export const getEventById = createAsyncThunk(
+  "events/getEventById",
+  async (id, { rejectWithValue }) => {
+    try {
+      const response = await api.get(`/events/${id}`);
+      return response.data.data;
+    } catch (error) {
+      console.error("API Error:", error.response?.data);
+      return rejectWithValue(
+        error.response?.data || "Failed to fetch event by ID"
+      );
     }
   }
 );
@@ -135,6 +151,18 @@ const eventSlice = createSlice({
       .addCase(deleteEvent.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload;
+      })
+      .addCase(getEventById.pending, (state) => {
+        state.loading = true;
+      })
+      .addCase(getEventById.fulfilled, (state, action) => {
+        state.loading = false;
+        // Store the fetched event in a separate field (e.g., `currentEvent`)
+        state.currentEvent = action.payload;
+      })
+      .addCase(getEventById.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload;
       });
   },
 });
@@ -146,4 +174,5 @@ export const eventActions = {
   addEvent,
   updateEvent,
   deleteEvent,
+  getEventById,
 };

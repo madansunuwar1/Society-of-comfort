@@ -71,7 +71,7 @@ const PaymentDetail = () => {
               className=" rounded-lg object-cover mt-2"
             />
             <p className="font-bold mt-4">Remarks</p>
-            <p>{payment.data.remark}</p>
+            <p>{payment.data.remarks}</p>
             {payment.status === "Rejected" && (
               <div>
                 <p>Rejected reason: {payment.rejected_reason}</p>
