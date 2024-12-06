@@ -89,14 +89,14 @@ const WorkerList = () => {
     <div className="w-full bg-slate-200 p-6 pb-20 rounded-lg shadow-md">
       <div className="bg-white rounded-lg p-4">
         <div className="mb-4 flex justify-between">
-          <h1 className="text-xl font-semibold mb-4">List Of Workers</h1>
+          <h1 className="text-xl font-semibold mb-4">List Of Staffs</h1>
           <Link to="/dashboard/addworker">
             <Button
               type="default"
               className="bg-green-800 text-white hover:bg-green-600"
               icon={<PlusOutlined />}
             >
-              Add New Worker
+              Add New Staff
             </Button>
           </Link>
         </div>

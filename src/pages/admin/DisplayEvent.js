@@ -52,11 +52,11 @@ const DisplayEvent = () => {
         </button>
       </div>
       {
-        <div className="bg-gray-100 mx-4 mt-4">
-          {events.map((item) => (
+        <div className="mx-4 mt-4 flex flex-col gap-4">
+          {events?.map((item) => (
             <Link
-              to={`/display-event/event-detail/${item.event.id}`}
-              key={item.event.id}
+              to={`/display-event/event-detail/${item.id}`}
+              key={item.id}
               className="flex items-center justify-between bg-white shadow-sm shadow-gray-400 rounded-lg p-4"
             >
               <div className="">
@@ -68,10 +68,10 @@ const DisplayEvent = () => {
                     WebkitLineClamp: 1,
                   }}
                 >
-                  {item.event.name}
+                  {item.name}
                 </p>
                 <p className="text-md text-gray-500">
-                  {new Date(item.event.date).toLocaleDateString()}
+                  {new Date(item.date).toLocaleDateString()}
                 </p>
                 <p
                   className="text-md text-gray-600 text-ellipsis overflow-hidden pt-2 w-2/3"
@@ -81,12 +81,12 @@ const DisplayEvent = () => {
                     WebkitLineClamp: 2,
                   }}
                 >
-                  {item.event.description}
+                  {item.description}
                 </p>
               </div>
 
               <img
-                src={item.file_url}
+                src={item.file.original_url}
                 alt="Payment slip"
                 className="h-16 w-16 rounded-lg object-cover"
               />

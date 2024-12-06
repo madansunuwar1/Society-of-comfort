@@ -4,6 +4,7 @@ import api from "../utils/api";
 import { SlArrowLeft } from "react-icons/sl";
 import { Button, Skeleton } from "antd";
 import { DownloadOutlined } from "@ant-design/icons";
+import html2canvas from "html2canvas"; // Import the html2canvas library
 
 const InvoiceDetail = () => {
   const { id } = useParams(); // Get the invoice id from the URL
@@ -21,9 +22,22 @@ const InvoiceDetail = () => {
       });
   }, [id]);
 
+  // Function to handle downloading the invoice as an image
+  const handleDownloadInvoice = () => {
+    const invoiceElement = document.getElementById("invoice-container");
+    if (invoiceElement) {
+      html2canvas(invoiceElement, { scale: 2 }).then((canvas) => {
+        const link = document.createElement("a");
+        link.href = canvas.toDataURL("image/png");
+        link.download = `invoice_${id}.png`;
+        link.click();
+      });
+    }
+  };
+
   return (
-    <div className="w-full bg-[#F5F5F5] min-h-[100vh] ">
-      <div className="flex  font-roboto  px-4 py-2 bg-[#3F3F95] rounded-b-lg">
+    <div className="w-full bg-[#F5F5F5] min-h-[100vh]">
+      <div className="flex font-roboto px-4 py-2 bg-[#3F3F95] rounded-b-lg">
         <div className="items-center my-auto">
           <Link to="/adduserpayment">
             <SlArrowLeft className="text-white" />
@@ -36,7 +50,11 @@ const InvoiceDetail = () => {
 
       {invoice ? (
         <>
-          <div className="bg-white p-4 rounded-lg shadow-sm shadow-gray-400 m-4">
+          {/* Invoice container to capture as an image */}
+          <div
+            id="invoice-container"
+            className="bg-white p-4 rounded-lg shadow-sm shadow-gray-400 m-4"
+          >
             <h2 className="text-xl font-bold text-center mb-2">
               Society of Comfort SMD Awas Bayawasthapan Samiti
             </h2>
@@ -55,8 +73,6 @@ const InvoiceDetail = () => {
             {/* Payment Details Section */}
             <div className="text-sm font-mono border-b border-gray-400 pb-2 mb-4">
               <strong>Items:</strong>
-
-              {/* Mapping Invoice Items */}
               {invoice.invoice_items && invoice.invoice_items.length > 0 ? (
                 <div className="mb-4 overflow-x-auto min-w-full">
                   <div className="space-y-2">
@@ -109,8 +125,9 @@ const InvoiceDetail = () => {
               style={{
                 padding: "20px 0px",
               }}
+              onClick={handleDownloadInvoice} // Attach the download handler
             >
-              Download invoice
+              Download Invoice
             </Button>
           </div>
         </>

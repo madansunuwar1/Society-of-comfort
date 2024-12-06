@@ -5,6 +5,7 @@ import { PlusOutlined, SearchOutlined } from "@ant-design/icons";
 import { useDispatch, useSelector } from "react-redux";
 import { paymentActions } from "../../redux/paymentSlice";
 import { eventActions } from "../../redux/eventSlice";
+import { Link } from "react-router-dom";
 
 const DashboardHome = () => {
   const dispatch = useDispatch();
@@ -77,7 +78,7 @@ const DashboardHome = () => {
             size="large"
           />
         </div>
-        <div className="my-auto">
+        <Link to="/dashboard/addinvoice" className="my-auto">
           {" "}
           <Button
             type="default"
@@ -86,7 +87,7 @@ const DashboardHome = () => {
           >
             Add New Invoice
           </Button>
-        </div>
+        </Link>
         <div className=" bg-[#CA8A04] p-2 rounded-xl">
           <div className="flex gap-2">
             <p className="text-md font-semibold text-white">
@@ -144,7 +145,7 @@ const DashboardHome = () => {
       </div> */}
       <div className="flex justify-between gap-8 mt-4">
         <div className="w-full">
-          <div className="p-4 bg-sky-100 shadow-sm shadow-gray-400 rounded-lg w-full">
+          <div className="p-4 bg-white shadow-sm shadow-gray-400 rounded-lg w-full">
             <h2 className="text-xl font-semibold border-b border-black pb-2 mb-2">
               Recent payment Received{" "}
             </h2>
@@ -191,7 +192,7 @@ const DashboardHome = () => {
               </ul>
             )}
           </div>
-          <div className="p-4 bg-sky-100 shadow-sm shadow-gray-400 rounded-lg w-full mt-8">
+          <div className="p-4 bg-white shadow-sm shadow-gray-400 rounded-lg w-full mt-8">
             <div className="flex justify-between border-b border-black pb-2 mb-2">
               <h2 className="text-xl font-semibold">Overdue Payment Alert</h2>
               <h2 className="text-md mb-4">(Overdue upto 3 months)</h2>
@@ -238,7 +239,7 @@ const DashboardHome = () => {
         </div>
 
         <div className="w-full">
-          <div className="p-4 bg-sky-100 shadow-sm shadow-gray-400 rounded-lg w-full">
+          <div className="p-4 bg-white shadow-sm shadow-gray-400 rounded-lg w-full">
             <h2 className="text-xl font-semibold border-b border-black pb-2 mb-2">
               Upcoming events
             </h2>
@@ -272,7 +273,7 @@ const DashboardHome = () => {
               </ul>
             )}
           </div>
-          <div className="p-4 bg-sky-100 shadow-sm shadow-gray-400 rounded-lg w-full mt-8">
+          <div className="p-4 bg-white shadow-sm shadow-gray-400 rounded-lg w-full mt-8">
             <h2 className="text-xl font-semibold border-b border-black pb-2 mb-2">
               Upcoming tasks
             </h2>

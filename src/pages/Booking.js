@@ -235,6 +235,39 @@ const Booking = () => {
           </button>
         </form>
       </div>
+      <div className="px-6">
+        <h1 className="text-xl font-bold mb-4 mt-8">Booking List</h1>
+        <div className="flex gap-4 md:flex-wrap flex-col">
+          {bookings?.map((book) => (
+            <div
+              key={book.id}
+              className="bg-white flex gap-4 shadow-md rounded-lg p-4 border border-gray-200"
+            >
+              <div>
+                <h3 className="text-md font-bold">
+                  Hall Name: {book.hall_name}
+                </h3>
+                <p>
+                  <strong>remarks:</strong> {book.remarks}
+                </p>
+                <p>
+                  <strong>Date:</strong>{" "}
+                  {new Date(book.created_at).toLocaleDateString()}
+                </p>
+                <p>
+                  <strong>Status:</strong> {book.status}
+                </p>
+                <button
+                  onClick={() => handleCancel(book.id)}
+                  className="bg-red-500 text-white px-4 py-2 rounded-lg mt-2"
+                >
+                  Cancel Booking
+                </button>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
     </div>
   );
 };
